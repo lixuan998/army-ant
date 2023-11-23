@@ -162,4 +162,6 @@ reset:
 
     ldr pc, =main
 
+    b .
+
 .end

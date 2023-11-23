@@ -73,6 +73,7 @@ int main(void)
     serial_print(ARMY_ANT_LOGO);
     // serial_print("end\n\r");
     // RTX0();
+    while(1);
     return 0;
 }
 

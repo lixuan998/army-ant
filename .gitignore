@@ -54,12 +54,14 @@ dkms.conf
 
 # CMake Build
 **/***/*/build/
+**/build/
 
 #vscode config files
 .vscode/
 
 #MacOs config files
 **/***/*/.DS_Store
+**/.DS_Store
 
 Demo/
 
