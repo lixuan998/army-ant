@@ -1,0 +1,196 @@
+
+main.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <RTX0>:
+   0:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+   4:	e28db000 	add	fp, sp, #0
+   8:	e24dd00c 	sub	sp, sp, #12
+   c:	e59f3040 	ldr	r3, [pc, #64]	; 54 <RTX0+0x54>
+  10:	e50b3008 	str	r3, [fp, #-8]
+  14:	e51b3008 	ldr	r3, [fp, #-8]
+  18:	e5933000 	ldr	r3, [r3]
+  1c:	e2033001 	and	r3, r3, #1
+  20:	e3530000 	cmp	r3, #0
+  24:	0a000000 	beq	2c <RTX0+0x2c>
+  28:	eafffff7 	b	c <RTX0+0xc>
+  2c:	e1a00000 	nop			; (mov r0, r0)
+  30:	e59f3020 	ldr	r3, [pc, #32]	; 58 <RTX0+0x58>
+  34:	e50b300c 	str	r3, [fp, #-12]
+  38:	e51b300c 	ldr	r3, [fp, #-12]
+  3c:	e3a02063 	mov	r2, #99	; 0x63
+  40:	e5832000 	str	r2, [r3]
+  44:	e1a00000 	nop			; (mov r0, r0)
+  48:	e28bd000 	add	sp, fp, #0
+  4c:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
+  50:	e12fff1e 	bx	lr
+  54:	01c2807c 	.word	0x01c2807c
+  58:	01c28000 	.word	0x01c28000
+
+0000005c <serial_print_char>:
+  5c:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+  60:	e28db000 	add	fp, sp, #0
+  64:	e24dd014 	sub	sp, sp, #20
+  68:	e1a03000 	mov	r3, r0
+  6c:	e54b300d 	strb	r3, [fp, #-13]
+  70:	e59f3040 	ldr	r3, [pc, #64]	; b8 <serial_print_char+0x5c>
+  74:	e50b3008 	str	r3, [fp, #-8]
+  78:	e51b3008 	ldr	r3, [fp, #-8]
+  7c:	e5933000 	ldr	r3, [r3]
+  80:	e2033001 	and	r3, r3, #1
+  84:	e3530000 	cmp	r3, #0
+  88:	0a000000 	beq	90 <serial_print_char+0x34>
+  8c:	eafffff7 	b	70 <serial_print_char+0x14>
+  90:	e1a00000 	nop			; (mov r0, r0)
+  94:	e59f3020 	ldr	r3, [pc, #32]	; bc <serial_print_char+0x60>
+  98:	e50b300c 	str	r3, [fp, #-12]
+  9c:	e55b200d 	ldrb	r2, [fp, #-13]
+  a0:	e51b300c 	ldr	r3, [fp, #-12]
+  a4:	e5832000 	str	r2, [r3]
+  a8:	e1a00000 	nop			; (mov r0, r0)
+  ac:	e28bd000 	add	sp, fp, #0
+  b0:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
+  b4:	e12fff1e 	bx	lr
+  b8:	01c2807c 	.word	0x01c2807c
+  bc:	01c28000 	.word	0x01c28000
+
+000000c0 <serial_print>:
+  c0:	e92d4800 	push	{fp, lr}
+  c4:	e28db004 	add	fp, sp, #4
+  c8:	e24dd010 	sub	sp, sp, #16
+  cc:	e50b0010 	str	r0, [fp, #-16]
+  d0:	e51b3010 	ldr	r3, [fp, #-16]
+  d4:	e50b3008 	str	r3, [fp, #-8]
+  d8:	ea000006 	b	f8 <serial_print+0x38>
+  dc:	e51b3008 	ldr	r3, [fp, #-8]
+  e0:	e5d33000 	ldrb	r3, [r3]
+  e4:	e1a00003 	mov	r0, r3
+  e8:	ebfffffe 	bl	5c <serial_print_char>
+  ec:	e51b3008 	ldr	r3, [fp, #-8]
+  f0:	e2833001 	add	r3, r3, #1
+  f4:	e50b3008 	str	r3, [fp, #-8]
+  f8:	e51b3008 	ldr	r3, [fp, #-8]
+  fc:	e5d33000 	ldrb	r3, [r3]
+ 100:	e3530000 	cmp	r3, #0
+ 104:	1afffff4 	bne	dc <serial_print+0x1c>
+ 108:	e1a00000 	nop			; (mov r0, r0)
+ 10c:	e1a00000 	nop			; (mov r0, r0)
+ 110:	e24bd004 	sub	sp, fp, #4
+ 114:	e8bd4800 	pop	{fp, lr}
+ 118:	e12fff1e 	bx	lr
+
+0000011c <main>:
+ 11c:	e92d4800 	push	{fp, lr}
+ 120:	e28db004 	add	fp, sp, #4
+ 124:	e59f0004 	ldr	r0, [pc, #4]	; 130 <main+0x14>
+ 128:	ebfffffe 	bl	c0 <serial_print>
+ 12c:	eafffffe 	b	12c <main+0x10>
+ 130:	00000000 	.word	0x00000000
+
+00000134 <uart_init>:
+ 134:	e92d4800 	push	{fp, lr}
+ 138:	e28db004 	add	fp, sp, #4
+ 13c:	ebfffffe 	bl	15c <configGPH>
+ 140:	ebfffffe 	bl	1c4 <configULC>
+ 144:	ebfffffe 	bl	210 <configUC>
+ 148:	ebfffffe 	bl	274 <configUBR>
+ 14c:	e1a00000 	nop			; (mov r0, r0)
+ 150:	e24bd004 	sub	sp, fp, #4
+ 154:	e8bd4800 	pop	{fp, lr}
+ 158:	e12fff1e 	bx	lr
+
+0000015c <configGPH>:
+ 15c:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+ 160:	e28db000 	add	fp, sp, #0
+ 164:	e24dd00c 	sub	sp, sp, #12
+ 168:	e59f3050 	ldr	r3, [pc, #80]	; 1c0 <configGPH+0x64>
+ 16c:	e5933000 	ldr	r3, [r3]
+ 170:	e50b3008 	str	r3, [fp, #-8]
+ 174:	e51b3008 	ldr	r3, [fp, #-8]
+ 178:	e3833020 	orr	r3, r3, #32
+ 17c:	e50b3008 	str	r3, [fp, #-8]
+ 180:	e51b3008 	ldr	r3, [fp, #-8]
+ 184:	e3833008 	orr	r3, r3, #8
+ 188:	e50b3008 	str	r3, [fp, #-8]
+ 18c:	e51b3008 	ldr	r3, [fp, #-8]
+ 190:	e3c33010 	bic	r3, r3, #16
+ 194:	e50b3008 	str	r3, [fp, #-8]
+ 198:	e51b3008 	ldr	r3, [fp, #-8]
+ 19c:	e3c33004 	bic	r3, r3, #4
+ 1a0:	e50b3008 	str	r3, [fp, #-8]
+ 1a4:	e59f2014 	ldr	r2, [pc, #20]	; 1c0 <configGPH+0x64>
+ 1a8:	e51b3008 	ldr	r3, [fp, #-8]
+ 1ac:	e5823000 	str	r3, [r2]
+ 1b0:	e1a00000 	nop			; (mov r0, r0)
+ 1b4:	e28bd000 	add	sp, fp, #0
+ 1b8:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
+ 1bc:	e12fff1e 	bx	lr
+ 1c0:	56000070 	.word	0x56000070
+
+000001c4 <configULC>:
+ 1c4:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+ 1c8:	e28db000 	add	fp, sp, #0
+ 1cc:	e24dd00c 	sub	sp, sp, #12
+ 1d0:	e3a03205 	mov	r3, #1342177280	; 0x50000000
+ 1d4:	e5933000 	ldr	r3, [r3]
+ 1d8:	e50b3008 	str	r3, [fp, #-8]
+ 1dc:	e51b3008 	ldr	r3, [fp, #-8]
+ 1e0:	e3833002 	orr	r3, r3, #2
+ 1e4:	e50b3008 	str	r3, [fp, #-8]
+ 1e8:	e51b3008 	ldr	r3, [fp, #-8]
+ 1ec:	e3833001 	orr	r3, r3, #1
+ 1f0:	e50b3008 	str	r3, [fp, #-8]
+ 1f4:	e3a02205 	mov	r2, #1342177280	; 0x50000000
+ 1f8:	e51b3008 	ldr	r3, [fp, #-8]
+ 1fc:	e5823000 	str	r3, [r2]
+ 200:	e1a00000 	nop			; (mov r0, r0)
+ 204:	e28bd000 	add	sp, fp, #0
+ 208:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
+ 20c:	e12fff1e 	bx	lr
+
+00000210 <configUC>:
+ 210:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+ 214:	e28db000 	add	fp, sp, #0
+ 218:	e24dd00c 	sub	sp, sp, #12
+ 21c:	e3a03245 	mov	r3, #1342177284	; 0x50000004
+ 220:	e5933000 	ldr	r3, [r3]
+ 224:	e50b3008 	str	r3, [fp, #-8]
+ 228:	e51b3008 	ldr	r3, [fp, #-8]
+ 22c:	e3833004 	orr	r3, r3, #4
+ 230:	e50b3008 	str	r3, [fp, #-8]
+ 234:	e51b3008 	ldr	r3, [fp, #-8]
+ 238:	e3833001 	orr	r3, r3, #1
+ 23c:	e50b3008 	str	r3, [fp, #-8]
+ 240:	e51b3008 	ldr	r3, [fp, #-8]
+ 244:	e3c33008 	bic	r3, r3, #8
+ 248:	e50b3008 	str	r3, [fp, #-8]
+ 24c:	e51b3008 	ldr	r3, [fp, #-8]
+ 250:	e3c33002 	bic	r3, r3, #2
+ 254:	e50b3008 	str	r3, [fp, #-8]
+ 258:	e3a02245 	mov	r2, #1342177284	; 0x50000004
+ 25c:	e51b3008 	ldr	r3, [fp, #-8]
+ 260:	e5823000 	str	r3, [r2]
+ 264:	e1a00000 	nop			; (mov r0, r0)
+ 268:	e28bd000 	add	sp, fp, #0
+ 26c:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
+ 270:	e12fff1e 	bx	lr
+
+00000274 <configUBR>:
+ 274:	e52db004 	push	{fp}		; (str fp, [sp, #-4]!)
+ 278:	e28db000 	add	fp, sp, #0
+ 27c:	e24dd00c 	sub	sp, sp, #12
+ 280:	e59f3028 	ldr	r3, [pc, #40]	; 2b0 <configUBR+0x3c>
+ 284:	e5933000 	ldr	r3, [r3]
+ 288:	e50b3008 	str	r3, [fp, #-8]
+ 28c:	e3a0301a 	mov	r3, #26
+ 290:	e50b3008 	str	r3, [fp, #-8]
+ 294:	e59f2014 	ldr	r2, [pc, #20]	; 2b0 <configUBR+0x3c>
+ 298:	e51b3008 	ldr	r3, [fp, #-8]
+ 29c:	e5823000 	str	r3, [r2]
+ 2a0:	e1a00000 	nop			; (mov r0, r0)
+ 2a4:	e28bd000 	add	sp, fp, #0
+ 2a8:	e49db004 	pop	{fp}		; (ldr fp, [sp], #4)
+ 2ac:	e12fff1e 	bx	lr
+ 2b0:	50000028 	.word	0x50000028

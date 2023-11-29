@@ -63,6 +63,8 @@ dkms.conf
 **/***/*/.DS_Store
 **/.DS_Store
 
+**/.txt
+
 Demo/
 
 res.xml
