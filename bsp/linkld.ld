@@ -8,7 +8,6 @@ SECTIONS
 {
     .text :
     {
-        startup.o(.text)
         *(.text)
         *(.text.*)
         *(.romrun)

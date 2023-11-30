@@ -67,7 +67,7 @@ void serial_print(char *msg)
     }
 }
 
-int main(void)
+void main(void)
 {
     // uart_init();
     serial_print(ARMY_ANT_LOGO);

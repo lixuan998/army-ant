@@ -1,11 +1,17 @@
 TOOLCHAIN_DIR=/usr/local/riscv/bin/
 
+OUTPUT_DIR := ./build
+
+SRC_DIR := ./arch/riscv/src	\
+		   ./b	\
+
 OBJS = \
 	main.o	\
 	startup.o	\
-	boot.o
+	boot.o	\
+	uart.o
 
-CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -gdwarf-2
+CFLAGS = -Wall -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
@@ -28,7 +34,7 @@ main.o : main.c
 	@${TOOLCHAIN_DIR}riscv64-unknown-linux-gnu-gcc $(CFLAGS) -march=rv64g -nostdinc -c main.c -o main.o
 
 boot.o : boot.c
-	@${TOOLCHAIN_DIR}riscv64-unknown-linux-gnu-gcc $(CFLAGS) -march=rv64g -nostdinc -c main.c -o main.o
+	@${TOOLCHAIN_DIR}riscv64-unknown-linux-gnu-gcc $(CFLAGS) -march=rv64g -nostdinc -c boot.c -o boot.o
 	
 
 
