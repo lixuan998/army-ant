@@ -13,7 +13,7 @@ D += ${BSP_DIR}/obj/startup.d
 
 
 
-all : ${OBJS} ${BSP_DIR}/boot_config.lds
+all : ${OBJS}
 
 ${BSP_DIR}/obj/boot.o : ${BSP_DIR}/boot.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
@@ -26,7 +26,3 @@ ${BSP_DIR}/obj/main.o : ${BSP_DIR}/main.c
 
 ${BSP_DIR}/obj/startup.o : ${BSP_DIR}/startup.S
 	@$(CC) $(CFLAGS) -c $^ -o $@
-
-${BSP_DIR}/boot_config.lds : ${BSP_DIR}/boot_config.c
-	@echo building boot_config.lds
-	@$(CC) -E -P  $^ -o $@

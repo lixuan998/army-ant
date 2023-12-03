@@ -6,6 +6,7 @@
 ****************************************************************************************************************************************************/
 
 #include "../../../kernel/include/k_defs.h"
+#include "../../defs.h"
 
 /****************************************************************************************************************************************************
  * 
@@ -179,5 +180,44 @@ void inline w_tp(uint64 tp)
   asm volatile("mv tp, %0" : : "r" (tp));
 }
 
+/****************************************************************************************************************************************************
+ * @brief This function's purpose is to read the Supervisor Status Register, which  keeps track of and controls the hart’s current
+ * operating state. This register is in the Machine Mode.
+****************************************************************************************************************************************************/
+uint64 inline r_sstatus()
+{
+  uint64 sstatus;
+  asm volatile("csrr %0, sstatus" : "=r" (sstatus));
+  return sstatus;
+}
 
+/****************************************************************************************************************************************************
+ * @brief This function's purpose is to write the Supervisor Status Register, which  keeps track of and controls the hart’s current
+ * operating state. This register is in the Machine Mode.
+****************************************************************************************************************************************************/
+void inline w_sstatus(uint64 sstatus)
+{
+  asm volatile("csrw sstatus, %0" : : "r" (sstatus));
+}
+
+void inline turn_on_s_interrupt()
+{
+    w_sstatus(r_sstatus() | SSTATUS_SIE_MASK);
+}
+
+void inline turn_off_s_interrupt()
+{
+    w_sstatus(r_sstatus() & ~SSTATUS_SIE_MASK);
+}
+
+int inline s_interrupt_status()
+{
+    return (r_sstatus() & SSTATUS_SIE_MASK);
+}
+
+void inline sfence_vma()
+{
+  // Flush all TLB entries.-
+  asm volatile("sfence.vma zero, zero");
+}
 #endif  /* __ASM_OPERATION_H__ */

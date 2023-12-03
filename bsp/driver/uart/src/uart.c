@@ -2,6 +2,7 @@
 
 void serial_print_char(char c)
 {
+    #ifndef DEBUG
     while (1)
     {
         volatile unsigned int *usr_val = (unsigned int *)(UART_BASE_ADDR + USR);
@@ -10,6 +11,7 @@ void serial_print_char(char c)
             break;
         }
     }
+    #endif
     volatile unsigned int *thr_val = (unsigned int *)(UART_BASE_ADDR + THR);
     (*thr_val) = c;
 }

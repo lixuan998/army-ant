@@ -11,5 +11,5 @@
                         " [[    [[ [[      [[   [[   [[  [[[[[     [[    [[ [[    [[     [[[[\n\r"\
                         "                                  [[                                \n\r"\
                         "                                 [[                                 \n\r"\
-                        "                              [[[[                   @Author: LiXuan\n\r"
+                        "                              [[[[                   @Author: Lixuan\n\r"
 #endif  /* __K_LOGO_H__ */

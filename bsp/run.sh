@@ -1,1 +1,0 @@
-qemu-system-arm -nographic -machine 'orangepi-pc' -cpu 'cortex-a7' -m '1G' -kernel "army-ant.elf"
