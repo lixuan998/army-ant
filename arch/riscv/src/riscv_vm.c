@@ -1,10 +1,10 @@
-#include "../include/vm.h"
+#include "arch/riscv/include/riscv_vm.h"
 
 int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, uint64 permisson)
 {
     if(size == 0)
     {
-        k_panic("in vm_map, page size invalid.");
+        k_panic(__FILE__, __LINE__, "in vm_map, page size invalid.");
     }
 
     pte_t *pte;
@@ -24,7 +24,7 @@ int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start
         }
         if((*pte) & PTE_PERMISSION_V)
         {
-            k_panic("in vm_map, pte already mapped.");
+            k_panic(__FILE__, __LINE__, "in vm_map, pte already mapped.");
         }
         (*pte) = PHY_ADDR_TO_PTE(phys_addr_start) | permisson | PTE_PERMISSION_V;
         phys_addr_start += PAGE_SIZE;
@@ -38,7 +38,7 @@ pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
     #ifdef SV39 //Use Sv39 scheme
     if(virt_addr >= ADDR_MAX_VAL)
     {
-        k_panic("in pte_retrieve, virt_addr exceeded.");
+        k_panic(__FILE__, __LINE__, "in pte_retrieve, virt_addr exceeded.");
     }
 
     for(int idx = 2; idx > 0; -- idx)
@@ -51,7 +51,7 @@ pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
         else
         {
             pagetable = (pagetable_t)k_alloc_single_page();
-            memset(pagetable, 0, PAGE_SIZE);
+            k_memset(pagetable, 0, PAGE_SIZE);
             if(pagetable == NULL)
             {
                 k_printf("pagetable NULL\n\r");

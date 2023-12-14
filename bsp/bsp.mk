@@ -1,24 +1,17 @@
-include common.mk
-
+include config.mk
 BSP_DIR := bsp
+include bsp/driver/driver.mk
 
 OBJS += ${BSP_DIR}/obj/boot.o
 D += ${BSP_DIR}/obj/boot.d
-OBJS += ${BSP_DIR}/obj/uart.o
-D += ${BSP_DIR}/obj/uart.d
 OBJS += ${BSP_DIR}/obj/main.o
 D += ${BSP_DIR}/obj/main.d
 OBJS += ${BSP_DIR}/obj/startup.o
 D += ${BSP_DIR}/obj/startup.d
 
-
-
 all : ${OBJS}
 
 ${BSP_DIR}/obj/boot.o : ${BSP_DIR}/boot.c
-	@$(CC) $(CFLAGS) -c $^ -o $@
-
-${BSP_DIR}/obj/uart.o : ${BSP_DIR}/driver/uart/src/uart.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
 
 ${BSP_DIR}/obj/main.o : ${BSP_DIR}/main.c

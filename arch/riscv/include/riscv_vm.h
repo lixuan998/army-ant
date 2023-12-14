@@ -1,11 +1,9 @@
 #ifndef __VM_H__
 #define __VM_H__
 
-
-#include "../include/vm.h"
-#include "../../defs.h"
-#include "../../../kernel/include/k_paging.h"
-#include "../../../kernel/include/k_stdio.h"
+#include "arch/riscv/include/riscv_defs.h"
+#include "kernel/include/k_paging.h"
+#include "kernel/include/k_stdio.h"
 
 #define ADDR_MAX_VAL        1UL << (9 + 9 + 9 + 12)
 

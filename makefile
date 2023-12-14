@@ -1,7 +1,8 @@
-include common.mk
+include config.mk
 include arch/arch.mk
 include bsp/bsp.mk
 include kernel/kernel.mk
+include console/console.mk
 
 all : army-ant.bin army-ant.elf
 
@@ -15,7 +16,14 @@ army-ant.elf : ${OBJS}
 	@echo "Making objdump to army-ant.txt..."
 	@${OBJDUMP} -d army-ant.elf > army-ant.txt
 
-.PHONY : clean
+.PHONY : clean mkdir
 clean : 
 	@echo "Cleaning..."
 	@rm -f *.o *.elf *.d *.bin army-ant.txt *.lds ${OBJS} ${D} ${BSP_DIR}/*.lds
+mkdir :
+	@echo "Making obj directories..."
+	@mkdir -p arch/${ARCH}/obj
+	@mkdir -p ${BSP_DIR}/obj
+	@mkdir -p kernel/obj
+	@mkdir -p console/obj
+	@echo "Obj directories created."

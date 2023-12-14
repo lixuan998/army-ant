@@ -1,4 +1,4 @@
-TOOLCHAIN_DIR := /usr/local/riscv/bin
+TOOLCHAIN_DIR := /opt/riscv/bin
 
 LINKLD := linkld.ld
 

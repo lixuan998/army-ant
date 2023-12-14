@@ -2,44 +2,30 @@
 
 void k_spinlock_init(K_SPINLOCK *slk, char *name)
 {
-    slk -> slk_name = name;
-    slk -> locked = K_SLK_UNLOCKED;
-    slk -> slk_owner = NULL;
+    riscv_spinlock_init(slk, name);
 }
 
 void k_spinlock_lock(K_SPINLOCK *slk)
 {
-    int interrupt_status = s_interrupt_status();
-    int cpu_id = k_get_cpu_id();
-    cpu_list[cpu_id].slk_cnt ++;
-    cpu_list[cpu_id].intrrupt_enabled = interrupt_status;
-    
-    if(slk -> locked && slk -> slk_owner == cpu_list + cpu_id)
-    {
-        k_panic("k_spinlock_lock");
-    }
-
-    while(__sync_lock_test_and_set(&slk->locked, 1) != 0);
-    __sync_synchronize();
-
-    slk -> slk_owner = cpu_list + cpu_id;
+    riscv_spinlock_lock(slk);
 }
 
 void k_spinlock_unlock(K_SPINLOCK *slk)
 {
-    int cpu_id = k_get_cpu_id();
-    if(!(slk -> locked && slk -> slk_owner == cpu_list + cpu_id))
-    {
-        k_panic("k_spinlock_unlock");
-    }
+    riscv_spinlock_unlock(slk);
+}
 
-    slk -> slk_owner = NULL;
-    __sync_synchronize();
-    __sync_lock_release(&slk->locked);
+void k_general_spinlock_init()
+{
+    riscv_general_spinlock_init();
+}
 
-    cpu_list[cpu_id].slk_cnt --;
-    if(cpu_list[cpu_id].slk_cnt == 0 && cpu_list[cpu_id].intrrupt_enabled)
-    {
-        turn_on_s_interrupt();
-    }
+void k_general_spinlock_lock(int lock_id)
+{
+    riscv_general_spinlock_lock(lock_id);
+}
+
+void k_general_spinlock_unlock(int lock_id)
+{
+    riscv_general_spinlock_unlock(lock_id);
 }

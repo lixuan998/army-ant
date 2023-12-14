@@ -5,8 +5,8 @@
  * @brief This file mainly defines some assembler operations embedded in C
 ****************************************************************************************************************************************************/
 
-#include "../../../kernel/include/k_defs.h"
-#include "../../defs.h"
+#include "kernel/include/k_defs.h"
+#include "arch/defs.h"
 
 /****************************************************************************************************************************************************
  * 
@@ -16,7 +16,7 @@
  * |   Bit   | Abbr Name |                       Full Name                        |                    Description                      |
  * +---------+-----------+--------------------------------------------------------+-----------------------------------------------------+
  * |    0    |    WPRI   |   Reserved Writes Preserve Values, Reads Ignore Values |                       NONE                          |
- * +---------+-----------+--------------------------------------+-----------------------------------------------------+
+ * +---------+-----------+--------------------------------------------------------+-----------------------------------------------------+
  * |    1    |    SIE    |               Supervisor Interrupt Enable              |      Turn on/off interrupt in Supervisor mode       |
  * +---------+-----------+--------------------------------------------------------+-----------------------------------------------------+
  * |    2    |    WPRI   |   Reserved Writes Preserve Values, Reads Ignore Values |                       NONE                          |
@@ -198,6 +198,25 @@ uint64 inline r_sstatus()
 void inline w_sstatus(uint64 sstatus)
 {
   asm volatile("csrw sstatus, %0" : : "r" (sstatus));
+}
+
+void inline w_stvec(uint64 stvec)
+{
+  asm volatile("csrw stvec, %0" : : "r" (stvec));
+}
+
+uint64 inline r_stvec()
+{
+  uint64 stvec;
+  asm volatile("csrr %0, stvec" : "=r" (stvec) );
+  return stvec;
+}
+
+uint64 inline r_scause()
+{
+  uint64 scause;
+  asm volatile("csrr %0, scause" : "=r" (scause) );
+  return scause;
 }
 
 void inline turn_on_s_interrupt()
