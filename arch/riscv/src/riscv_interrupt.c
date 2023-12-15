@@ -64,7 +64,6 @@ void riscv_external_interrupt_handler()
             int ret = k_getc(&c);
             while(ret >= 0)
             {
-                // k_putc(c);
                 console_get_char(c);
                 ret = k_getc(&c);
             }
@@ -72,7 +71,7 @@ void riscv_external_interrupt_handler()
         }
         case TIMER0:
         {
-            k_printf("timer0 init\n\r");
+            // k_printf("timer0 init\n\r");
             k_time_stamp_update();
             timer_pending_clear(0);
             break;

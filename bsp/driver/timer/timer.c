@@ -17,7 +17,7 @@ void timer_set_prescale(int n, int prescale)
 
 volatile void timer_start(int n, int tick)
 {
-    k_printf("\n\r");
+    __sync_synchronize();
     write_reg32(TMRn_INTV_VALUE_REG(n), read_reg32(TMRn_INTV_VALUE_REG(n)) | TIMER_FREQUENCY / tick);
     volatile uint32 tmr_ctrl_val = read_reg32(TMRn_CTRL_REG(n));
     timer_set_prescale(n, TMRn_CTRL_PRES_DIVEDE_2);
@@ -35,14 +35,15 @@ volatile void timer_start(int n, int tick)
     tmr_ctrl_val |= (1 << TMRn_CTRL_EN_OFFSET);
     write_reg32(TMRn_CTRL_REG(n), tmr_ctrl_val);
     timer_interrupt_enable(n);
+    __sync_synchronize();
 }
 
 volatile void timer_stop(int n)
 {
+    // __sync_synchronize();
+    // k_printf("\n\r");
     __sync_synchronize();
-    k_printf("\n\r");
-
     write_reg32(TMR_IRQ_EN_REG, (read_reg32(TMR_IRQ_EN_REG) & (~(1 << n))));
-
-    k_printf("\n\r");
+    __sync_synchronize();
+    // k_printf("\n\r");
 }

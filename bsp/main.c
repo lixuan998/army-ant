@@ -42,11 +42,11 @@ int main()
     
     while(1)
     {
-        uint32 duration;
-        k_start_timing();
-        k_msleep(50);
-        k_stop_timing(&duration);
-        k_printf("duration: %d\n\r", duration);
+        // uint32 duration = 0;
+        // k_start_timing();
+        // k_msleep(876);
+        // k_stop_timing(&duration);
+        // k_printf("duration: %d\n\r", duration);
         
     }
     return 0;
