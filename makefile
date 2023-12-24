@@ -1,6 +1,7 @@
 include config.mk
 include arch/arch.mk
-include bsp/bsp.mk
+include bsp-milkv-duo/bsp.mk
+# include bsp/bsp.mk
 include kernel/kernel.mk
 include console/console.mk
 

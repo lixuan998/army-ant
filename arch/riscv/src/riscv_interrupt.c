@@ -4,14 +4,19 @@ extern volatile int tick_cnt;
 
 void riscv_interrupt_init()
 {
+    // riscv_interrupt_disable();
+    k_printf("stvec1: %x\n\r", r_stvec());
     w_stvec((uint64)k_interrupt_vector);
+    k_printf("stvec2: %x\n\r", r_stvec());
     plic_interrupt_enable();
     riscv_interrupt_enable();
 }
 
 void riscv_interrupt_enable()
 {
+    k_printf("sstatus1: %x\n\r", r_sstatus());
     turn_on_s_interrupt();
+    k_printf("sstatus2: %x\n\r", r_sstatus());
 }
 
 void riscv_interrupt_disable()
@@ -27,7 +32,8 @@ void riscv_interrupt_handler()
 {
     uint64 scause = r_scause();
     uint64 scause_code = r_scause() & SCAUSE_EXCEPTION_CODE_MASK;
-    
+    // k_printf("AAA\n\r");
+    k_printf("scause: %x code: %d\n\r", scause, scause_code);
     if(scause & SCAUSE_INTERRUPT)
     {
         switch(scause_code)
@@ -58,7 +64,7 @@ void riscv_external_interrupt_handler()
     plic_interrupt_source = riscv_get_interrupt_source();
     switch (plic_interrupt_source)
     {
-        case UART0:
+        case 44:
         {
             char c;
             int ret = k_getc(&c);

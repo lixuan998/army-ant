@@ -32,7 +32,7 @@ extern addr_t kernel_text_end[];
 #define PAGE_SIZE                             4096  
 #define NULL                                  0
 
-#define RAM_SIZE                              1 * 1024 * 1024 * 1024
+#define RAM_SIZE                              60 * 1024 * 1024
 #define RAM_TOP                               (addr_t)kernel_start + (RAM_SIZE - 1UL)
 
 //Machine Mode
