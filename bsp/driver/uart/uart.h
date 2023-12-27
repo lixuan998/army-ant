@@ -15,10 +15,19 @@
 #define UART_IIR             0x0008
 
 #define UART_LSR_DATA_READY  1 << 0
+#define UART_LSR_THR_EMPTY   1 << 5
+
+#define UART_LCR_DLS_8       1 << 0
+#define UART_LCR_STOP        1 << 1
+#define UART_LCR_PARITY      1 << 2
+
+#define UART_FCR_ENABLE_FIFO 1 << 0
+
+#define UART_IER_ERBFI       1 << 0 // Enable Received Data Available Interrupt. 
 void uart_init();
 
-void serial_print_char(char c);
-int serial_receive_data();
-void serial_print(char *msg);
+void uart_print_char(char c);
+int uart_scan_char();
+void uart_print_str(char *str);
 
 #endif /* __UART_H__ */

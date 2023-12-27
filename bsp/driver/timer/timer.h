@@ -29,6 +29,7 @@
 void timer_interrupt_enable(int n);
 void timer_pending_clear(int n);
 void timer_set_prescale(int n, int prescale);
-volatile void timer_start(int n, int tick);
-volatile void timer_stop(int n);
+void timer_start(int n, int tick);
+void timer_stop(int n);
+
 #endif /* __TIMER_H__ */

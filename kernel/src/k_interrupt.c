@@ -2,10 +2,10 @@
 
 void k_interrupt_init()
 {
-    riscv_interrupt_init();
+    interrupt_init();
 }
 
 void k_interrupt_handler()
 {
-    riscv_interrupt_handler();
+    interrupt_handler();
 }

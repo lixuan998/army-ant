@@ -1,5 +1,5 @@
 #include "arch/riscv/include/riscv_asm_operation.h"
-#include "kernel/include/k_stdio.h"
+#include "lib/include/stdio.h"
 #include "arch/defs.h"
 #include "kernel/include/k_vm.h"
 #include "kernel/include/k_paging.h"
@@ -13,15 +13,11 @@ __attribute__ ((aligned (16))) char stack0[4096 * 4];
 void boot_cfg()
 {
     //Set MPP to Supervisor mode.
-    k_printf("SSTATUS1: %x\n\r", r_sstatus());
-    k_printf("MSTATUS1: %x\n\r", r_mstatus());
     uint64 cur_mstatus = r_mstatus();
     cur_mstatus &= (~(MSTATUS_MPP_MASK));
     cur_mstatus |= (SUPERVISOR_MODE_CODE << MSTATUS_MPP_OFFSET);
     w_mstatus(cur_mstatus);
     w_mepc((uint64)main);
-    k_printf("SSTATUS1: %x\n\r", r_sstatus());
-    k_printf("MSTATUS1: %x\n\r", r_mstatus());
 
     //Stop paging
     sfence_vma();

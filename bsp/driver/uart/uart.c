@@ -2,19 +2,19 @@
 
 void uart_init()
 {
-    write_reg32(UART_BASE_ADDR + UART_IER, 0);
-    write_reg32(UART_BASE_ADDR + UART_FCR, 1);
-    write_reg32(UART_BASE_ADDR + UART_LCR, 3);
-    write_reg32(UART_BASE_ADDR + UART_IER, 1);
+    write_reg32(UART_BASE_ADDR + UART_IER, ~UART_IER_ERBFI);
+    write_reg32(UART_BASE_ADDR + UART_FCR, UART_FCR_ENABLE_FIFO);
+    write_reg32(UART_BASE_ADDR + UART_LCR, UART_LCR_DLS_8);
+    write_reg32(UART_BASE_ADDR + UART_IER, UART_IER_ERBFI);
 }
 
-void serial_print_char(char c)
+void uart_print_char(char c)
 {
     #ifndef DEBUG
     while (1)
     {
         uint32 lsr_val = read_reg32(UART_BASE_ADDR + UART_LSR);
-        if (lsr_val & (1 << 5))
+        if (lsr_val & (UART_LSR_THR_EMPTY))
         {
             break;
         }
@@ -24,7 +24,7 @@ void serial_print_char(char c)
     (*thr_val) = c;
 }
 
-int serial_receive_data()
+int uart_scan_char()
 {
     if(read_reg32(UART_BASE_ADDR + UART_LSR) & UART_LSR_DATA_READY)
     {
@@ -33,12 +33,12 @@ int serial_receive_data()
     else return -1;
 }
 
-void serial_print(char *msg)
+void uart_print_str(char *str)
 {
-    char *ptr = msg;
+    char *ptr = str;
     while((*ptr) != '\0')
     {
-        serial_print_char(*ptr);
+        uart_print_char(*ptr);
         ptr ++;
     }
 }

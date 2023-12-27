@@ -77,9 +77,9 @@
 ****************************************************************************************************************************************************/
 uint64 inline r_mstatus()
 {
-  uint64 mstatus;
-  asm volatile("csrr %0, mstatus" : "=r" (mstatus));
-  return mstatus;
+    uint64 mstatus;
+    asm volatile("csrr %0, mstatus" : "=r" (mstatus));
+    return mstatus;
 }
 
 /****************************************************************************************************************************************************
@@ -88,7 +88,7 @@ uint64 inline r_mstatus()
 ****************************************************************************************************************************************************/
 void inline w_mstatus(uint64 mstatus)
 {
-  asm volatile("csrw mstatus, %0" : : "r" (mstatus));
+    asm volatile("csrw mstatus, %0" : : "r" (mstatus));
 }
 
 void inline w_mepc(uint64 mepc)
@@ -102,19 +102,19 @@ void inline w_mepc(uint64 mepc)
 ****************************************************************************************************************************************************/
 uint64 inline r_mhartid()
 {
-  uint64 mhartid;
-  asm volatile("csrr %0, mhartid" : "=r" (mhartid));
-  return mhartid;
+    uint64 mhartid;
+    asm volatile("csrr %0, mhartid" : "=r" (mhartid));
+    return mhartid;
 }
 
 void inline w_medeleg(uint64 medeleg)
 {
-  asm volatile("csrw medeleg, %0" : : "r" (medeleg));
+    asm volatile("csrw medeleg, %0" : : "r" (medeleg));
 }
 
 void inline w_mideleg(uint64 mideleg)
 {
-  asm volatile("csrw mideleg, %0" : : "r" (mideleg));
+    asm volatile("csrw mideleg, %0" : : "r" (mideleg));
 }
 /****************************************************************************************************************************************************
  * @brief this function's purpose is to read the  Supervisor Address Translation and Protection (satp) Register
@@ -131,9 +131,9 @@ void inline w_mideleg(uint64 mideleg)
 ****************************************************************************************************************************************************/
 uint64 inline r_satp()
 {
-  uint64 satp;
-  asm volatile("csrr %0, satp" : "=r" (satp));
-  return satp;
+    uint64 satp;
+    asm volatile("csrr %0, satp" : "=r" (satp));
+    return satp;
 }
 
 /****************************************************************************************************************************************************
@@ -142,42 +142,42 @@ uint64 inline r_satp()
 ****************************************************************************************************************************************************/
 void inline w_satp(uint64 satp)
 {
-  asm volatile("csrw satp, %0" : : "r" (satp));
+    asm volatile("csrw satp, %0" : : "r" (satp));
 }
 
 uint64 inline r_sie()
 {
-  uint64 sie;
-  asm volatile("csrr %0, sie" : "=r" (sie));
-  return sie;
+    uint64 sie;
+    asm volatile("csrr %0, sie" : "=r" (sie));
+    return sie;
 }
 
 void inline w_sie(uint64 sie)
 {
-  asm volatile("csrw sie, %0" : : "r" (sie));
+    asm volatile("csrw sie, %0" : : "r" (sie));
 }
 
 
 void inline w_pmpaddr0(uint64 x)
 {
-  asm volatile("csrw pmpaddr0, %0" : : "r" (x));
+    asm volatile("csrw pmpaddr0, %0" : : "r" (x));
 }
 
 void inline w_pmpcfg0(uint64 x)
 {
-  asm volatile("csrw pmpcfg0, %0" : : "r" (x));
+    asm volatile("csrw pmpcfg0, %0" : : "r" (x));
 }
 
 uint64 inline r_tp()
 {
-  uint64 tp;
-  asm volatile("mv %0, tp" : "=r" (tp));
-  return tp;
+    uint64 tp;
+    asm volatile("mv %0, tp" : "=r" (tp));
+    return tp;
 }
 
 void inline w_tp(uint64 tp)
 {
-  asm volatile("mv tp, %0" : : "r" (tp));
+    asm volatile("mv tp, %0" : : "r" (tp));
 }
 
 /****************************************************************************************************************************************************
@@ -186,9 +186,9 @@ void inline w_tp(uint64 tp)
 ****************************************************************************************************************************************************/
 uint64 inline r_sstatus()
 {
-  uint64 sstatus;
-  asm volatile("csrr %0, sstatus" : "=r" (sstatus));
-  return sstatus;
+    uint64 sstatus;
+    asm volatile("csrr %0, sstatus" : "=r" (sstatus));
+    return sstatus;
 }
 
 /****************************************************************************************************************************************************
@@ -197,26 +197,26 @@ uint64 inline r_sstatus()
 ****************************************************************************************************************************************************/
 void inline w_sstatus(uint64 sstatus)
 {
-  asm volatile("csrw sstatus, %0" : : "r" (sstatus));
+    asm volatile("csrw sstatus, %0" : : "r" (sstatus));
 }
 
 void inline w_stvec(uint64 stvec)
 {
-  asm volatile("csrw stvec, %0" : : "r" (stvec));
+    asm volatile("csrw stvec, %0" : : "r" (stvec));
 }
 
 uint64 inline r_stvec()
 {
-  uint64 stvec;
-  asm volatile("csrr %0, stvec" : "=r" (stvec) );
-  return stvec;
+    uint64 stvec;
+    asm volatile("csrr %0, stvec" : "=r" (stvec) );
+    return stvec;
 }
 
 uint64 inline r_scause()
 {
-  uint64 scause;
-  asm volatile("csrr %0, scause" : "=r" (scause) );
-  return scause;
+    uint64 scause;
+    asm volatile("csrr %0, scause" : "=r" (scause) );
+    return scause;
 }
 
 void inline turn_on_s_interrupt()
@@ -236,7 +236,13 @@ int inline s_interrupt_status()
 
 void inline sfence_vma()
 {
-  // Flush all TLB entries.-
-  asm volatile("sfence.vma zero, zero");
+    // Flush all TLB entries.-
+    asm volatile("sfence.vma zero, zero");
+}
+
+int inline get_cpu_id()
+{
+    int cpu_id = ((uint64 *)r_tp())[0];
+    return cpu_id;
 }
 #endif  /* __ASM_OPERATION_H__ */

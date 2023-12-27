@@ -28,15 +28,15 @@ void retrieve_command_history(int direction)
         if(cmd_history_cur == 0) return;
         else
         {
-            k_printf("\r");
-            for(int i = 0; i < cmd_buf_idx + 2; ++ i) k_printf(" ");
-            k_printf("\r$ ");
+            printf("\r");
+            for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
+            printf("\r$ ");
 
-            k_memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
+            memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
             cmd_history_cur --;
-            k_strcpy(cmd_buf, cmd_history[cmd_history_cur]);
+            strcpy(cmd_buf, cmd_history[cmd_history_cur]);
             cmd_buf_idx = cmd_history_len[cmd_history_cur];
-            k_printf("%s", cmd_buf);
+            printf("%s", cmd_buf);
         }
     }
     else
@@ -44,23 +44,23 @@ void retrieve_command_history(int direction)
         if(cmd_history_cur == cmd_history_cnt) return;
         else
         {
-            k_printf("\r");
-            for(int i = 0; i < cmd_buf_idx + 2; ++ i) k_printf(" ");
-            k_printf("\r$ ");
+            printf("\r");
+            for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
+            printf("\r$ ");
 
-            k_memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
+            memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
             cmd_history_cur ++;
-            k_strcpy(cmd_buf, cmd_history[cmd_history_cur]);
+            strcpy(cmd_buf, cmd_history[cmd_history_cur]);
             cmd_buf_idx = cmd_history_len[cmd_history_cur];
-            k_printf("%s", cmd_buf);
+            printf("%s", cmd_buf);
         }
     }
 }
 
 void add_command_history()
 {
-    k_memset(cmd_history[cmd_history_cnt ++], '\0', COMMAND_BUFF_SIZE);
-    k_strcpy(cmd_history[cmd_history_cnt - 1], cmd_buf);
+    memset(cmd_history[cmd_history_cnt ++], '\0', COMMAND_BUFF_SIZE);
+    strcpy(cmd_history[cmd_history_cnt - 1], cmd_buf);
     cmd_history_len[cmd_history_cnt - 1] = cmd_buf_idx;
     cmd_history_cur = cmd_history_cnt;
 }
@@ -86,13 +86,13 @@ void console_init()
 
     for(int i = 0; i < COMMAND_HISTORY_SIZE; ++ i)
     {
-        k_memset(cmd_history[i], '\0', COMMAND_BUFF_SIZE);
+        memset(cmd_history[i], '\0', COMMAND_BUFF_SIZE);
         cmd_history_len[i] = 0;
     }
 
-    k_memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
-    k_printf(ARMY_ANT_LOGO);
-    k_printf("$ ");
+    memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
+    printf(ARMY_ANT_LOGO);
+    printf("$ ");
 }
 
 void console_display(char c)
@@ -103,7 +103,7 @@ void console_display(char c)
         {
             if(cmd_buf_idx > 0)
             {
-                k_printf("\b \b");
+                printf("\b \b");
             }
             break;
         }
@@ -111,14 +111,14 @@ void console_display(char c)
         {
             if(cmd_buf_idx > 0)
             {
-                k_printf("\b \b");
+                printf("\b \b");
             }
             break;
         }
         case '\r' :
         {
-            k_printf("\n\rcommad: %s", cmd_buf);
-            k_printf("\n\r$ ");
+            printf("\n\rcommad: %s", cmd_buf);
+            printf("\n\r$ ");
             break;
         }
         case '[' :
@@ -127,12 +127,12 @@ void console_display(char c)
             {
                 if(last_duration > 10)
                 {
-                    k_printf("%c", c);
+                    printf("%c", c);
                 }
             }
             else
             {
-                k_printf("%c", c);
+                printf("%c", c);
             }
             break;
         }
@@ -142,16 +142,16 @@ void console_display(char c)
             {
                 if(last_duration <= 10)
                 {
-                    // k_printf("-UPARROW-");
+                    // printf("-UPARROW-");
                 }
                 else
                 {
-                    k_printf("[%c", c);
+                    printf("[%c", c);
                 }
             }
             else
             {
-                k_printf("%c", c);
+                printf("%c", c);
             }
             break;
         }
@@ -161,16 +161,16 @@ void console_display(char c)
             {
                 if(last_duration <= 10)
                 {
-                    // k_printf("-DOWNARROW-");
+                    // printf("-DOWNARROW-");
                 }
                 else
                 {
-                    k_printf("[%c", c);
+                    printf("[%c", c);
                 }
             }
             else
             {
-                k_printf("%c", c);
+                printf("%c", c);
             }
             break;
         }
@@ -180,16 +180,16 @@ void console_display(char c)
             {
                 if(last_duration <= 10)
                 {
-                    k_printf("-RIGHTARROW-");
+                    printf("-RIGHTARROW-");
                 }
                 else
                 {
-                    k_printf("[%c", c);
+                    printf("[%c", c);
                 }
             }
             else
             {
-                k_printf("%c", c);
+                printf("%c", c);
             }
             break;
         }
@@ -199,16 +199,16 @@ void console_display(char c)
             {
                 if(last_duration <= 10)
                 {
-                    k_printf("-LEFTARROW-");
+                    printf("-LEFTARROW-");
                 }
                 else
                 {
-                    k_printf("[%c", c);
+                    printf("[%c", c);
                 }
             }
             else
             {
-                k_printf("%c", c);
+                printf("%c", c);
             }
             break;
         }
@@ -218,7 +218,7 @@ void console_display(char c)
         }
         default:
         {
-            k_printf("%c", c);
+            printf("%c", c);
             break;
         }
             
@@ -256,7 +256,7 @@ void console_cmd_process(char c)
                 add_command_history();
             }
             
-            k_memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
+            memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
             cmd_buf_idx = 0;
             break;
         }
@@ -387,8 +387,8 @@ void console_cmd_process(char c)
 
 void console_get_char(char c)
 {
-    k_stop_timing(&last_duration);
+    stop_timing(&last_duration);
     console_display(c);
     console_cmd_process(c);
-    k_start_timing();
+    start_timing();
 }

@@ -1,6 +1,6 @@
-#include "kernel/include/k_stdio.h"
+#include "../include/stdio.h"
 
-void k_printf(char *fmt, ...)
+void printf(char *fmt, ...)
 {
     va_list arg_list;
     va_start(arg_list, fmt);
@@ -29,18 +29,18 @@ void k_printf(char *fmt, ...)
                 if(negative) buff[++idx] = '-';
                 while(idx >= 0)
                 {
-                    serial_print_char(buff[idx--]);
+                    print_char(buff[idx--]);
                 }
             }
             else if((*fmt) == 's')
             {
                 char *str = va_arg(arg_list, char *);
-                serial_print(str);
+                print_str(str);
             }
             else if((*fmt) == 'c')
             {
                 char ch = va_arg(arg_list, int);
-                serial_print_char(ch);
+                print_char(ch);
             }
             else if((*fmt) == 'x')
             {
@@ -58,7 +58,7 @@ void k_printf(char *fmt, ...)
                 buff[++idx] = '0';
                 while(idx >= 0)
                 {
-                    serial_print_char(buff[idx--]);
+                    print_char(buff[idx--]);
                 }
             }
             else if((*fmt) == 'p')
@@ -77,23 +77,23 @@ void k_printf(char *fmt, ...)
                 buff[++idx] = '0';
                 while(idx >= 0)
                 {
-                    serial_print_char(buff[idx--]);
+                    print_char(buff[idx--]);
                 }
             }
             else if((*fmt) == '%')
             {
-                serial_print_char('%');
+                print_char('%');
             }
         }
         else
         {
-            serial_print_char(*fmt);
+            print_char(*fmt);
         }
         ++ fmt;
     }
 }
 
-void k_sprintf(char *str, char *fmt, ...)
+void sprintf(char *str, char *fmt, ...)
 {
     va_list arg_list;
     va_start(arg_list, fmt);
@@ -128,12 +128,12 @@ void k_sprintf(char *str, char *fmt, ...)
             else if((*fmt) == 's')
             {
                 char *str = va_arg(arg_list, char *);
-                serial_print(str);
+                print_str(str);
             }
             else if((*fmt) == 'c')
             {
                 char ch = va_arg(arg_list, int);
-                serial_print_char(ch);
+                print_char(ch);
             }
             else if((*fmt) == 'x')
             {
@@ -187,23 +187,23 @@ void k_sprintf(char *str, char *fmt, ...)
     *str = '\0';
 }
 
-int k_getc(char *c)
+int getc(char *c)
 {
-    int val = serial_receive_data();
+    int val = scan_char();
     if(val < 0) return -1;
     *c = (char)val;
     return 0;
 }
 
-void k_putc(char c)
+void putc(char c)
 {
-    if(c == '\r') k_printf("\n");
-    k_printf("%c", c);
+    if(c == '\r') printf("\n");
+    printf("%c", c);
 }
 
-void k_panic(char *file_name, int line, char *error)
+void panic(char *file_name, int line, char *error)
 {
-    k_printf("%s[%d]error: %s\n\r", file_name, line, error);
-    k_printf("kernel freezed...");
+    printf("%s[%d]error: %s\n\r", file_name, line, error);
+    printf("kernel freezed...");
     while(1);
 }
