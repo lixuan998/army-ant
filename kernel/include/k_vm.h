@@ -1,7 +1,7 @@
 #ifndef __K_VM_H__
 #define __K_VM_H__
 
-#include "k_defs.h"
+#include "arch/defs.h"
 #include "lib/include/stdio.h"
 #include "k_paging.h"
 #include "bsp/init.h"

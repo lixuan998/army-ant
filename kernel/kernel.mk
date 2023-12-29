@@ -8,8 +8,10 @@ OBJS += kernel/obj/k_paging.o
 D += kernel/obj/k_paging.d
 OBJS += kernel/obj/k_interrupt.o
 D += kernel/obj/k_interrupt.d
-OBJS += kernel/obj/k_int_vector.o
-D += kernel/obj/k_int_vector.d
+OBJS += kernel/obj/k_proc.o
+D += kernel/obj/k_proc.d
+OBJS += kernel/obj/k_schedule.o
+D += kernel/obj/k_schedule.d
 
 all : ${OBJS}
 
@@ -21,5 +23,7 @@ kernel/obj/k_paging.o : kernel/src/k_paging.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
 kernel/obj/k_interrupt.o : kernel/src/k_interrupt.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
-kernel/obj/k_int_vector.o : kernel/k_int_vector.S
+kernel/obj/k_proc.o : kernel/src/k_proc.c
+	@$(CC) $(CFLAGS) -c $^ -o $@
+kernel/obj/k_schedule.o : kernel/src/k_schedule.c
 	@$(CC) $(CFLAGS) -c $^ -o $@

@@ -2,7 +2,6 @@
 #define __STDIO_H__
 
 #include "stdarg.h"
-#include "kernel/include/k_defs.h"
 #include "bsp/init.h"
 
 void printf(char *fmt, ...);

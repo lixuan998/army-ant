@@ -134,14 +134,14 @@ SELECTIVE void software_interrupt_handler();
 /****************************************************************************************************************************************************
  * Virtual Memory related functions.
 ****************************************************************************************************************************************************/
-MUST int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, uint64 permisson);
+MUST int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson);
 SELECTIVE pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr);
 MUST void set_vm_pagetable(pagetable_t pagetable);
 
 /****************************************************************************************************************************************************
  * Serial I/O related functions.
 ****************************************************************************************************************************************************/
-void print_char(char c);
-void print_str(char *str);
-int scan_char();
+MUST void print_char(char c);
+MUST void print_str(char *str);
+MUST int scan_char();
 #endif /* __INTI_H__ */

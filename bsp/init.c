@@ -3,52 +3,52 @@
 /****************************************************************************************************************************************************
  * Spinlock related functions.
 ****************************************************************************************************************************************************/
-static CPU cpu_list[CPU_NUM];
 
 void spinlock_init(SPINLOCK *slk, char *name)
 {
-    slk -> slk_name = name;
-    slk -> locked = SLK_UNLOCKED;
-    slk -> slk_owner = NULL;
+    // slk -> slk_name = name;
+    // slk -> locked = SLK_UNLOCKED;
+    // slk -> slk_owner = NULL;
 }
 
 void spinlock_lock(SPINLOCK *slk)
 {
-    int interrupt_status = s_interrupt_status();
-    int cpu_id = get_cpu_id();
-    cpu_list[cpu_id].slk_cnt ++;
-    cpu_list[cpu_id].interrupt_enabled = interrupt_status;
+    // int interrupt_status = s_interrupt_status();
+
+    // CPU *cur_cpu = current_cpu();
+    // cur_cpu->slk_cnt ++;
+    // cur_cpu->interrupt_enabled = interrupt_status;
     
-    if(slk -> locked && slk -> slk_owner == cpu_list + cpu_id)
-    {
-        panic(__FILE__, __LINE__, "riscv_spinlock_lock");
-    }
+    // if(slk -> locked && slk -> slk_owner == cur_cpu)
+    // {
+    //     panic(__FILE__, __LINE__, "riscv_spinlock_lock");
+    // }
 
-    while(__sync_lock_test_and_set(&slk->locked, 1) != 0);
-    __sync_synchronize();
+    // while(__sync_lock_test_and_set(&slk->locked, 1) != 0);
+    // __sync_synchronize();
 
-    slk -> slk_owner = cpu_list + cpu_id;
+    // slk -> slk_owner = cur_cpu;
 
-    interrupt_disable();
+    // interrupt_disable();
 }
 
 void spinlock_unlock(SPINLOCK *slk)
 {
-    int cpu_id = get_cpu_id();
-    if(!(slk -> locked && slk -> slk_owner == cpu_list + cpu_id))
-    {
-        panic(__FILE__, __LINE__, "riscv_spinlock_unlock");
-    }
+    // CPU *cur_cpu = current_cpu();
+    // if(!(slk -> locked && slk -> slk_owner == cur_cpu))
+    // {
+    //     panic(__FILE__, __LINE__, "riscv_spinlock_unlock");
+    // }
 
-    slk -> slk_owner = NULL;
-    __sync_synchronize();
-    __sync_lock_release(&slk->locked);
+    // slk -> slk_owner = NULL;
+    // __sync_synchronize();
+    // __sync_lock_release(&slk->locked);
 
-    cpu_list[cpu_id].slk_cnt --;
-    if(cpu_list[cpu_id].slk_cnt == 0 && cpu_list[cpu_id].interrupt_enabled)
-    {
-        interrupt_enable();
-    }
+    // cur_cpu -> slk_cnt --;
+    // if(cur_cpu -> slk_cnt == 0 && cur_cpu -> interrupt_enabled)
+    // {
+    //     interrupt_enable();
+    // }
 }
 
 /****************************************************************************************************************************************************
@@ -94,7 +94,7 @@ void free_single_page(void *page)
 void interrupt_init()
 {
     extern void k_interrupt_vector();
-    w_stvec((uint64)k_interrupt_vector);
+    w_stvec((isa_reg_t)k_interrupt_vector);
     plic_interrupt_enable();
     interrupt_enable();
 }
@@ -111,8 +111,8 @@ void interrupt_disable()
 
 void interrupt_handler()
 {
-    uint64 scause = r_scause();
-    uint64 scause_code = r_scause() & SCAUSE_EXCEPTION_CODE_MASK;
+    isa_reg_t scause = r_scause();
+    isa_reg_t scause_code = r_scause() & SCAUSE_EXCEPTION_CODE_MASK;
     if(scause & SCAUSE_INTERRUPT)
     {
         switch(scause_code)
@@ -147,6 +147,7 @@ void external_interrupt_handler()
     {
         case UART0_SOURCE:
         {
+            // printf("uart0 interrupt\n\r");
             char c;
             int ret = getc(&c);
             while(ret >= 0)
@@ -187,7 +188,7 @@ void software_interrupt_handler()
 /****************************************************************************************************************************************************
  * Virtual Memory related functions.
 ****************************************************************************************************************************************************/
-int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, uint64 permisson)
+int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson)
 {
     if(size == 0)
     {
@@ -222,13 +223,11 @@ int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start
 
 pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
 {
-    #ifdef SV39 //Use Sv39 scheme
     if(virt_addr >= ADDR_MAX_VAL)
     {
         panic(__FILE__, __LINE__, "in pte_retrieve, virt_addr exceeded.");
     }
-
-    for(int idx = 2; idx > 0; -- idx)
+    for (int idx = 2; idx > 0; --idx)
     {
         pte_t* pte = &pagetable[ADDR_IDX(virt_addr, idx)];
         if((*pte) & PTE_PERMISSION_V)
@@ -247,7 +246,6 @@ pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
             (*pte) = PHY_ADDR_TO_PTE(pagetable) | PTE_PERMISSION_V;
         }
     }
-    #endif /* SV39 */
     return &pagetable[ADDR_IDX(virt_addr, 0)];
 }
 

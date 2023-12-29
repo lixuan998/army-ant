@@ -1,4 +1,4 @@
-#include "kernel/include/k_paging.h"
+#include "../include/k_paging.h"
 
 void k_mem_paging_init()
 {

@@ -1,12 +1,13 @@
-#ifndef __ASM_OPERATION_H__
-#define __ASM_OPERATION_H__
+#ifndef __RISCV_ASM_OPERATION_H__
+#define __RISCV_ASM_OPERATION_H__
 
 /****************************************************************************************************************************************************
  * @brief This file mainly defines some assembler operations embedded in C
 ****************************************************************************************************************************************************/
 
-#include "kernel/include/k_defs.h"
-#include "arch/defs.h"
+#include "riscv_type_defs.h"
+#include "riscv_csr_defs.h"
+#include "riscv_proc_defs.h"
 
 /****************************************************************************************************************************************************
  * 
@@ -75,9 +76,9 @@
  * @brief This function's purpose is to read the Machine Status Register, which  keeps track of and controls the hart’s current
  * operating state. This register is in the Machine Mode.
 ****************************************************************************************************************************************************/
-uint64 inline r_mstatus()
+isa_reg_t inline r_mstatus()
 {
-    uint64 mstatus;
+    isa_reg_t mstatus;
     asm volatile("csrr %0, mstatus" : "=r" (mstatus));
     return mstatus;
 }
@@ -86,12 +87,12 @@ uint64 inline r_mstatus()
  * @brief This function's purpose is to write the Machine Status Register, which  keeps track of and controls the hart’s current
  * operating state. This register is in the Machine Mode.
 ****************************************************************************************************************************************************/
-void inline w_mstatus(uint64 mstatus)
+void inline w_mstatus(isa_reg_t mstatus)
 {
     asm volatile("csrw mstatus, %0" : : "r" (mstatus));
 }
 
-void inline w_mepc(uint64 mepc)
+void inline w_mepc(isa_reg_t mepc)
 {
     asm volatile ("csrw mepc, %0" : : "r" (mepc));
 }
@@ -100,19 +101,19 @@ void inline w_mepc(uint64 mepc)
  * @brief this function's purpose is to read the Hart ID Register, which contains the integer ID of the hardware
  * thread running the code. This register is in the Machine Mode.
 ****************************************************************************************************************************************************/
-uint64 inline r_mhartid()
+isa_reg_t inline r_mhartid()
 {
-    uint64 mhartid;
+    isa_reg_t mhartid;
     asm volatile("csrr %0, mhartid" : "=r" (mhartid));
     return mhartid;
 }
 
-void inline w_medeleg(uint64 medeleg)
+void inline w_medeleg(isa_reg_t medeleg)
 {
     asm volatile("csrw medeleg, %0" : : "r" (medeleg));
 }
 
-void inline w_mideleg(uint64 mideleg)
+void inline w_mideleg(isa_reg_t mideleg)
 {
     asm volatile("csrw mideleg, %0" : : "r" (mideleg));
 }
@@ -129,9 +130,9 @@ void inline w_mideleg(uint64 mideleg)
  * 0    -   Bare Mode   -   No translation or protection(no paging)
  * 1    -     Sv32      -   Page-based 32-bit virtual addressing
 ****************************************************************************************************************************************************/
-uint64 inline r_satp()
+isa_reg_t inline r_satp()
 {
-    uint64 satp;
+    isa_reg_t satp;
     asm volatile("csrr %0, satp" : "=r" (satp));
     return satp;
 }
@@ -140,42 +141,42 @@ uint64 inline r_satp()
  * @brief this function's purpose is to write the  Supervisor Address Translation and Protection (satp) Register
  * , controls supervisor-mode address translation and protection.
 ****************************************************************************************************************************************************/
-void inline w_satp(uint64 satp)
+void inline w_satp(isa_reg_t satp)
 {
     asm volatile("csrw satp, %0" : : "r" (satp));
 }
 
-uint64 inline r_sie()
+isa_reg_t inline r_sie()
 {
-    uint64 sie;
+    isa_reg_t sie;
     asm volatile("csrr %0, sie" : "=r" (sie));
     return sie;
 }
 
-void inline w_sie(uint64 sie)
+void inline w_sie(isa_reg_t sie)
 {
     asm volatile("csrw sie, %0" : : "r" (sie));
 }
 
 
-void inline w_pmpaddr0(uint64 x)
+void inline w_pmpaddr0(isa_reg_t pmpaddr0)
 {
-    asm volatile("csrw pmpaddr0, %0" : : "r" (x));
+    asm volatile("csrw pmpaddr0, %0" : : "r" (pmpaddr0));
 }
 
-void inline w_pmpcfg0(uint64 x)
+void inline w_pmpcfg0(isa_reg_t pmpcfg0)
 {
-    asm volatile("csrw pmpcfg0, %0" : : "r" (x));
+    asm volatile("csrw pmpcfg0, %0" : : "r" (pmpcfg0));
 }
 
-uint64 inline r_tp()
+isa_reg_t inline r_tp()
 {
-    uint64 tp;
+    isa_reg_t tp;
     asm volatile("mv %0, tp" : "=r" (tp));
     return tp;
 }
 
-void inline w_tp(uint64 tp)
+void inline w_tp(isa_reg_t tp)
 {
     asm volatile("mv tp, %0" : : "r" (tp));
 }
@@ -184,9 +185,9 @@ void inline w_tp(uint64 tp)
  * @brief This function's purpose is to read the Supervisor Status Register, which  keeps track of and controls the hart’s current
  * operating state. This register is in the Machine Mode.
 ****************************************************************************************************************************************************/
-uint64 inline r_sstatus()
+isa_reg_t inline r_sstatus()
 {
-    uint64 sstatus;
+    isa_reg_t sstatus;
     asm volatile("csrr %0, sstatus" : "=r" (sstatus));
     return sstatus;
 }
@@ -195,26 +196,26 @@ uint64 inline r_sstatus()
  * @brief This function's purpose is to write the Supervisor Status Register, which  keeps track of and controls the hart’s current
  * operating state. This register is in the Machine Mode.
 ****************************************************************************************************************************************************/
-void inline w_sstatus(uint64 sstatus)
+void inline w_sstatus(isa_reg_t sstatus)
 {
     asm volatile("csrw sstatus, %0" : : "r" (sstatus));
 }
 
-void inline w_stvec(uint64 stvec)
+void inline w_stvec(isa_reg_t stvec)
 {
     asm volatile("csrw stvec, %0" : : "r" (stvec));
 }
 
-uint64 inline r_stvec()
+isa_reg_t inline r_stvec()
 {
-    uint64 stvec;
+    isa_reg_t stvec;
     asm volatile("csrr %0, stvec" : "=r" (stvec) );
     return stvec;
 }
 
-uint64 inline r_scause()
+isa_reg_t inline r_scause()
 {
-    uint64 scause;
+    isa_reg_t scause;
     asm volatile("csrr %0, scause" : "=r" (scause) );
     return scause;
 }
@@ -242,7 +243,44 @@ void inline sfence_vma()
 
 int inline get_cpu_id()
 {
-    int cpu_id = ((uint64 *)r_tp())[0];
+    int cpu_id = ((isa_reg_t *)r_tp())[0];
     return cpu_id;
 }
-#endif  /* __ASM_OPERATION_H__ */
+
+void inline context_switch(CONTEXT *old_context, CONTEXT *new_context) {
+    asm volatile (
+        "sd ra, 0(%0)\n"
+        "sd sp, 8(%0)\n"
+        "sd s0, 16(%0)\n"
+        "sd s1, 24(%0)\n"
+        "sd s2, 32(%0)\n"
+        "sd s3, 40(%0)\n"
+        "sd s4, 48(%0)\n"
+        "sd s5, 56(%0)\n"
+        "sd s6, 64(%0)\n"
+        "sd s7, 72(%0)\n"
+        "sd s8, 80(%0)\n"
+        "sd s9, 88(%0)\n"
+        "sd s10, 96(%0)\n"
+        "sd s11, 104(%0)\n"
+
+        "ld ra, 0(%1)\n"
+        "ld sp, 8(%1)\n"
+        "ld s0, 16(%1)\n"
+        "ld s1, 24(%1)\n"
+        "ld s2, 32(%1)\n"
+        "ld s3, 40(%1)\n"
+        "ld s4, 48(%1)\n"
+        "ld s5, 56(%1)\n"
+        "ld s6, 64(%1)\n"
+        "ld s7, 72(%1)\n"
+        "ld s8, 80(%1)\n"
+        "ld s9, 88(%1)\n"
+        "ld s10, 96(%1)\n"
+        "ld s11, 104(%1)\n"
+        :
+        : "r" (old_context), "r" (new_context)
+        : "memory"
+    );
+}
+#endif  /* __RISCV_ASM_OPERATION_H__ */

@@ -1,4 +1,4 @@
-#include "arch/riscv/include/riscv_asm_operation.h"
+#include "arch/asm_operation.h"
 #include "lib/include/stdio.h"
 #include "arch/defs.h"
 #include "kernel/include/k_vm.h"
@@ -13,15 +13,15 @@ __attribute__ ((aligned (16))) char stack0[4096 * 4];
 void boot_cfg()
 {
     //Set MPP to Supervisor mode.
-    uint64 cur_mstatus = r_mstatus();
+    isa_reg_t cur_mstatus = r_mstatus();
     cur_mstatus &= (~(MSTATUS_MPP_MASK));
     cur_mstatus |= (SUPERVISOR_MODE_CODE << MSTATUS_MPP_OFFSET);
     w_mstatus(cur_mstatus);
-    w_mepc((uint64)main);
+    w_mepc((isa_reg_t)main);
 
     //Stop paging
     sfence_vma();
-    w_satp((uint64)SATP_BARE_MODE << (uint64)RV64_SATP_MODE_OFFSET);
+    w_satp((isa_reg_t)SATP_BARE_MODE << (isa_reg_t)RV64_SATP_MODE_OFFSET);
     sfence_vma();
 
 
@@ -33,9 +33,9 @@ void boot_cfg()
     w_pmpaddr0(0xFFFFFFFFFFFFFFFFUL);
     w_pmpcfg0(0xF);
 
-    uint64 tp_arr[50];
+    isa_reg_t tp_arr[50];
     tp_arr[0] = r_mhartid();
-    w_tp((uint64)&tp_arr);
+    w_tp((isa_reg_t)&tp_arr);
 
     asm volatile ("mret");
 }

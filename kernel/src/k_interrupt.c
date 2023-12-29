@@ -1,4 +1,4 @@
-#include "kernel/include/k_interrupt.h"
+#include "../include/k_interrupt.h"
 
 void k_interrupt_init()
 {

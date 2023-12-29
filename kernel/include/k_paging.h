@@ -1,6 +1,6 @@
 #ifndef __K_PAGING_H__
 #define __K_PAGING_H__
-#include "k_defs.h"
+
 #include "k_spinlock.h"
 #include "lib/include/stdlib.h"
 #include "bsp/init.h"

@@ -2,10 +2,10 @@
 
 void uart_init()
 {
-    write_reg32(UART_BASE_ADDR + UART_IER, ~UART_IER_ERBFI);
-    write_reg32(UART_BASE_ADDR + UART_FCR, UART_FCR_ENABLE_FIFO);
-    write_reg32(UART_BASE_ADDR + UART_LCR, UART_LCR_DLS_8);
-    write_reg32(UART_BASE_ADDR + UART_IER, UART_IER_ERBFI);
+    write_reg32(UART_BASE_ADDR + UART_IER, 0);
+    write_reg32(UART_BASE_ADDR + UART_FCR, 1);
+    // write_reg32(UART_BASE_ADDR + UART_LCR, (uint32)3);
+    write_reg32(UART_BASE_ADDR + UART_IER, 1);
 }
 
 void uart_print_char(char c)

@@ -3,7 +3,7 @@
 #include "kernel/include/k_paging.h"
 #include "kernel/include/k_vm.h"
 #include "lib/include/time.h"
-#include "arch/riscv/include/riscv_asm_operation.h"
+#include "arch/asm_operation.h"
 #include "kernel/include/k_interrupt.h"
 #include "lib/include/time.h"
 #include "driver/uart/uart.h"
@@ -35,19 +35,22 @@ int main()
     
     
     // printf("interrupt initialized!\n\r");
+    printf("AAA\n\r");
     kernel_init();
+    printf("BBB\n\r");
     peripheral_init();
+    printf("CCC\n\r");
     console_init();
     
     
     
     while(1)
     {
-        uint32 duration = 0;
-        start_timing();
-        sleep(1);
-        stop_timing(&duration);
-        printf("duration: %d\n\r", duration);
+        // uint32 duration = 0;
+        // start_timing();
+        // sleep(1);
+        // stop_timing(&duration);
+        // printf("duration: %d\n\r", duration);
         
     }
     return 0;
@@ -55,7 +58,6 @@ int main()
 
 void kernel_init()
 {
-    
     k_mem_paging_init();
     k_pagetable_init();
     k_vm_enable();
@@ -65,5 +67,5 @@ void kernel_init()
 void peripheral_init()
 {
     uart_init();
-    timer_start(0, 1000);
+    // timer_start(0, 1000);
 }

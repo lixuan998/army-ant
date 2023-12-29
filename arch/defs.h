@@ -5,6 +5,7 @@
 
 inline void write_reg32(volatile uint32 reg, uint32 val)
 {
+    // printf("1write_reg32: reg=%p, val=%x\n\r", reg, val);
     volatile uint32 *reg_ptr = (uint32 *)((long)reg);
     *reg_ptr = val;
 }

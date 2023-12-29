@@ -45,7 +45,7 @@ void printf(char *fmt, ...)
             else if((*fmt) == 'x')
             {
                 char hex[] = "0123456789ABCDEF";
-                uint64 val = va_arg(arg_list, uint64);
+                ptr_t val = va_arg(arg_list, ptr_t);
                 char buff[100];
                 int idx = -1;
                 if(val == 0) buff[++idx] = '0';
@@ -64,7 +64,7 @@ void printf(char *fmt, ...)
             else if((*fmt) == 'p')
             {
                 char hex[] = "0123456789ABCDEF";
-                uint64 val = va_arg(arg_list, uint64);
+                ptr_t val = va_arg(arg_list, ptr_t);
                 char buff[100];
                 int idx = -1;
                 if(val == 0) buff[++idx] = '0';
@@ -138,7 +138,7 @@ void sprintf(char *str, char *fmt, ...)
             else if((*fmt) == 'x')
             {
                 char hex[] = "0123456789ABCDEF";
-                uint64 val = va_arg(arg_list, uint64);
+                ptr_t val = va_arg(arg_list, ptr_t);
                 char buff[100];
                 int idx = -1;
                 if(val == 0) buff[++idx] = '0';
@@ -157,7 +157,7 @@ void sprintf(char *str, char *fmt, ...)
             else if((*fmt) == 'p')
             {
                 char hex[] = "0123456789ABCDEF";
-                uint64 val = va_arg(arg_list, uint64);
+                ptr_t val = va_arg(arg_list, ptr_t);
                 char buff[100];
                 int idx = -1;
                 if(val == 0) buff[++idx] = '0';

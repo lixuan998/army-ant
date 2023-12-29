@@ -77,13 +77,6 @@ void main(void)
     return 0;
 }
 
-void uart_init(void)
-{
-    configGPH();
-    configULC();
-    configUC();
-    configUBR();
-}
 
 void configGPH(void)  //设置GPH2、3分别为TXD0,RXD0
 {
