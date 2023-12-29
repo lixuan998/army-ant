@@ -4,7 +4,6 @@
 #include "arch/defs.h"
 #include "lib/include/stdio.h"
 #include "k_paging.h"
-#include "bsp/init.h"
 
 void k_pagetable_init();
 void k_vm_enable();

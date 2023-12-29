@@ -20,4 +20,10 @@ typedef uint64                                pagesize_t;
 
 #define NULL                                  0
 
+typedef struct _PRIORITY_QUEUE{
+    void *data;
+    struct _PRIORITY_QUEUE *left;
+    struct _PRIORITY_QUEUE *right;
+} PRIORITY_QUEUE;
+
 #endif /* __RISCV_TYPE_DEFS_H__ */

@@ -35,11 +35,11 @@ int main()
     
     
     // printf("interrupt initialized!\n\r");
-    printf("AAA\n\r");
+    // printf("AAA\n\r");
     kernel_init();
-    printf("BBB\n\r");
+    // printf("BBB\n\r");
     peripheral_init();
-    printf("CCC\n\r");
+    // printf("CCC\n\r");
     console_init();
     
     

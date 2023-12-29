@@ -1,6 +1,8 @@
 #ifndef __RISCV_VM_DEFS_H__
 #define __RISCV_VM_DEFS_H__
 
+#include "riscv_type_defs.h"
+
 #define RAM_SIZE                              (60 * 1024 * 1024)
 #define RAM_TOP                               (addr_t)kernel_start + (RAM_SIZE - 1UL)
 #define ADDR_MAX_VAL                          (1UL << (9 + 9 + 9 + 12))
@@ -24,5 +26,17 @@
 
 #define VM_MAP_SUCCESS                        (0)
 #define VM_MAP_FAILED                         (-1)
+
+typedef struct _VM_MAP_INFO{
+    addr_t virt_addr_start;
+    addr_t phys_addr_start;
+    pagesize_t size;
+    isa_reg_t permisson;
+} VM_MAP_INFO;
+
+void pagetabe_init(pagetable_t pagetable, VM_MAP_INFO map_info[], int num_of_mapping);
+int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson);
+pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr);
+void set_vm_pagetable(pagetable_t pagetable);
 
 #endif  /* __RISCV_VM_DEFS_H__ */

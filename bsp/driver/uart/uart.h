@@ -17,7 +17,7 @@
 #define UART_LSR_DATA_READY  1 << 0
 #define UART_LSR_THR_EMPTY   1 << 5
 
-#define UART_LCR_DLS_8       1 << 0
+#define UART_LCR_DLS_8       3 << 0
 #define UART_LCR_STOP        1 << 1
 #define UART_LCR_PARITY      1 << 2
 

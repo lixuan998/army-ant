@@ -26,4 +26,7 @@ typedef struct _MEM_PAGE{
     struct _MEM_PAGE *next;
 } MEM_PAGE;
 
+void *alloc_single_page();
+void free_single_page(void *page);
+
 #endif  /* __RISCV_PAGING_DEFS_H__ */

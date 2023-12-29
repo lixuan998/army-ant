@@ -2,8 +2,6 @@
 #define __K_PROC_H__
 
 #include "arch/defs.h"
-#include "arch/asm_operation.h"
-
 
 
 

@@ -2,7 +2,6 @@
 #define __RISCV_SPINLOCK_DEFS_H__
 
 #include "riscv_type_defs.h"
-#include "riscv_cpu_defs.h"
 
 // forward declaration of struct _CPU.
 typedef struct _CPU CPU;

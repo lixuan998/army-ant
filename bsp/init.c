@@ -6,49 +6,49 @@
 
 void spinlock_init(SPINLOCK *slk, char *name)
 {
-    // slk -> slk_name = name;
-    // slk -> locked = SLK_UNLOCKED;
-    // slk -> slk_owner = NULL;
+    slk -> slk_name = name;
+    slk -> locked = SLK_UNLOCKED;
+    slk -> slk_owner = NULL;
 }
 
 void spinlock_lock(SPINLOCK *slk)
 {
-    // int interrupt_status = s_interrupt_status();
+    int interrupt_status = s_interrupt_status();
 
-    // CPU *cur_cpu = current_cpu();
-    // cur_cpu->slk_cnt ++;
-    // cur_cpu->interrupt_enabled = interrupt_status;
+    CPU *cur_cpu = current_cpu();
+    cur_cpu->slk_cnt ++;
+    cur_cpu->interrupt_enabled = interrupt_status;
     
-    // if(slk -> locked && slk -> slk_owner == cur_cpu)
-    // {
-    //     panic(__FILE__, __LINE__, "riscv_spinlock_lock");
-    // }
+    if(slk -> locked && slk -> slk_owner == cur_cpu)
+    {
+        panic(__FILE__, __LINE__, "riscv_spinlock_lock");
+    }
 
-    // while(__sync_lock_test_and_set(&slk->locked, 1) != 0);
-    // __sync_synchronize();
+    while(__sync_lock_test_and_set(&slk->locked, 1) != 0);
+    __sync_synchronize();
 
-    // slk -> slk_owner = cur_cpu;
+    slk -> slk_owner = cur_cpu;
 
-    // interrupt_disable();
+    interrupt_disable();
 }
 
 void spinlock_unlock(SPINLOCK *slk)
 {
-    // CPU *cur_cpu = current_cpu();
-    // if(!(slk -> locked && slk -> slk_owner == cur_cpu))
-    // {
-    //     panic(__FILE__, __LINE__, "riscv_spinlock_unlock");
-    // }
+    CPU *cur_cpu = current_cpu();
+    if(!(slk -> locked && slk -> slk_owner == cur_cpu))
+    {
+        panic(__FILE__, __LINE__, "riscv_spinlock_unlock");
+    }
 
-    // slk -> slk_owner = NULL;
-    // __sync_synchronize();
-    // __sync_lock_release(&slk->locked);
+    slk -> slk_owner = NULL;
+    __sync_synchronize();
+    __sync_lock_release(&slk->locked);
 
-    // cur_cpu -> slk_cnt --;
-    // if(cur_cpu -> slk_cnt == 0 && cur_cpu -> interrupt_enabled)
-    // {
-    //     interrupt_enable();
-    // }
+    cur_cpu -> slk_cnt --;
+    if(cur_cpu -> slk_cnt == 0 && cur_cpu -> interrupt_enabled)
+    {
+        interrupt_enable();
+    }
 }
 
 /****************************************************************************************************************************************************
@@ -188,11 +188,20 @@ void software_interrupt_handler()
 /****************************************************************************************************************************************************
  * Virtual Memory related functions.
 ****************************************************************************************************************************************************/
-int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson)
+void pagetabe_init(pagetable_t pagetable, VM_MAP_INFO map_info[], int num_of_mapping)
+{
+    for(int i = 0; i < num_of_mapping; ++ i)
+    {
+        printf("virt_addr_start: %x, phys_addr_start: %x, size: %x\n\r", map_info[i].virt_addr_start, map_info[i].phys_addr_start, map_info[i].size);
+        vm_mapping(pagetable, map_info[i].virt_addr_start, map_info[i].phys_addr_start, map_info[i].size, map_info[i].permisson);
+    }
+}
+
+int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson)
 {
     if(size == 0)
     {
-        panic(__FILE__, __LINE__, "in vm_map, page size invalid.");
+        panic(__FILE__, __LINE__, "in vm_mapping, page size invalid.");
     }
 
     pte_t *pte;
@@ -207,12 +216,12 @@ int vm_map(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start
         pte = pte_retrieve(pagetable, virt_addr_start);
         if(pte == NULL)
         {
-            printf("in vm_map, pte is NULL.");
+            printf("in vm_mapping, pte is NULL.");
             return VM_MAP_FAILED;
         }
         if((*pte) & PTE_PERMISSION_V)
         {
-            panic(__FILE__, __LINE__, "in vm_map, pte already mapped.");
+            panic(__FILE__, __LINE__, "in vm_mapping, pte already mapped.");
         }
         (*pte) = PHY_ADDR_TO_PTE(phys_addr_start) | permisson | PTE_PERMISSION_V;
         phys_addr_start += PAGE_SIZE;

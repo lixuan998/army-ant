@@ -1,5 +1,6 @@
 # Prerequisites
 **/*.d
+**/*.txt
 
 # Object files
 **/*.o
@@ -63,10 +64,10 @@ dkms.conf
 **/***/*/.DS_Store
 **/.DS_Store
 
-**/.txt
-
 Demo/
 
 res.xml
 
 .VSCodeCounter/
+
+army-ant.txt
