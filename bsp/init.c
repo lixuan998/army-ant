@@ -192,7 +192,6 @@ void pagetabe_init(pagetable_t pagetable, VM_MAP_INFO map_info[], int num_of_map
 {
     for(int i = 0; i < num_of_mapping; ++ i)
     {
-        printf("virt_addr_start: %x, phys_addr_start: %x, size: %x\n\r", map_info[i].virt_addr_start, map_info[i].phys_addr_start, map_info[i].size);
         vm_mapping(pagetable, map_info[i].virt_addr_start, map_info[i].phys_addr_start, map_info[i].size, map_info[i].permisson);
     }
 }
@@ -208,7 +207,7 @@ int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_s
     virt_addr_start = ALIGN_FLOOR(virt_addr_start);
     addr_t virt_addr_end = ALIGN_FLOOR(virt_addr_start + size);
 
-    //It's not necessary to align phys_addr_start, it's only for making the whole process more explicit.printf("phy addr: %x\n\r", phys_addr_start);
+    //It's not necessary to align phys_addr_start, it's only for making the whole process more explicit.
     phys_addr_start = ALIGN_FLOOR(phys_addr_start);
 
     while(virt_addr_start < virt_addr_end)

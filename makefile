@@ -27,4 +27,5 @@ mkdir :
 	@mkdir -p ${BSP_DIR}/obj
 	@mkdir -p kernel/obj
 	@mkdir -p console/obj
+	@mkdir -p lib/obj
 	@echo "Obj directories created."

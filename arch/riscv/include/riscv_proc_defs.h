@@ -66,7 +66,7 @@ enum proc_state{
 };
 
 typedef struct _PROC{
-    // SPINLOCK lock;
+    SPINLOCK lock;
 
     void *sleep_for;
     int child_exit_ret;
