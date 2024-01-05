@@ -119,7 +119,9 @@ enum EXTERNAL_INTERRUPT_SOURCE{
     AXI_RD_IRQ_SOURCE          = 195
 };
 
-void interrupt_init();
+extern void kernel_interrupt_vector();
+
+void interrupt_init(void *interrupt_vector);
 void interrupt_enable();
 void interrupt_disable();
 void interrupt_handler();

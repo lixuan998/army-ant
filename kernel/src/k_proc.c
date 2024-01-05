@@ -1,1 +1,1 @@
-#include "../include/k_proc.h"
+#include "arch/defs.h"

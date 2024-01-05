@@ -1,9 +1,9 @@
 
-.global k_interrupt_vector
-.extern k_interrupt_handler
+.global kernel_interrupt_vector
+.extern interrupt_handler
 .align 4
 
-k_interrupt_vector:
+kernel_interrupt_vector:
 
     addi sp, sp, -256
 
@@ -39,7 +39,7 @@ k_interrupt_vector:
     sd t5, 232(sp)
     sd t6, 240(sp)
 
-    call k_interrupt_handler
+    call interrupt_handler
 
     ld ra, 0(sp)
     ld sp, 8(sp)

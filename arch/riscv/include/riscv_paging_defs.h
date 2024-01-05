@@ -3,7 +3,8 @@
 
 #include "riscv_type_defs.h"
 
-#define PAGE_SIZE                             (4096)
+#define PAGE_SIZE                             (4096UL)
+#define SQRT_PAGE_SIZE                        (64UL)
 #define ALIGN_FLOOR(addr)                     (((addr)) & ~(PAGE_SIZE - 1))
 #define ALIGN_CEIL(addr)                      (((addr) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 
@@ -18,6 +19,10 @@
 extern addr_t                                 kernel_start[];
 extern addr_t                                 kernel_end[];
 extern addr_t                                 kernel_text_end[];
+extern addr_t                                 rodata_end[];
+extern addr_t                                 data_end[];
+extern addr_t                                 bss_start[];
+extern addr_t                                 bss_end[];
 
 #define UNALLOCTE_PAGE_VALUE                  0xFF
 #define ALLOCATED_PAGE_VALUE                  0x00
@@ -28,5 +33,7 @@ typedef struct _MEM_PAGE{
 
 void *alloc_single_page();
 void free_single_page(void *page);
+void free_pages(void *p_start, void *p_end);
+void mem_paging_init();
 
 #endif  /* __RISCV_PAGING_DEFS_H__ */

@@ -1,5 +1,5 @@
-#ifndef __K_LOGO_H__
-#define __K_LOGO_H__
+#ifndef __LOGO_H__
+#define __LOGO_H__
 
 
 #define ARMY_ANT_LOGO   "    [[                                       [[                [[   \n\r"\
@@ -12,4 +12,4 @@
                         "                                  [[                                \n\r"\
                         "                                 [[                                 \n\r"\
                         "                              [[[[                   @Author: Lixuan\n\r"
-#endif  /* __K_LOGO_H__ */
+#endif  /* __LOGO_H__ */

@@ -1,13 +1,6 @@
 #include "../include/riscv_cpu_defs.h"
 
-CPU cpu_list[CPU_NUM] = {
-    {.cpu_id = 0,
-     .interrupt_enabled = 0,
-     .reg_list = {},
-     .slk_cnt = 0,
-     .proc = NULL
-    }
-};
+CPU cpu_list[CPU_NUM];
 
 CPU * current_cpu()
 {

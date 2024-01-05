@@ -1,17 +1,21 @@
-#include "arch/asm_operation.h"
 #include "lib/include/stdio.h"
-#include "arch/defs.h"
-#include "kernel/include/k_vm.h"
-#include "kernel/include/k_paging.h"
 #include "driver/plic/plic.h"
+#include "arch/defs.h"
 
 extern int main();
 
-extern void k_interrupt_vector();
+extern void interrupt_vector();
 
-__attribute__ ((aligned (16))) char stack0[4096 * 4];
+__attribute__ ((aligned (16))) char kernel_stack[4096 * CPU_NUM];
 void boot_cfg()
 {
+    //clean .bss.
+    char *bss_ptr = (char *)bss_start;
+    while(bss_ptr < (char *)bss_end)
+    {
+        *bss_ptr = NULL;
+        bss_ptr ++;
+    }
     //Set MPP to Supervisor mode.
     isa_reg_t cur_mstatus = r_mstatus();
     cur_mstatus &= (~(MSTATUS_MPP_MASK));

@@ -1,5 +1,11 @@
 #include "../include/stdio.h"
 
+#ifdef UART_STDIO
+void (*print_char)(char) = uart_print_char;
+void (*print_str)(char *) = uart_print_str;
+int (*scan_char)() = uart_scan_char;
+#endif  /* UART_STDIO */
+
 void printf(char *fmt, ...)
 {
     va_list arg_list;
@@ -201,9 +207,9 @@ void putc(char c)
     printf("%c", c);
 }
 
-void panic(char *file_name, int line, char *error)
+void _panic(char *file_name, int line, char *error)
 {
-    printf("%s[%d]error: %s\n\r", file_name, line, error);
+    printf("%s[%d] error: %s\n\r", file_name, line, error);
     printf("kernel freezed...");
     while(1);
 }

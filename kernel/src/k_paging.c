@@ -1,27 +1,53 @@
-#include "../include/k_paging.h"
+#include "arch/defs.h"
+#include "lib/include/stdio.h"
+#include "lib/include/stdlib.h"
 
-void k_mem_paging_init()
+SPINLOCK mem_paging_spinlock;
+
+MEM_PAGE *mem_page_list = NULL;
+
+void mem_paging_init()
 {
-    extern SPINLOCK mem_paging_spinlock;
-    k_spinlock_init(&mem_paging_spinlock, "mem_paging_spinlock");
-    k_free_pages((addr_t *)(kernel_end), (addr_t *)(RAM_TOP));    
+    spinlock_init(&mem_paging_spinlock, "mem_paging_spinlock");
+    free_pages((addr_t *)(kernel_end), (addr_t *)(RAM_TOP));    
 }
 
-void k_free_pages(void *p_start, void *p_end)
+void *alloc_single_page()
 {
-    addr_t *pg = (addr_t*)ALIGN_CEIL((addr_t)p_start);
-    for(; pg + PAGE_SIZE <= (addr_t *)p_end; pg += PAGE_SIZE)
+    if(mem_page_list == NULL)
     {
-        k_free_single_page(pg);
+        panic("in alloc_single_page, no memory page left");
     }
+    spinlock_lock(&mem_paging_spinlock);
+    MEM_PAGE *page = mem_page_list;
+    mem_page_list = mem_page_list -> next;
+    spinlock_unlock(&mem_paging_spinlock);
+
+    memset(page, ALLOCATED_PAGE_VALUE, PAGE_SIZE);
+    return (void *)page;
 }
 
-void k_free_single_page(void *page)
+void free_single_page(void *page)
 {
-    free_single_page(page);
+    if((addr_t)page % PAGE_SIZE || (addr_t )page < (addr_t )kernel_end || (addr_t)page > RAM_TOP)
+    {
+        panic("in free_single_page, page out of bound");
+    }
+    memset(page, UNALLOCTE_PAGE_VALUE, PAGE_SIZE);
+
+    spinlock_lock(&mem_paging_spinlock);
+    MEM_PAGE *new_page = (MEM_PAGE *)page;
+    new_page->next = mem_page_list;
+    mem_page_list = new_page;
+    spinlock_unlock(&mem_paging_spinlock);
 }
 
-void *k_alloc_single_page()
+void free_pages(void *p_start, void *p_end)
 {
-    return alloc_single_page();
+    addr_t pg = (addr_t)ALIGN_FLOOR((addr_t)p_end);
+    while(pg - PAGE_SIZE >= (addr_t )p_start)
+    {
+        free_single_page((void *)pg);
+        pg -= PAGE_SIZE;
+    }
 }

@@ -80,9 +80,11 @@ typedef struct _PROC{
     SYS_REGS proc_regs;
     CONTEXT proc_context;
 
+    int priority;
+
     char proc_name[30];
 
 } PROC;
 
-
+PROC *proc_create(PROC *parent, char *name, int priority);
 #endif /* __RISCV_PROC_DEFS_H__ */

@@ -4,7 +4,7 @@
 #include "lib/include/stdio.h"
 #include "lib/include/stdlib.h"
 #include "lib/include/string.h"
-#include "kernel/include/k_logo.h"
+#include "logo.h"
 #include "lib/include/time.h"
 
 void console_init();

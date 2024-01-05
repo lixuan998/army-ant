@@ -1,16 +1,10 @@
 OUTPUT_ARCH( "riscv" )
 ENTRY(_start)
 
-/* MEMORY
-{
-    TEXT_SEG (rx) : ORIGIN = 0x80000000, LENGTH = (100 * 1024)
-    DATA_SEG (rw) : ORIGIN = (0x80000000 + (100 * 1024)), LENGTH = (500 * 1024)
-} */
-
 MEMORY
 {
     TEXT_SEG (rx) : ORIGIN = 0x40000000, LENGTH = (100 * 1024)
-    DATA_SEG (rw) : ORIGIN = (0x40000000 + (100 * 1024)), LENGTH = (1024 * 1024 * 1024)
+    DATA_SEG (rw) : ORIGIN = (0x40000000 + (100 * 1024)), LENGTH = (10 * 1024 * 1024)
 }
 
 SECTIONS
@@ -21,11 +15,7 @@ SECTIONS
   .text : {
     bsp/obj/startup.o(.text .text.*)
     *(.text .text.*)
-    /* . = ALIGN(0x1000);
-    _trampoline = .; */
-    /* *(trampsec) */
     . = ALIGN(0x1000);
-    /* ASSERT(. - _trampoline == 0x1000, "error: trampoline larger than one page"); */
     PROVIDE(kernel_text_end = .);
   } > TEXT_SEG
 
@@ -34,6 +24,7 @@ SECTIONS
     *(.srodata .srodata.*) /* do not need to distinguish this from .rodata */
     . = ALIGN(16);
     *(.rodata .rodata.*)
+    PROVIDE(rodata_end = .);
   } > DATA_SEG
 
   .data : {
@@ -41,13 +32,16 @@ SECTIONS
     *(.sdata .sdata.*) /* do not need to distinguish this from .data */
     . = ALIGN(16);
     *(.data .data.*)
+    PROVIDE(data_end = .);
   } > DATA_SEG
 
   .bss : {
+    PROVIDE(bss_start = .);
     . = ALIGN(16);
     *(.sbss .sbss.*) /* do not need to distinguish this from .bss */
     . = ALIGN(16);
     *(.bss .bss.*)
+    PROVIDE(bss_end = .);
   } > DATA_SEG
 
   . = ALIGN(0x1000);

@@ -3,7 +3,9 @@
 
 #include "riscv_type_defs.h"
 
-#define RAM_SIZE                              (60 * 1024 * 1024)
+#define SV39
+
+#define RAM_SIZE                              (1 * 1024 * 1024 * 1024)
 #define RAM_TOP                               (addr_t)kernel_start + (RAM_SIZE - 1UL)
 #define ADDR_MAX_VAL                          (1UL << (9 + 9 + 9 + 12))
 #define ADDR_IDX(addr, idx)                   ((((isa_reg_t) (addr)) >> (idx * 9 + 12)) & 0x1FF)
@@ -27,6 +29,8 @@
 #define VM_MAP_SUCCESS                        (0)
 #define VM_MAP_FAILED                         (-1)
 
+#define bitof(x)   (sizeof(x) * 8)
+
 typedef struct _VM_MAP_INFO{
     addr_t virt_addr_start;
     addr_t phys_addr_start;
@@ -34,9 +38,17 @@ typedef struct _VM_MAP_INFO{
     isa_reg_t permisson;
 } VM_MAP_INFO;
 
-void pagetabe_init(pagetable_t pagetable, VM_MAP_INFO map_info[], int num_of_mapping);
+typedef struct _MEM_BLK{
+    int blk_free_space;
+    char blk_cell[SQRT_PAGE_SIZE][SQRT_PAGE_SIZE / bitof(char)];
+    struct _MEM_BLK *next;
+} MEM_BLK;
+
+pagetable_t pagetable_create(VM_MAP_INFO map_info[], int num_of_mapping);
 int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson);
 pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr);
 void set_vm_pagetable(pagetable_t pagetable);
+
+extern MEM_BLK *mem_blk_list;
 
 #endif  /* __RISCV_VM_DEFS_H__ */
