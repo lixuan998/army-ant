@@ -10,6 +10,8 @@ void kernel_mem_init();
 void kernel_vm_init();
 void kernel_interrupt_init();
 
+void general_spinlock_init();
+
 void kernel_init();
 void peripheral_init();
 
@@ -39,6 +41,7 @@ int main()
     
     // printf("interrupt initialized!\n\r");
     // printf("AAA\n\r");
+    general_spinlock_init();
     kernel_init();
     // printf("BBB\n\r");
     peripheral_init();
@@ -147,6 +150,14 @@ void kernel_interrupt_init()
 {
     interrupt_init(kernel_interrupt_vector);
     interrupt_enable();
+}
+
+void general_spinlock_init()
+{
+    for(int i = 0; i < GENERAL_SPINLOCK_NUM; ++ i)
+    {
+        spinlock_init(general_spinlock + i, "general_spinlock");
+    }
 }
 
 void kernel_init()

@@ -2,7 +2,10 @@
 #define __RISCV_PROC_DEFS_H__
 
 #include "riscv_type_defs.h"
+#include "riscv_vm_defs.h"
 #include "riscv_spinlock_defs.h"
+
+#include "lib/include/stdlib.h"
 
 typedef struct _SYS_REGS{
     isa_reg_t k_satp;  // pagetable in kernel mode.
@@ -79,6 +82,7 @@ typedef struct _PROC{
     int proc_mem_size;
     SYS_REGS proc_regs;
     CONTEXT proc_context;
+    MEM_BLK *mem_blk_head;
 
     int priority;
 

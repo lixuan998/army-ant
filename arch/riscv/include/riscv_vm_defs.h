@@ -2,6 +2,7 @@
 #define __RISCV_VM_DEFS_H__
 
 #include "riscv_type_defs.h"
+#include "riscv_paging_defs.h"
 
 #define SV39
 

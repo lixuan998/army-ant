@@ -103,7 +103,7 @@ void blk_cell_free(MEM_BLK *blk, int cell_num)
 
 void malloc_init()
 {
-    spinlock_init(&malloc_lock, "spinlock_for_malloc");
+    spinlock_init(&malloc_lock, "malloc_spinlock");
     kernel_mem_blk_head = (MEM_BLK *)alloc_single_page();
     blk_init(kernel_mem_blk_head);
     mem_blk_list = kernel_mem_blk_head;
