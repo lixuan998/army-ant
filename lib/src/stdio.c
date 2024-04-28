@@ -86,6 +86,27 @@ void printf(char *fmt, ...)
                     print_char(buff[idx--]);
                 }
             }
+            else if((*fmt) == 'b')
+            {
+                ptr_t val = va_arg(arg_list, ptr_t);
+                // if(val == 0) buff[++idx] = '0';
+                // while(val != 0)
+                // {
+                //     buff[++idx] = '0' + (val & 1);
+                //     val >>= 1;
+                // }
+                print_char('b');
+                // while(idx >= 0)
+                // {
+                //     print_char(buff[idx--]);
+                // }
+                for(int i = 31; i >= 0; --i)
+                {
+                    if(val & (1UL << i)) print_char('1');
+                    else print_char('0'); 
+                    // print_char('0' + (val & (1 << i)));
+                }
+            }
             else if((*fmt) == '%')
             {
                 print_char('%');

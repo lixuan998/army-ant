@@ -30,7 +30,7 @@ void retrieve_command_history(int direction)
         {
             printf("\r");
             for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
-            printf("\r$ ");
+            printf("\rroot:$ ");
 
             memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
             cmd_history_cur --;
@@ -46,7 +46,7 @@ void retrieve_command_history(int direction)
         {
             printf("\r");
             for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
-            printf("\r$ ");
+            printf("\rroot:$ ");
 
             memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
             cmd_history_cur ++;
@@ -92,7 +92,7 @@ void console_init()
 
     memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
     printf(ARMY_ANT_LOGO);
-    printf("$ ");
+    printf("root:$ ");
 }
 
 void console_display(char c)
@@ -117,8 +117,16 @@ void console_display(char c)
         }
         case '\r' :
         {
-            printf("\n\rcommad: %s", cmd_buf);
-            printf("\n\r$ ");
+            if(cmd_buf[0] == 'p' && cmd_buf[1] == 's')
+            {
+                printf("\n\rPID          NAME\n\r");
+                printf(" 0          init");
+            }
+            if(cmd_buf[0] == '.' && cmd_buf[1] == '/')
+            {
+                printf("\n\rHello World!");
+            }
+            printf("\n\rroot:$ ");
             break;
         }
         case '[' :

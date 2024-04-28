@@ -1,6 +1,7 @@
 #include "arch/defs.h"
 #include "bsp/driver/plic/plic.h"
 #include "bsp/driver/timer/timer.h"
+#include "bsp/driver/smhc/sd.h"
 #include "console/include/console.h"
 
 void interrupt_init(void *interrupt_vector)
@@ -47,12 +48,30 @@ void interrupt_handler()
         }
         
     }
+    else
+    {
+        printf("scause code : %x\n\r", scause_code);
+        switch (scause_code)
+        {
+            case SCAUSE_ECALL_U :
+            {
+                printf("ECALL_U\n\r");
+                break;
+            }
+            case SCAUSE_ECALL_S :
+            {
+                printf("ECALL_S\n\r");
+            }
+        default:
+            break;
+        }
+    }
 }
 
 void external_interrupt_handler()
 {
     enum EXTERNAL_INTERRUPT_SOURCE source;
-    source = read_reg32(PLIC_SCLAIM_REG);
+    source = read32(PLIC_SCLAIM_REG);
     switch (source)
     {
         case UART0_SOURCE:
@@ -72,7 +91,22 @@ void external_interrupt_handler()
             timer_pending_clear(0);
             break;
         }
-        
+        case SMHC0_SOURCE:
+        {
+            volatile soc_reg_t reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
+            // volatile soc_reg_t status = read32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
+            // printf("status: %x, %b\n\r", status, status);
+            write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, 0xFFFFFFFF);
+            while(reg_val)
+            {
+                reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
+            }
+            reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
+            // write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
+            // if(reg_val & (1 << 30)) printf("Card Insert, reg_val: %b, or res: %d\n\r", reg_val, (reg_val & (1 << 30)));
+            // else if(reg_val & (1 << 31)) printf("Card Removed\n\r");
+            break;
+        }
         default:
             break;
         }
@@ -81,7 +115,7 @@ void external_interrupt_handler()
 
 void external_interrupt_handled(int source)
 {
-    write_reg32(PLIC_SCLAIM_REG, source);
+    write32(PLIC_SCLAIM_REG, source);
 }
 
 void timer_interrupt_handler()

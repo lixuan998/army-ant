@@ -7,6 +7,21 @@
 
 #include "lib/include/stdlib.h"
 
+enum PROC_STATE{
+    PROC_STATE_RUNNING,
+    PROC_STATE_READY,
+    PROC_STATE_WAITING,
+    PROC_STATE_EXIT,
+    PROC_STATE_SLEEPING,
+    PROC_STATE_ZOMBIE,
+};
+
+enum PROC_PRIORITY{
+    PROC_PRIORITY_LOW,
+    PROC_PRIORITY_MEDIUM,
+    PROC_PRIORITY_HIGH,
+};
+
 typedef struct _SYS_REGS{
     isa_reg_t k_satp;  // pagetable in kernel mode.
     isa_reg_t k_sp;    // used in kernel mode for processes when they trap to the kernel mode.
@@ -74,21 +89,30 @@ typedef struct _PROC{
     void *sleep_for;
     int child_exit_ret;
     int pid;
-    enum proc_state state;
+    enum PROC_STATE proc_state;
 
     struct _PROC *parent;
 
-    isa_reg_t kernel_stack;
+    pagetable_t pagetable;
+    addr_t kernel_stack;
+    addr_t user_stack;
     int proc_mem_size;
-    SYS_REGS proc_regs;
+    SYS_REGS *system_regs;
     CONTEXT proc_context;
+    MEM_PAGE *pages[100];
     MEM_BLK *mem_blk_head;
 
-    int priority;
+    enum PROC_PRIORITY priority;
 
     char proc_name[30];
 
 } PROC;
 
-PROC *proc_create(PROC *parent, char *name, int priority);
+PROC *proc_create(PROC *parent, char *name, enum PROC_PRIORITY priority);
+void exec(PROC *proc, char *code, int code_size);
+void proc_ret();
+void init_proc();
+
+void scheduler();
+void back_to_scheduler();
 #endif /* __RISCV_PROC_DEFS_H__ */

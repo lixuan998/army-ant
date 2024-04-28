@@ -3,6 +3,7 @@ include lib/lib.mk
 include arch/arch.mk
 include ${BSP_DIR}/bsp.mk
 include kernel/kernel.mk
+include driver/driver.mk
 include console/console.mk
 
 all : army-ant.bin army-ant.elf
@@ -27,5 +28,6 @@ mkdir :
 	@mkdir -p ${BSP_DIR}/obj
 	@mkdir -p kernel/obj
 	@mkdir -p console/obj
+	@mkdir -p driver/obj
 	@mkdir -p lib/obj
 	@echo "Obj directories created."

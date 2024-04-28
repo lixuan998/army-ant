@@ -11,6 +11,7 @@ typedef unsigned int                          uint32;
 typedef unsigned long                         uint64;
 
 typedef uint64                                isa_reg_t;
+typedef uint32                                soc_reg_t;
 typedef uint64                                ptr_t;
 
 typedef uint64*                               pagetable_t;

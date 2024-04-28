@@ -16,16 +16,9 @@ void memset(void *ptr, int value, int size)
 
 void memcpy(void *dest, void *src, int size)
 {
-    char *cdest = (char *)dest;
-    char *csrc = (char *)src;
-    char tmp[size];
     for(int i = 0; i < size; ++ i)
     {
-        tmp[i] = csrc[i];
-    }
-    for(int i = 0; i < size; ++ i)
-    {
-        cdest[i] = tmp[i];
+        (*((char *)dest + i)) = (*((char *)src + i));
     }
     return;
 }
@@ -111,7 +104,7 @@ void malloc_init()
 
 void *malloc(int size)
 {
-    printf("malloc called, size: %d\n\r", size);
+    // printf("malloc called, size: %d\n\r", size);
     if(mem_blk_list == NULL)
     {
         malloc_init();
@@ -173,8 +166,20 @@ void *malloc(int size)
         spinlock_unlock(&malloc_lock);
     }
     
-    debug_malloc(cur_blk);
+    // debug_malloc(cur_blk);
     return (void *)ret_addr;
+}
+
+void mem_blk_head_switch(int is_user, void *mem_blk_head)
+{
+    if(is_user == USER_MEM_BLK)
+    {
+        mem_blk_list = (MEM_BLK *)mem_blk_head;
+    }
+    else
+    {
+        mem_blk_list = kernel_mem_blk_head;
+    }
 }
 
 void free(void *ptr)
@@ -192,7 +197,7 @@ void free(void *ptr)
         blk_cell_free(cur_blk, cell_num + i);
     }
     cur_blk -> blk_free_space += (ptr_size + META_DATA_SIZE);
-    debug_malloc(cur_blk);
+    // debug_malloc(cur_blk);
 }
 
 void debug_malloc(MEM_BLK *blk)

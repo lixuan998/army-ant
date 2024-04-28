@@ -1,7 +1,7 @@
 #include "arch/defs.h"
 #include "lib/include/stdio.h"
 
-SPINLOCK general_spinlock[5];
+SPINLOCK general_spinlock[GENERAL_SPINLOCK_NUM];
 
 void spinlock_init(SPINLOCK *slk, char *name)
 {

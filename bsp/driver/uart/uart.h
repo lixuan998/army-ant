@@ -24,6 +24,7 @@
 #define UART_FCR_ENABLE_FIFO 1 << 0
 
 #define UART_IER_ERBFI       1 << 0 // Enable Received Data Available Interrupt. 
+
 void uart_init();
 
 void uart_print_char(char c);

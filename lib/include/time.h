@@ -8,7 +8,6 @@ typedef long long timestamp_t;
 
 void msleep(int ms);
 void sleep(int s);
-void timestamp_init();
 void timestamp_update();
 
 void get_timestamp_duration(timestamp_t t1, timestamp_t t2, uint32 *duration);

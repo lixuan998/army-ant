@@ -6,7 +6,7 @@
 
 #define SV39
 
-#define RAM_SIZE                              (1 * 1024 * 1024 * 1024)
+#define RAM_SIZE                              (1 * 100 * 1024 * 1024)
 #define RAM_TOP                               (addr_t)kernel_start + (RAM_SIZE - 1UL)
 #define ADDR_MAX_VAL                          (1UL << (9 + 9 + 9 + 12))
 #define ADDR_IDX(addr, idx)                   ((((isa_reg_t) (addr)) >> (idx * 9 + 12)) & 0x1FF)
