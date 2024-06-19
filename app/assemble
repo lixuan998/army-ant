@@ -1,0 +1,12 @@
+
+test_asm.o:     file format elf64-littleriscv
+
+
+Disassembly of section .text:
+
+0000000000000000 <_start>:
+   0:	025007b7          	lui	a5,0x2500
+   4:	04800713          	li	a4,72
+   8:	c398                	sw	a4,0(a5)
+   a:	4501                	li	a0,0
+   c:	8082                	ret

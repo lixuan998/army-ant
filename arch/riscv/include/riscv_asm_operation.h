@@ -247,5 +247,17 @@ int inline get_cpu_id()
     return cpu_id;
 }
 
+inline void w_sepc(uint64 x)
+{
+  asm volatile("csrw sepc, %0" : : "r" (x));
+}
+
+inline uint64 r_sepc()
+{
+  uint64 x;
+  asm volatile("csrr %0, sepc" : "=r" (x) );
+  return x;
+}
+
 extern void context_switch(CONTEXT *old_context, CONTEXT *new_context);
 #endif  /* __RISCV_ASM_OPERATION_H__ */

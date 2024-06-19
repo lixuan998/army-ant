@@ -103,7 +103,7 @@ void init_proc()
         0x74, 0x00, 0x00, 0x24, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00
         };
-    char code[] = {0xef, 0x00, 0x00, 0x00};
+    char code[] = {0xb7, 0x07, 0x50, 0x02, 0x13, 0x07, 0x80, 0x04, 0x98, 0xc3, 0x01, 0x45, 0x82, 0x80};
     exec(init, code, sizeof(code));
 }
 
@@ -117,6 +117,8 @@ void scheduler()
         {            
             if(cur_proc -> proc_state == PROC_STATE_READY)
             {
+                CPU *cpu = current_cpu();
+                cpu->proc = cur_proc;
                 printf("scheduling : %s\n\r", cur_proc -> proc_name);
                 printf("READY\n\r");
                 cur_proc -> proc_state = PROC_STATE_RUNNING;
@@ -132,6 +134,11 @@ void scheduler()
 
 void back_to_scheduler()
 {
+    PROC *p = current_cpu_proc();
+    printf("cur proc name: %s\n\r", p -> proc_name);
     printf("last_context ra: %x\n\r", last_context.ra);
+    w_sepc(p->system_regs->epc);
+    w_satp(p->pagetable);
+    asm volatile("sret");
     context_switch(&cur_proc -> proc_context, &last_context);
 }

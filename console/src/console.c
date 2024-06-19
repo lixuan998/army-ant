@@ -126,6 +126,10 @@ void console_display(char c)
             {
                 printf("\n\rHello World!");
             }
+            if(cmd_buf[0] == 'l' && cmd_buf[1] == 's')
+            {
+                printf("\n\r3月 15 13:57 hello");
+            }
             printf("\n\rroot:$ ");
             break;
         }

@@ -27,6 +27,9 @@ int main()
     peripheral_init();
     smhcn_init(0);
     console_init();
+
+    // init_proc();
+    // scheduler();
     
     while(1);
     return 0;
@@ -94,6 +97,8 @@ void general_spinlock_init()
 
 void kernel_init()
 {
+    ledc_clk_init();
+    write32(0x02008000, 0x41);
     printf("\n\r");
     kernel_mem_init();
     printf("\n\r");
