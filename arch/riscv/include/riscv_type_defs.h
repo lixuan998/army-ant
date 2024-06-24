@@ -21,4 +21,6 @@ typedef uint64                                pagesize_t;
 
 #define NULL                                  0UL
 
+#define bitof(x)   (sizeof(x) * 8)
+
 #endif /* __RISCV_TYPE_DEFS_H__ */

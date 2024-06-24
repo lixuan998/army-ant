@@ -3,17 +3,24 @@
 #include "lib/include/stdlib.h"
 
 #ifdef SV39
+
 pagetable_t kernel_pagetable = NULL;
 
 pagetable_t pagetable_create(VM_MAP_INFO map_info[], int num_of_mapping)
 {
     pagetable_t pagetable = (pagetable_t)alloc_single_page();
 
+    pagetable_entry_add(pagetable, map_info, num_of_mapping);
+    return pagetable;
+}
+
+void pagetable_entry_add(pagetable_t pagetable, VM_MAP_INFO map_info[], int num_of_mapping)
+{
+    if(pagetable == NULL) panic("in pagetable_entry_add, pagetable is NULL.");
     for(int i = 0; i < num_of_mapping; ++ i)
     {
         vm_mapping(pagetable, map_info[i].virt_addr_start, map_info[i].phys_addr_start, map_info[i].size, map_info[i].permisson);
     }
-    return pagetable;
 }
 
 int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_start, pagesize_t size, isa_reg_t permisson)
@@ -23,7 +30,7 @@ int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_s
         panic("in vm_mapping, page size invalid.");
     }
 
-    pte_t *pte;
+    volatile pte_t *pte;
     virt_addr_start = ALIGN_FLOOR(virt_addr_start);
     addr_t virt_addr_end = ALIGN_FLOOR(virt_addr_start + size);
 
@@ -42,7 +49,7 @@ int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_s
         {
             panic("in vm_mapping, pte already mapped.");
         }
-        (*pte) = PHY_ADDR_TO_PTE(phys_addr_start) | permisson | PTE_PERMISSION_V;
+        (*pte) = (PHY_ADDR_TO_PTE(phys_addr_start) | permisson | PTE_PERMISSION_V);
         phys_addr_start += PAGE_SIZE;
         virt_addr_start += PAGE_SIZE;
     }
@@ -51,13 +58,13 @@ int vm_mapping(pagetable_t pagetable, addr_t virt_addr_start, addr_t phys_addr_s
 
 pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
 {
-    if(virt_addr >= ADDR_MAX_VAL)
+    if(virt_addr >= VM_ADDR_MAX_VAL)
     {
         panic("in pte_retrieve, virt_addr exceeded.");
     }
     for (int idx = 2; idx > 0; --idx)
     {
-        pte_t* pte = &pagetable[ADDR_IDX(virt_addr, idx)];
+        pte_t* pte = &pagetable[VM_ADDR_IDX(virt_addr, idx)];
         if((*pte) & PTE_PERMISSION_V)
         {
             pagetable = (pagetable_t)(PTE_TO_PHY_ADDR(*pte));
@@ -74,13 +81,13 @@ pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
             (*pte) = PHY_ADDR_TO_PTE(pagetable) | PTE_PERMISSION_V;
         }
     }
-    return &pagetable[ADDR_IDX(virt_addr, 0)];
+    return &pagetable[VM_ADDR_IDX(virt_addr, 0)];
 }
 
 void set_vm_pagetable(pagetable_t pagetable)
 {
     sfence_vma();
-    w_satp((SATP_SV39_MODE << RV64_SATP_MODE_OFFSET) | PHY_TO_SATP((addr_t)pagetable));
+    w_satp((SATP_SV39_MODE << RV64_SATP_MODE_OFFSET) | ADDR_TO_SATP((addr_t)pagetable));
     sfence_vma();
 }
 

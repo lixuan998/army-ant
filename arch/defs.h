@@ -11,9 +11,9 @@ inline void write32(volatile uint32 reg, uint32 val)
     *reg_ptr = val;
 }
 
-inline int read32(volatile uint32 reg)
+inline uint32 read32(volatile uint32 reg)
 {
-    volatile int val = *((uint32 *)((long)reg));
+    uint32 val = *((uint32 *)((long)reg));
     return val;
 }
 

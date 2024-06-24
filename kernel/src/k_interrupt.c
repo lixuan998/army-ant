@@ -23,7 +23,8 @@ void interrupt_disable()
 void interrupt_handler()
 {
     isa_reg_t scause = r_scause();
-    isa_reg_t scause_code = r_scause() & SCAUSE_EXCEPTION_CODE_MASK;
+
+    isa_reg_t scause_code = scause & SCAUSE_EXCEPTION_CODE_MASK;
     if(scause & SCAUSE_INTERRUPT)
     {
         switch(scause_code)
@@ -48,9 +49,8 @@ void interrupt_handler()
         }
         
     }
-    else
+    else if(scause & SCAUSE_EXCEPTION)
     {
-        printf("scause code : %x\n\r", scause_code);
         switch (scause_code)
         {
             case SCAUSE_ECALL_U :
@@ -70,8 +70,9 @@ void interrupt_handler()
 
 void external_interrupt_handler()
 {
-    enum EXTERNAL_INTERRUPT_SOURCE source;
+    enum PLIC_EXTERNAL_INTERRUPT_SOURCE source;
     source = read32(PLIC_SCLAIM_REG);
+    // printf("source: %d\n\r", source);
     switch (source)
     {
         case UART0_SOURCE:
@@ -109,13 +110,13 @@ void external_interrupt_handler()
         }
         default:
             break;
-        }
-    external_interrupt_handled(source);
+    }
+    plic_interrupt_handled(source);
 }
 
 void external_interrupt_handled(int source)
 {
-    write32(PLIC_SCLAIM_REG, source);
+    write32(PLIC_SCLAIM_REG, read32(PLIC_SCLAIM_REG));
 }
 
 void timer_interrupt_handler()

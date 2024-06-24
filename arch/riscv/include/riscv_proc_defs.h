@@ -7,6 +7,8 @@
 
 #include "lib/include/stdlib.h"
 
+extern addr_t ret_to_user[];
+
 enum PROC_STATE{
     PROC_STATE_RUNNING,
     PROC_STATE_READY,
@@ -22,10 +24,12 @@ enum PROC_PRIORITY{
     PROC_PRIORITY_HIGH,
 };
 
-typedef struct _SYS_REGS{
+typedef struct _TRAPFRAME{
     isa_reg_t k_satp;  // pagetable in kernel mode.
     isa_reg_t k_sp;    // used in kernel mode for processes when they trap to the kernel mode.
+    isa_reg_t k_trap;
     isa_reg_t epc;     // saved user program counter.
+    isa_reg_t pid;
     isa_reg_t ra;
     isa_reg_t sp;
     isa_reg_t gp;
@@ -57,7 +61,7 @@ typedef struct _SYS_REGS{
     isa_reg_t t4;
     isa_reg_t t5;
     isa_reg_t t6;
-} SYS_REGS;
+} TRAPFRAME;
 
 typedef struct _CONTEXT{
     isa_reg_t ra;
@@ -84,8 +88,6 @@ enum proc_state{
 };
 
 typedef struct _PROC{
-    SPINLOCK lock;
-
     void *sleep_for;
     int child_exit_ret;
     int pid;
@@ -95,12 +97,9 @@ typedef struct _PROC{
 
     pagetable_t pagetable;
     addr_t kernel_stack;
-    addr_t user_stack;
-    int proc_mem_size;
-    SYS_REGS *system_regs;
+    int proc_code_mem_pages;
+    TRAPFRAME *trapframe;
     CONTEXT proc_context;
-    MEM_PAGE *pages[100];
-    MEM_BLK *mem_blk_head;
 
     enum PROC_PRIORITY priority;
 
@@ -109,8 +108,10 @@ typedef struct _PROC{
 } PROC;
 
 PROC *proc_create(PROC *parent, char *name, enum PROC_PRIORITY priority);
-void exec(PROC *proc, char *code, int code_size);
+void exec(PROC *proc, unsigned char *code, int code_size);
 void proc_ret();
+void kernel_trap();
+void user_trap();
 void init_proc();
 
 void scheduler();

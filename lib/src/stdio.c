@@ -5,7 +5,7 @@ void (*print_char)(char) = uart_print_char;
 void (*print_str)(char *) = uart_print_str;
 int (*scan_char)() = uart_scan_char;
 #endif  /* UART_STDIO */
-
+ 
 void printf(char *fmt, ...)
 {
     va_list arg_list;

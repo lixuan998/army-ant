@@ -2,7 +2,7 @@
 
 LIST * list_add(LIST *list, void *data)
 {
-    LIST * new_node = malloc(sizeof(LIST));
+    LIST * new_node = k_malloc(sizeof(LIST));
     new_node -> data = data;
     new_node -> next = NULL;
     if(list == NULL)

@@ -1,5 +1,5 @@
-#ifndef __RISCV_ISA_DEFS_H__
-#define __RISCV_ISA_DEFS_H__
+#ifndef __RISCV_CSR_DEFS_H__
+#define __RISCV_CSR_DEFS_H__
 
 #define REGISTER_NUMBERS                      32
 
@@ -26,6 +26,6 @@
 #define SSTATUS_SPIE_OFFSET                   5
 #define SSTATUS_SPIE_MASK                     1UL << SSTATUS_SPIE_OFFSET
 #define SSTATUS_SPP_OFFSET                    8
-#define SSTATUS_SPP_MASK                      1UL << SSTATUS_SPP_OFFSET
+#define SSTATUS_SPP_MASK                      (1UL << SSTATUS_SPP_OFFSET)
 
-#endif  /* __RISCV_ISA_DEFS_H__ */
+#endif  /* __RISCV_CSR_DEFS_H__ */
