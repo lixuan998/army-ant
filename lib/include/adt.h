@@ -9,11 +9,11 @@ typedef struct _PRIORITY_QUEUE{
     struct _PRIORITY_QUEUE *right;
 } PRIORITY_QUEUE;
 
-typedef struct _LIST{
+typedef struct _LOOP_LIST{
     void *data;
-    struct _LIST *next;
-} LIST;
+    struct _LOOP_LIST *next;
+} LOOP_LIST;
 
-LIST * list_add(LIST * list, void * data);
+LOOP_LIST * list_add(LOOP_LIST * list, void * data);
 
 #endif /* __ADT_H__ */

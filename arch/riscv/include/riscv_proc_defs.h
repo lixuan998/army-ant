@@ -7,6 +7,8 @@
 
 #include "lib/include/stdlib.h"
 
+#define VM_PROC_SHARED_MEM_ADDR (0x40000000)
+
 extern addr_t ret_to_user[];
 
 enum PROC_STATE{
@@ -108,6 +110,8 @@ typedef struct _PROC{
 } PROC;
 
 PROC *proc_create(PROC *parent, char *name, enum PROC_PRIORITY priority);
+addr_t allocate_shared_memory(PROC *proc_1, PROC *proc_2, int size);
+
 void exec(PROC *proc, unsigned char *code, int code_size);
 void proc_ret();
 void kernel_trap();
@@ -115,5 +119,7 @@ void user_trap();
 void init_proc();
 
 void scheduler();
+
+void proc_yield();
 void back_to_scheduler();
 #endif /* __RISCV_PROC_DEFS_H__ */

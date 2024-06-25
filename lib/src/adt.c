@@ -1,23 +1,24 @@
 #include "../include/adt.h"
 
-LIST * list_add(LIST *list, void *data)
+LOOP_LIST *list_add(LOOP_LIST *list, void *data)
 {
-    LIST * new_node = k_malloc(sizeof(LIST));
-    new_node -> data = data;
-    new_node -> next = NULL;
-    if(list == NULL)
+    LOOP_LIST *new_node = k_malloc(sizeof(LOOP_LIST));
+    new_node->data = data;
+    new_node->next = new_node;
+    if (list == NULL)
     {
         list = new_node;
         printf("after malloc list: %x\n\r", list);
     }
     else
     {
-        LIST * temp = list;
-        while(temp -> next != NULL)
+        LOOP_LIST *temp = list;
+        while (temp->next != list)
         {
-            temp = temp -> next;
+            temp = temp->next;
         }
-        temp -> next = new_node;
+        new_node->next = temp->next;
+        temp->next = new_node;
     }
 
     return list;

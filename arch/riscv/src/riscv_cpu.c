@@ -10,10 +10,6 @@ CPU * current_cpu()
 
 PROC * current_cpu_proc()
 {
-    CPU *cur_cpu = current_cpu();
-    interrupt_disable();
-    cur_cpu->interrupt_enabled --;
     PROC *cur_cpu_proc = current_cpu()->proc;
-    cur_cpu->interrupt_enabled ++;
     return cur_cpu_proc;
 }

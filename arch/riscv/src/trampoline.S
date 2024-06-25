@@ -7,23 +7,10 @@ trampoline:
 
 .globl user_intr_interface
 user_intr_interface:    
-	#
-        # trap.c sets stvec to point here, so
-        # traps from user space start here,
-        # in supervisor mode, but with a
-        # user page table.
-        #
-
-        # save user a0 in sscratch so
-        # a0 can be used to get at TRAPFRAME.
         csrw sscratch, a0
 
-        # each process has a separate p->trapframe memory area,
-        # but it's mapped to the same virtual address
-        # (TRAPFRAME) in every process's user page table.
         li a0, VM_TRAPFRAME_ADDR
         
-        # save the user registers in TRAPFRAME
         sd ra, 40(a0)
         sd sp, 48(a0)
         sd gp, 56(a0)
@@ -55,48 +42,27 @@ user_intr_interface:
         sd t5, 272(a0)
         sd t6, 280(a0)
 
-        // li      a5,38797312
-        // li      a4,68
-        // sw      a4,0(a5)
-	# save the user a0 in p->trapframe->a0
         csrr t0, sscratch
         sd t0, 112(a0)
 
-        # initialize kernel stack pointer, from p->trapframe->kernel_sp
         ld sp, 8(a0)
 
-        # make tp hold the current hartid, from p->trapframe->kernel_hartid
         ld tp, 32(a0)
 
-        # load the address of kernel_trap(), from p->trapframe->kernel_trap
         ld t0, 16(a0)
 
-
-        # fetch the kernel page table address, from p->trapframe->kernel_satp.
         ld t1, 0(a0)
 
-        # wait for any previous memory operations to complete, so that
-        # they use the user page table.
-        
         sfence.vma zero, zero
 
-        # install the kernel page table.
         csrw satp, t1
 
-        # flush now-stale user entries from the TLB.
         sfence.vma zero, zero
 
         jr t0
 
 .globl ret_to_user
 ret_to_user:
-        // li      a5,38797312
-        // li      a4,69
-        // sw      a4,0(a5)
-        // ret
-        
-
-        
         sfence.vma zero, zero
         csrw satp, a0
         sfence.vma zero, zero
@@ -137,17 +103,4 @@ ret_to_user:
 
         ld a0, 112(a0)
 
-        // j test_asm
-        // li a3, 0x00000000
-        // jr (x0)
-        // li      a5,38797312
-        // li      a4, 70
-        // sw      a4,0(a5)
-        
         sret
-.global test_asm
-test_asm:
-    li      a5,38797312
-    li      a4,71
-    sw      a4,0(a5)
-    ret

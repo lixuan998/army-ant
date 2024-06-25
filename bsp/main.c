@@ -23,7 +23,7 @@ int main()
     kernel_init();
     
     peripheral_init();
-    smhcn_init(0);
+    // smhcn_init(0);
     console_init();
 
     init_proc();
@@ -98,7 +98,7 @@ void kernel_vm_init()
 void kernel_interrupt_init()
 {
     interrupt_init(kernel_interrupt_vector);
-    interrupt_enable();
+    // interrupt_enable();
     printf("interrupt system initialize           [OK]\n\r");
 }
 
