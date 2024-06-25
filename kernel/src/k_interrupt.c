@@ -31,12 +31,10 @@ void kernel_interrupt_handler()
         {
         case SCAUSE_SOFTWARE_INTERRUPT:
         {
-            software_interrupt_handler();
             break;
         }
         case SCAUSE_TIMER_INTERRUPT:
         {
-            timer_interrupt_handler();
             break;
         }
         case SCAUSE_EXTERNAL_INTERRUPT:
@@ -119,12 +117,10 @@ void user_interrupt_handler()
         {
         case SCAUSE_SOFTWARE_INTERRUPT:
         {
-            software_interrupt_handler();
             break;
         }
         case SCAUSE_TIMER_INTERRUPT:
         {
-            timer_interrupt_handler();
             break;
         }
         case SCAUSE_EXTERNAL_INTERRUPT:
@@ -203,17 +199,4 @@ void user_interrupt_handler()
             break;
         }
     }
-}
-
-void external_interrupt_handled(int source)
-{
-    write32(PLIC_SCLAIM_REG, read32(PLIC_SCLAIM_REG));
-}
-
-void timer_interrupt_handler()
-{
-}
-
-void software_interrupt_handler()
-{
 }

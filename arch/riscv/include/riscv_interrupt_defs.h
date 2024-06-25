@@ -36,9 +36,5 @@ void interrupt_enable();
 void interrupt_disable();
 void kernel_interrupt_handler();
 void user_interrupt_handler();
-void external_interrupt_handler();
-void external_interrupt_handled(int source);
-void timer_interrupt_handler();
-void software_interrupt_handler();
 
 #endif  /* __RISCV_INTERRUPT_DEFS_H__ */
