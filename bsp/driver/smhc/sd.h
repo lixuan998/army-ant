@@ -1,9 +1,11 @@
 #ifndef __SD_H__
 #define __SD_H__
 
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_basic_operation.h"
 
 #include "smhc_defs.h"
+#include "smhcsd_defs.h"
 
 #include "../ccu/ccu.h"
 #include "../gpio/gpio.h"

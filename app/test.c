@@ -34,43 +34,31 @@ inline uint32 read32(volatile uint32 reg)
     return val;
 }
 
-void inline putc(char c)
-{
-    while (1)
-    {
-        uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
-        if (lsr_val & (UART_LSR_THR_EMPTY))
-        {
-            break;
-        }
-    }
-    write32(UART_BASE_ADDR + UART_THR, c);
-}
+void syscall_exit();
 
+void putc(char c);
 int main()
 {
-    volatile char *arr = (char *)(VM_PROC_SHARED_MEM_ADDR);
-    char world[] = "world\n\r";
-    while (1)
+    char hello[] = "hello\n\r";
+    for (int i = 0; i < 5; ++i)
     {
-        if (arr[0] == 'W')
+        while (((((volatile char *)(VM_PROC_SHARED_MEM_ADDR))[0]) != 'R'));
+        (((volatile char *)(VM_PROC_SHARED_MEM_ADDR))[0]) = 'W';
+        for (int i = 0; i < 7; ++i)
         {
-            for (int i = 0; i < 7; ++i)
+            while (1)
             {
-                while (1)
+                uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
+                if (lsr_val & (UART_LSR_THR_EMPTY))
                 {
-                    uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
-                    if (lsr_val & (UART_LSR_THR_EMPTY))
-                    {
-                        break;
-                    }
+                    break;
                 }
-                write32(UART_BASE_ADDR + UART_THR, world[i]);
             }
-            arr[0] = 'H';
+            write32(UART_BASE_ADDR + UART_THR, hello[i]);
         }
+        (((volatile char *)(VM_PROC_SHARED_MEM_ADDR))[0]) = 'R';
     }
-
+    syscall_exit();
     return 0;
 }
 
@@ -89,3 +77,24 @@ int main()
 //         write32(UART_BASE_ADDR + UART_THR, 'W');
 //     }
 // }
+
+// int main()
+// {
+//     while(1)
+//     {
+//         putc('K');
+//     }
+// }
+
+void putc(char c)
+{
+    while (1)
+    {
+        uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
+        if (lsr_val & (UART_LSR_THR_EMPTY))
+        {
+            break;
+        }
+    }
+    write32(UART_BASE_ADDR + UART_THR, c);
+}

@@ -1,7 +1,6 @@
 #ifndef __TIME_H__
 #define __TIME_H__
 
-#include "arch/defs.h"
 #include "stdio.h"
 
 typedef long long timestamp_t;

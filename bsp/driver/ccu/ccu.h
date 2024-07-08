@@ -1,7 +1,8 @@
 #ifndef __CCU_H__
 #define __CCU_H__
 
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_basic_operation.h"
 
 #define CCU_BASE_ADDR                   (0x02001000UL)
 

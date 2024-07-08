@@ -1,4 +1,9 @@
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_spinlock_defs.h"
+#include "arch/riscv/include/riscv_mem_layout.h"
+#include "arch/riscv/include/riscv_interrupt_defs.h"
+#include "arch/riscv/include/riscv_mem_defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_proc_defs.h"
 #include "lib/include/stdio.h"
 #include "lib/include/time.h"
 #include "lib/include/time.h"
@@ -23,7 +28,7 @@ int main()
     kernel_init();
     
     peripheral_init();
-    // smhcn_init(0);
+    smhcn_init(0);
     console_init();
 
     init_proc();
@@ -98,7 +103,7 @@ void kernel_vm_init()
 void kernel_interrupt_init()
 {
     interrupt_init(kernel_interrupt_vector);
-    // interrupt_enable();
+    interrupt_enable();
     printf("interrupt system initialize           [OK]\n\r");
 }
 

@@ -13,6 +13,12 @@ D += arch/${ARCH}/obj/context_switch.d
 OBJS += arch/${ARCH}/obj/trampoline.o
 D += arch/${ARCH}/obj/trampoline.d
 
+OBJS += arch/${ARCH}/obj/syscall_interface.o
+D += arch/${ARCH}/obj/syscall_interface.d
+
+OBJS += arch/${ARCH}/obj/syscall.o
+D += arch/${ARCH}/obj/syscall.d
+
 all : ${OBJS}
 
 # arch/${ARCH}/obj/riscv_vm.o : arch/${ARCH}/src/riscv_vm.c
@@ -25,4 +31,8 @@ arch/${ARCH}/obj/interrupt_vector.o : arch/${ARCH}/src/interrupt_vector.S
 arch/${ARCH}/obj/context_switch.o : arch/${ARCH}/src/context_switch.S
 	@$(CC) $(CFLAGS) -c $^ -o $@
 arch/${ARCH}/obj/trampoline.o : arch/${ARCH}/src/trampoline.S
+	@$(CC) $(CFLAGS) -c $^ -o $@
+arch/${ARCH}/obj/syscall_interface.o : arch/${ARCH}/src/syscall_interface.S
+	@$(CC) $(CFLAGS) -c $^ -o $@
+arch/${ARCH}/obj/syscall.o : arch/${ARCH}/src/syscall.c
 	@$(CC) $(CFLAGS) -c $^ -o $@

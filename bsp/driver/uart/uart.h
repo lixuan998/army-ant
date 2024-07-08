@@ -1,8 +1,8 @@
 #ifndef __UART_H__
 #define __UART_H__
 
-#include "arch/defs.h"
-
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_basic_operation.h"
 
 #define UART_BASE_ADDR       0x02500000
 #define UART_THR             0x0000

@@ -18,4 +18,18 @@
 #define VM_TRAMPOLINE_ADDR                    (VM_ADDR_MAX_VAL - PAGE_SIZE)
 #define VM_TRAPFRAME_ADDR                     (VM_TRAMPOLINE_ADDR - PAGE_SIZE)
 
+#ifndef __TRAMPOLINE__
+extern unsigned long                                 kernel_start_addr[];
+extern unsigned long                                 kernel_end_addr[];
+extern unsigned long                                 kernel_text_start_addr[];
+extern unsigned long                                 kernel_text_end_addr[];
+extern unsigned long                                 rodata_end_addr[];
+extern unsigned long                                 data_end_addr[];
+extern unsigned long                                 bss_start_addr[];
+extern unsigned long                                 bss_end_addr[];
+extern unsigned long                                 trampoline_start_addr[];
+extern unsigned long                                 trampoline_end_addr[];
+extern unsigned long                                 trampoline[];
+#endif /* __TRAMPOLINE__ */
+
 #endif /* __RISCV_MEM_LAYOUT_H__ */

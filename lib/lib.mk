@@ -8,8 +8,6 @@ OBJS += lib/obj/time.o
 D += lib/obj/time.d
 OBJS += lib/obj/string.o
 D += lib/obj/string.d
-OBJS += lib/obj/adt.o
-D += lib/obj/adt.d
 
 all : ${OBJS}
 
@@ -20,6 +18,4 @@ lib/obj/stdlib.o : lib/src/stdlib.c
 lib/obj/time.o : lib/src/time.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
 lib/obj/string.o : lib/src/string.c
-	@$(CC) $(CFLAGS) -c $^ -o $@
-lib/obj/adt.o : lib/src/adt.c
 	@$(CC) $(CFLAGS) -c $^ -o $@

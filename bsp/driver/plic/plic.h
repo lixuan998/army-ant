@@ -1,7 +1,8 @@
 #ifndef __PLIC_H__
 #define __PLIC_H__
 
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_basic_operation.h"
 #include "lib/include/stdio.h"
 
 #define PLIC_ENABLE                 (1)

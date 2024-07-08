@@ -1,7 +1,7 @@
 #ifndef __STDLIB_H__
 #define __STDLIB_H__
 
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
 #include "stdio.h"
 
 #define META_DATA_SIZE        (sizeof(int))

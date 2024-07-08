@@ -1,7 +1,8 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_basic_operation.h"
 
 #define TIMER_BASE_ADDR                      (0x02050000)
 #define TMR_IRQ_EN_REG                       (TIMER_BASE_ADDR + 0x0000)   //Timer IRQ Enable Register.

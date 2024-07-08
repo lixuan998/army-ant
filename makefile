@@ -3,7 +3,6 @@ include lib/lib.mk
 include arch/arch.mk
 include ${BSP_DIR}/bsp.mk
 include kernel/kernel.mk
-include driver/driver.mk
 include console/console.mk
 
 all : army-ant.bin army-ant.elf

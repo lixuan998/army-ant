@@ -1,4 +1,4 @@
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_vm_defs.h"
 #include "lib/include/stdio.h"
 #include "lib/include/stdlib.h"
 
@@ -12,6 +12,23 @@ pagetable_t pagetable_create(VM_MAP_INFO map_info[], int num_of_mapping)
 
     pagetable_entry_add(pagetable, map_info, num_of_mapping);
     return pagetable;
+}
+
+void pagetable_destroy(pagetable_t pagetable)
+{
+    for(int i = 0; i < 512; ++ i)
+    {
+        pte_t pte = pagetable[i];
+        if((pte & PTE_PERMISSION_V) && ((pte & PTE_PERMISSION_R) == 0))
+        {
+            addr_t pagetable_child = PTE_TO_PHY_ADDR(pte);
+            pagetable_destroy((pagetable_t)pagetable_child);
+            pagetable[i] = NULL;
+        }
+    }
+
+    free_single_page((addr_t)pagetable);
+    pagetable = NULL;
 }
 
 void pagetable_entry_add(pagetable_t pagetable, VM_MAP_INFO map_info[], int num_of_mapping)

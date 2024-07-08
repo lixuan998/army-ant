@@ -1,7 +1,8 @@
 #ifndef __GPIO_H__
 #define __GPIO_H__
 
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_basic_operation.h"
 
 typedef uint32                      (gpio_t);
 

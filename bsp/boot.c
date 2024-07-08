@@ -1,12 +1,12 @@
 #include "lib/include/stdio.h"
 #include "driver/plic/plic.h"
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_type_defs.h"
+#include "arch/riscv/include/riscv_mem_layout.h"
 
 extern int main();
 
 extern void interrupt_vector();
 
-__attribute__ ((aligned (16))) char kernel_stack[4096 * CPU_NUM];
 void boot_cfg()
 {
     //clean .bss.

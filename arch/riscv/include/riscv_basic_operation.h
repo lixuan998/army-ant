@@ -1,13 +1,11 @@
-#ifndef __RISCV_ASM_OPERATION_H__
-#define __RISCV_ASM_OPERATION_H__
+#ifndef __RISCV_BASIC_OPERATION_H__
+#define __RISCV_BASIC_OPERATION_H__
 
 /****************************************************************************************************************************************************
  * @brief This file mainly defines some assembler operations embedded in C
  ****************************************************************************************************************************************************/
 
 #include "riscv_type_defs.h"
-#include "riscv_csr_defs.h"
-#include "riscv_proc_defs.h"
 
 /****************************************************************************************************************************************************
  *
@@ -266,5 +264,31 @@ inline uint64 r_sepc()
     return x;
 }
 
+#define IOMEM(addr) ((volatile void __iomem *)((long)(addr)))
+
+inline void write32(volatile uint32 reg, uint32 val)
+{
+    volatile uint32 *reg_ptr = (uint32 *)((long)reg);
+    *reg_ptr = val;
+}
+
+inline uint32 read32(volatile uint32 reg)
+{
+    uint32 val = *((uint32 *)((long)reg));
+    return val;
+}
+
+inline void write64(volatile uint64 reg, uint64 val)
+{
+    volatile uint64 *reg_ptr = (uint64 *)((long)reg);
+    *reg_ptr = val;
+}
+
+inline uint64 read64(volatile uint64 reg)
+{
+    volatile uint64 val = *((uint64 *)((long)reg));
+    return val;
+}
+
 extern void context_switch(CONTEXT *old_context, CONTEXT *new_context);
-#endif /* __RISCV_ASM_OPERATION_H__ */
+#endif /* __RISCV_BASIC_OPERATION_H__ */

@@ -1,4 +1,4 @@
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_interrupt_defs.h"
 #include "bsp/driver/plic/plic.h"
 #include "bsp/driver/timer/timer.h"
 #include "bsp/driver/smhc/sd.h"
@@ -22,154 +22,118 @@ void interrupt_disable()
 
 void kernel_interrupt_handler()
 {
-    isa_reg_t scause = r_scause();
-
-    isa_reg_t scause_code = scause & SCAUSE_EXCEPTION_CODE_MASK;
-    if (scause & SCAUSE_INTERRUPT)
-    {
-        switch (scause_code)
-        {
-        case SCAUSE_SOFTWARE_INTERRUPT:
-        {
-            break;
-        }
-        case SCAUSE_TIMER_INTERRUPT:
-        {
-            break;
-        }
-        case SCAUSE_EXTERNAL_INTERRUPT:
-        {
-            enum PLIC_EXTERNAL_INTERRUPT_SOURCE source;
-            source = plic_interrupt_source();
-            // printf("source: %d\n\r", source);
-            switch (source)
-            {
-            case UART0_SOURCE:
-            {
-                char c;
-                int ret = getc(&c);
-                while (ret >= 0)
-                {
-                    console_get_char(c);
-                    ret = getc(&c);
-                }
-                break;
-            }
-            case TIMER0_SOURCE:
-            {
-                timestamp_update();
-                timer_pending_clear(0);
-                break;
-            }
-            case SMHC0_SOURCE:
-            {
-                volatile soc_reg_t reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                // volatile soc_reg_t status = read32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
-                // printf("status: %x, %b\n\r", status, status);
-                write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, 0xFFFFFFFF);
-                while (reg_val)
-                {
-                    reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                }
-                reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                // write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
-                // if(reg_val & (1 << 30)) printf("Card Insert, reg_val: %b, or res: %d\n\r", reg_val, (reg_val & (1 << 30)));
-                // else if(reg_val & (1 << 31)) printf("Card Removed\n\r");
-                break;
-            }
-            default:
-                break;
-            }
-            plic_interrupt_handled(source);
-            break;
-        }
-        default:
-            break;
-        }
-    }
-    else if (scause & SCAUSE_EXCEPTION)
-    {
-        switch (scause_code)
-        {
-        case SCAUSE_ECALL_U:
-        {
-            printf("ECALL_U\n\r");
-            break;
-        }
-        case SCAUSE_ECALL_S:
-        {
-            printf("ECALL_S\n\r");
-        }
-        default:
-            break;
-        }
-    }
+    interrupt_handler();
 }
 
 void user_interrupt_handler()
 {
-    isa_reg_t scause = r_scause();
+    uint32 interrupt_type = interrupt_handler();
 
-    isa_reg_t scause_code = scause & SCAUSE_EXCEPTION_CODE_MASK;
-    if (scause & SCAUSE_INTERRUPT)
+    // Distinguish interrupt type, Interrupt or Exception.
+    // If interrupt_type & (1 << 31) == 1, it's an interrupt, 0 otherwise.
+    if (interrupt_type & (1 << 31))
     {
-        switch (scause_code)
+        int scause_val = ((interrupt_type >> 16) & 0xFF);
+        if(scause_val == SCAUSE_SOFTWARE_INTERRUPT)
         {
-        case SCAUSE_SOFTWARE_INTERRUPT:
-        {
-            break;
+
         }
-        case SCAUSE_TIMER_INTERRUPT:
+        else if(scause_val == SCAUSE_TIMER_INTERRUPT)
         {
-            break;
+            
         }
-        case SCAUSE_EXTERNAL_INTERRUPT:
+        else if(scause_val == SCAUSE_EXTERNAL_INTERRUPT)
         {
-            enum PLIC_EXTERNAL_INTERRUPT_SOURCE source;
-            source = plic_interrupt_source();
-            // printf("source: %d\n\r", source);
-            switch (source)
+            int plic_val = ((interrupt_type & 0xFF));
+            if(plic_val == TIMER0_SOURCE)
             {
-            case UART0_SOURCE:
-            {
-                char c;
-                int ret = getc(&c);
-                while (ret >= 0)
-                {
-                    console_get_char(c);
-                    ret = getc(&c);
-                }
-                break;
-            }
-            case TIMER0_SOURCE:
-            {
-                timestamp_update();
-                timer_pending_clear(0);
                 PROC *cur_proc = current_cpu_proc();
                 if (cur_proc != NULL)
                 {
                     if (cur_proc->proc_state == PROC_STATE_RUNNING)
                     {
-                        plic_interrupt_handled(source);
                         proc_yield();
                     }
                 }
+            }
+        }
+    }
+    else
+    {
+        int scause_val = ((interrupt_type >> 16) & 0xFF);
+        if(scause_val == SCAUSE_ECALL_U)
+        {
+            PROC *cur_proc = current_cpu_proc();
+            cur_proc->trapframe->epc += 4;
+            interrupt_enable();
+            syscall();
+        }
+    }
+}
+
+uint32 interrupt_handler()
+{
+    uint32 interrupt_type = 0;
+    isa_reg_t scause = r_scause();
+
+    isa_reg_t scause_code = scause & SCAUSE_EXCEPTION_CODE_MASK;
+    if (scause & SCAUSE_INTERRUPT)
+    {
+        interrupt_type = 1 << 31;
+        switch (scause_code)
+        {
+        case SCAUSE_SOFTWARE_INTERRUPT:
+        {
+            interrupt_type |= (SCAUSE_SOFTWARE_INTERRUPT) << 16;
+            break;
+        }
+        case SCAUSE_TIMER_INTERRUPT:
+        {
+            interrupt_type |= (SCAUSE_TIMER_INTERRUPT) << 16;
+            break;
+        }
+        case SCAUSE_EXTERNAL_INTERRUPT:
+        {
+            interrupt_type |= (SCAUSE_EXTERNAL_INTERRUPT) << 16;
+            enum PLIC_EXTERNAL_INTERRUPT_SOURCE source;
+            source = plic_interrupt_source();
+            // printf("source: %d\n\r", source);
+            switch (source)
+            {
+            case UART0_SOURCE:
+            {
+                interrupt_type |= UART0_SOURCE;
+                char c;
+                int ret = getc(&c);
+                while (ret >= 0)
+                {
+                    console_get_char(c);
+                    ret = getc(&c);
+                }
+                break;
+            }
+            case TIMER0_SOURCE:
+            {
+                interrupt_type |= TIMER0_SOURCE;
+                timestamp_update();
+                timer_pending_clear(0);
                 break;
             }
             case SMHC0_SOURCE:
             {
+                interrupt_type |= SMHC0_SOURCE;
                 volatile soc_reg_t reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                // volatile soc_reg_t status = read32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
-                // printf("status: %x, %b\n\r", status, status);
+                volatile soc_reg_t status = read32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
+                printf("U status: %x, %b\n\r", status, status);
                 write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, 0xFFFFFFFF);
                 while (reg_val)
                 {
                     reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
                 }
                 reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                // write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
-                // if(reg_val & (1 << 30)) printf("Card Insert, reg_val: %b, or res: %d\n\r", reg_val, (reg_val & (1 << 30)));
-                // else if(reg_val & (1 << 31)) printf("Card Removed\n\r");
+                write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
+                if(reg_val & (1 << 30)) printf("Card Insert, reg_val: %b, or res: %d\n\r", reg_val, (reg_val & (1 << 30)));
+                else if(reg_val & (1 << 31)) printf("Card Removed\n\r");
                 break;
             }
             default:
@@ -182,21 +146,23 @@ void user_interrupt_handler()
             break;
         }
     }
-    else if (scause & SCAUSE_EXCEPTION)
+    else
     {
         switch (scause_code)
         {
         case SCAUSE_ECALL_U:
         {
-            printf("ECALL_U\n\r");
+            interrupt_type |= (SCAUSE_ECALL_U) << 16;
             break;
         }
         case SCAUSE_ECALL_S:
         {
+            interrupt_type |= (SCAUSE_ECALL_S) << 16;
             printf("ECALL_S\n\r");
         }
         default:
             break;
         }
     }
+    return interrupt_type;
 }

@@ -1,3 +1,4 @@
+#define __TRAMPOLINE__
 #include "arch/riscv/include/riscv_mem_layout.h"
 
 .section trampoline_section

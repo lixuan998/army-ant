@@ -1,4 +1,4 @@
-#include "arch/defs.h"
+#include "arch/riscv/include/riscv_spinlock_defs.h"
 #include "lib/include/stdio.h"
 
 SPINLOCK general_spinlock[GENERAL_SPINLOCK_NUM];
@@ -31,7 +31,7 @@ void spinlock_lock(SPINLOCK *slk)
 
     slk -> slk_owner = cur_cpu;
 
-    interrupt_disable();
+    turn_off_s_interrupt();
 }
 
 void spinlock_unlock(SPINLOCK *slk)
@@ -49,6 +49,6 @@ void spinlock_unlock(SPINLOCK *slk)
     cur_cpu -> slk_cnt --;
     if(cur_cpu -> slk_cnt == 0 && cur_cpu -> interrupt_enabled)
     {
-        interrupt_enable();
+        turn_on_s_interrupt();
     }
 }
