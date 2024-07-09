@@ -12,6 +12,7 @@
 #include "driver/smhc/sd.h"
 #include "driver/gpio/gpio.h"
 #include "console/include/console.h"
+#include "fs/include/diskio.h"
 
 void kernel_mem_init();
 void kernel_vm_init();
@@ -31,8 +32,10 @@ int main()
     smhcn_init(0);
     console_init();
 
-    init_proc();
-    scheduler();
+    register_virtual_disk();
+
+    // init_proc();
+    // scheduler();
     
     while(1);
     return 0;

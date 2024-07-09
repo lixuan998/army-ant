@@ -9,24 +9,6 @@
 #define SMHC_CARD_FLAG_SDHC (1 << 1) // SDHC card.
 #define SMHC_CARD_FLAG_SDXC (1 << 2) // SDXC card.
 
-#define VDD_165_195 (1 << 7) // VDD voltage 1.65 - 1.95
-#define VDD_20_21 (1 << 8)   // VDD voltage 2.0 ~ 2.1
-#define VDD_21_22 (1 << 9)   // VDD voltage 2.1 ~ 2.2
-#define VDD_22_23 (1 << 10)  // VDD voltage 2.2 ~ 2.3
-#define VDD_23_24 (1 << 11)  // VDD voltage 2.3 ~ 2.4
-#define VDD_24_25 (1 << 12)  // VDD voltage 2.4 ~ 2.5
-#define VDD_25_26 (1 << 13)  // VDD voltage 2.5 ~ 2.6
-#define VDD_26_27 (1 << 14)  // VDD voltage 2.6 ~ 2.7
-#define VDD_27_28 (1 << 15)  // VDD voltage 2.7 ~ 2.8
-#define VDD_28_29 (1 << 16)  // VDD voltage 2.8 ~ 2.9
-#define VDD_29_30 (1 << 17)  // VDD voltage 2.9 ~ 3.0
-#define VDD_30_31 (1 << 18)  // VDD voltage 3.0 ~ 3.1
-#define VDD_31_32 (1 << 19)  // VDD voltage 3.1 ~ 3.2
-#define VDD_32_33 (1 << 20)  // VDD voltage 3.2 ~ 3.3
-#define VDD_33_34 (1 << 21)  // VDD voltage 3.3 ~ 3.4
-#define VDD_34_35 (1 << 22)  // VDD voltage 3.4 ~ 3.5
-#define VDD_35_36 (1 << 23)  // VDD voltage 3.5 ~ 3.6
-
 typedef struct _SCR
 {
     // For more details about SCR register, look for "SD Specifications Part 1 Physical Layer Simplified Specification Version 3.01", page 106.
@@ -80,6 +62,26 @@ typedef struct _CID
     uint16 OID;  // OEM/Application ID. bit range: [104:119], width:16.
     uint8 MID;   // Manufacturer ID. bit range: [120:127], width:8.
 } CID;
+
+// Card capacity.
+#define MMC_VDD_165_195 (0x00000080) /* VDD voltage 1.65 - 1.95 */
+#define MMC_VDD_20_21 (0x00000100)   /* VDD voltage 2.0 ~ 2.1 */
+#define MMC_VDD_21_22 (0x00000200)   /* VDD voltage 2.1 ~ 2.2 */
+#define MMC_VDD_22_23 (0x00000400)   /* VDD voltage 2.2 ~ 2.3 */
+#define MMC_VDD_23_24 (0x00000800)   /* VDD voltage 2.3 ~ 2.4 */
+#define MMC_VDD_24_25 (0x00001000)   /* VDD voltage 2.4 ~ 2.5 */
+#define MMC_VDD_25_26 (0x00002000)   /* VDD voltage 2.5 ~ 2.6 */
+#define MMC_VDD_26_27 (0x00004000)   /* VDD voltage 2.6 ~ 2.7 */
+#define MMC_VDD_27_28 (0x00008000)   /* VDD voltage 2.7 ~ 2.8 */
+#define MMC_VDD_28_29 (0x00010000)   /* VDD voltage 2.8 ~ 2.9 */
+#define MMC_VDD_29_30 (0x00020000)   /* VDD voltage 2.9 ~ 3.0 */
+#define MMC_VDD_30_31 (0x00040000)   /* VDD voltage 3.0 ~ 3.1 */
+#define MMC_VDD_31_32 (0x00080000)   /* VDD voltage 3.1 ~ 3.2 */
+#define MMC_VDD_32_33 (0x00100000)   /* VDD voltage 3.2 ~ 3.3 */
+#define MMC_VDD_33_34 (0x00200000)   /* VDD voltage 3.3 ~ 3.4 */
+#define MMC_VDD_34_35 (0x00400000)   /* VDD voltage 3.4 ~ 3.5 */
+#define MMC_VDD_35_36 (0x00800000)   /* VDD voltage 3.5 ~ 3.6 */
+
 typedef struct _SMHC_CARD
 {
     struct _SMHC_HOST *host;

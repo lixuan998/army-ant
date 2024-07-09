@@ -4,6 +4,8 @@ include arch/arch.mk
 include ${BSP_DIR}/bsp.mk
 include kernel/kernel.mk
 include console/console.mk
+include fs/fs.mk
+
 
 all : army-ant.bin army-ant.elf
 

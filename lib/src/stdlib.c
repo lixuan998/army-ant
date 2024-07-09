@@ -8,7 +8,7 @@ SPINLOCK malloc_lock;
 void memset(void *ptr, int value, int size)
 {
     char *cptr = (char *)ptr;
-    for(int i = 0; i < size; ++ i)
+    for (int i = 0; i < size; ++i)
     {
         cptr[i] = value;
     }
@@ -16,11 +16,45 @@ void memset(void *ptr, int value, int size)
 
 void memcpy(char *dest, char *src, int size)
 {
-    if(size == 14) printf("Equal\n\r");
-    for(int i = 0; i < size; ++ i)
+    if (size == 14)
+        printf("Equal\n\r");
+    for (int i = 0; i < size; ++i)
     {
         dest[i] = src[i];
     }
+}
+
+int memcmp(void *s1, void *s2, int n)
+{
+    unsigned char *p1 = (unsigned char *)s1;
+    unsigned char *p2 = (unsigned char *)s2;
+
+    for (int i = 0; i < n; i++)
+    {
+        if (p1[i] != p2[i])
+        {
+            return p1[i] - p2[i];
+        }
+    }
+
+    return 0;
+}
+
+char *strchr(char *s, int c)
+{
+    while (*s != '\0')
+    {
+        if (*s == (char)c)
+        {
+            return (char *)s;
+        }
+        s++;
+    }
+    if (c == '\0')
+    {
+        return (char *)s;
+    }
+    return 0;
 }
 
 // void *malloc(int size)
@@ -28,11 +62,11 @@ void memcpy(char *dest, char *src, int size)
 //     addr_t ret_addr = NULL;
 //     HEAP_MEM_BLK *cur_heap_mem_blk = current_cpu_proc() -> trapframe -> heap_mem_blk;
 //     spinlock_init(&malloc_lock, "malloc_spinlock");
-    
+
 //     while(ret_addr == NULL)
 //     {
 //         spinlock_lock(&malloc_lock);
-        
+
 //         if(cur_heap_mem_blk -> blk_free_space >= size + META_DATA_SIZE)
 //         {
 //             int continue_cells;
@@ -81,7 +115,7 @@ void memcpy(char *dest, char *src, int size)
 //         }
 //         spinlock_unlock(&malloc_lock);
 //     }
-    
+
 //     // debug_malloc(cur_heap_mem_blk);
 //     return (void *)ret_addr;
 // }
@@ -107,12 +141,12 @@ void memcpy(char *dest, char *src, int size)
 void debug_malloc(HEAP_MEM_BLK *blk)
 {
     int y_bit;
-    printf("remain space: %d\n\r", blk -> blk_free_space);
-    for(int i = 0; i < SQRT_PAGE_SIZE; ++ i)
+    printf("remain space: %d\n\r", blk->blk_free_space);
+    for (int i = 0; i < SQRT_PAGE_SIZE; ++i)
     {
-        for(int j = 0; j < SQRT_PAGE_SIZE; ++ j)
+        for (int j = 0; j < SQRT_PAGE_SIZE; ++j)
         {
-            y_bit = ((blk -> blk_cell[i][j / bitof(char)]) >> (j % bitof(char)) & 1);
+            y_bit = ((blk->blk_cell[i][j / bitof(char)]) >> (j % bitof(char)) & 1);
             printf("%d ", y_bit);
         }
         printf("\n\r");
