@@ -12,21 +12,21 @@ void uart_print_char(char c)
 {
     while (1)
     {
-        uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
+        uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR); // 获取LSR寄存器的值
         if (lsr_val & (UART_LSR_THR_EMPTY))
         {
             break;
         }
     }
-    volatile unsigned int *thr_val = (unsigned int *)(UART_BASE_ADDR + UART_THR);
-    (*thr_val) = c;
+    volatile unsigned int *thr_val = (unsigned int *)(UART_BASE_ADDR + UART_THR); // 获取THR寄存器的地址
+    (*thr_val) = c; // 将数据写入THR寄存器
 }
 
 int uart_scan_char()
 {
     if(read32(UART_BASE_ADDR + UART_LSR) & UART_LSR_DATA_READY)
     {
-        return (int)read32(UART_BASE_ADDR + UART_RBR);
+        return (int)read32(UART_BASE_ADDR + UART_RBR); // 读取RBR寄存器中的数据
     }
     else return -1;
 }

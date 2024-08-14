@@ -1,7 +1,7 @@
 #include "arch/riscv/include/riscv_interrupt_defs.h"
 #include "bsp/driver/plic/plic.h"
 #include "bsp/driver/timer/timer.h"
-#include "bsp/driver/smhc/sd.h"
+#include "bsp/driver/sdio/sd.h"
 #include "console/include/console.h"
 
 void interrupt_init(void *interrupt_vector)
@@ -97,7 +97,6 @@ uint32 interrupt_handler()
             interrupt_type |= (SCAUSE_EXTERNAL_INTERRUPT) << 16;
             enum PLIC_EXTERNAL_INTERRUPT_SOURCE source;
             source = plic_interrupt_source();
-            // printf("source: %d\n\r", source);
             switch (source)
             {
             case UART0_SOURCE:
@@ -124,7 +123,6 @@ uint32 interrupt_handler()
                 interrupt_type |= SMHC0_SOURCE;
                 volatile soc_reg_t reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
                 volatile soc_reg_t status = read32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
-                printf("U status: %x, %b\n\r", status, status);
                 write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, 0xFFFFFFFF);
                 while (reg_val)
                 {
@@ -132,8 +130,6 @@ uint32 interrupt_handler()
                 }
                 reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
                 write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
-                if(reg_val & (1 << 30)) printf("Card Insert, reg_val: %b, or res: %d\n\r", reg_val, (reg_val & (1 << 30)));
-                else if(reg_val & (1 << 31)) printf("Card Removed\n\r");
                 break;
             }
             default:

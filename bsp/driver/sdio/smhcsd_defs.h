@@ -3,11 +3,38 @@
 
 #include "arch/riscv/include/riscv_type_defs.h"
 
-#define SMHC_CARD_TYPE_MMC 0
-#define SMHC_CARD_TYPE_SD 1
-#define SMHC_CARD_FLAG_HIGHSPEED (1 << 0)
-#define SMHC_CARD_FLAG_SDHC (1 << 1) // SDHC card.
-#define SMHC_CARD_FLAG_SDXC (1 << 2) // SDXC card.
+#define MMCSD_CARD_TYPE_MMC 0
+#define MMCSD_CARD_TYPE_SD 1
+#define MMCSD_CARD_FLAG_HIGHSPEED (1 << 0)
+#define MMCSD_CARD_FLAG_SDHC (1 << 1) // SDHC card.
+#define MMCSD_CARD_FLAG_SDXC (1 << 2) // SDXC card.
+
+// the following is response bit.
+#define R1_OUT_OF_RANGE (1 << 31)       // er, c
+#define R1_ADDRESS_ERROR (1 << 30)      // erx, c
+#define R1_BLOCK_LEN_ERROR (1 << 29)    // er, c
+#define R1_ERASE_SEQ_ERROR (1 << 28)    // er, c
+#define R1_ERASE_PARAM (1 << 27)        // ex, c
+#define R1_WP_VIOLATION (1 << 26)       // erx, c
+#define R1_CARD_IS_LOCKED (1 << 25)     // sx, a
+#define R1_LOCK_UNLOCK_FAILED (1 << 24) // erx, c
+#define R1_COM_CRC_ERROR (1 << 23)      // er, b
+#define R1_ILLEGAL_COMMAND (1 << 22)    // er, b
+#define R1_CARD_ECC_FAILED (1 << 21)    // ex, c
+#define R1_CC_ERROR (1 << 20)           // erx, c
+#define R1_ERROR (1 << 19)              // erx, c
+#define R1_UNDERRUN (1 << 18)           // ex, c
+#define R1_OVERRUN (1 << 17)            // ex, c
+#define R1_CID_CSD_OVERWRITE (1 << 16)  // erx, c, CID/CSD overwrite
+#define R1_WP_ERASE_SKIP (1 << 15)      // sx, c
+#define R1_CARD_ECC_DISABLED (1 << 14)  // sx, a
+#define R1_ERASE_RESET (1 << 13)        // sr, c
+#define R1_STATUS(x) (x & 0xFFFFE000)
+#define R1_CURRENT_STATE(x) ((x & 0x00001E00) >> 9) // sx, b (4 bits)
+#define R1_READY_FOR_DATA (1 << 8)                  // sx, a
+#define R1_APP_CMD (1 << 5)                         // sr, c
+
+#define CARD_BUSY (1 << 31)
 
 typedef struct _SCR
 {
@@ -64,30 +91,31 @@ typedef struct _CID
 } CID;
 
 // Card capacity.
-#define MMC_VDD_165_195 (0x00000080) /* VDD voltage 1.65 - 1.95 */
-#define MMC_VDD_20_21 (0x00000100)   /* VDD voltage 2.0 ~ 2.1 */
-#define MMC_VDD_21_22 (0x00000200)   /* VDD voltage 2.1 ~ 2.2 */
-#define MMC_VDD_22_23 (0x00000400)   /* VDD voltage 2.2 ~ 2.3 */
-#define MMC_VDD_23_24 (0x00000800)   /* VDD voltage 2.3 ~ 2.4 */
-#define MMC_VDD_24_25 (0x00001000)   /* VDD voltage 2.4 ~ 2.5 */
-#define MMC_VDD_25_26 (0x00002000)   /* VDD voltage 2.5 ~ 2.6 */
-#define MMC_VDD_26_27 (0x00004000)   /* VDD voltage 2.6 ~ 2.7 */
-#define MMC_VDD_27_28 (0x00008000)   /* VDD voltage 2.7 ~ 2.8 */
-#define MMC_VDD_28_29 (0x00010000)   /* VDD voltage 2.8 ~ 2.9 */
-#define MMC_VDD_29_30 (0x00020000)   /* VDD voltage 2.9 ~ 3.0 */
-#define MMC_VDD_30_31 (0x00040000)   /* VDD voltage 3.0 ~ 3.1 */
-#define MMC_VDD_31_32 (0x00080000)   /* VDD voltage 3.1 ~ 3.2 */
-#define MMC_VDD_32_33 (0x00100000)   /* VDD voltage 3.2 ~ 3.3 */
-#define MMC_VDD_33_34 (0x00200000)   /* VDD voltage 3.3 ~ 3.4 */
-#define MMC_VDD_34_35 (0x00400000)   /* VDD voltage 3.4 ~ 3.5 */
-#define MMC_VDD_35_36 (0x00800000)   /* VDD voltage 3.5 ~ 3.6 */
+#define MMC_VDD_165_195 (0x00000080) // VDD voltage 1.65 - 1.95
+#define MMC_VDD_20_21 (0x00000100)   // VDD voltage 2.0 ~ 2.1
+#define MMC_VDD_21_22 (0x00000200)   // VDD voltage 2.1 ~ 2.2
+#define MMC_VDD_22_23 (0x00000400)   // VDD voltage 2.2 ~ 2.3
+#define MMC_VDD_23_24 (0x00000800)   // VDD voltage 2.3 ~ 2.4
+#define MMC_VDD_24_25 (0x00001000)   // VDD voltage 2.4 ~ 2.5
+#define MMC_VDD_25_26 (0x00002000)   // VDD voltage 2.5 ~ 2.6
+#define MMC_VDD_26_27 (0x00004000)   // VDD voltage 2.6 ~ 2.7
+#define MMC_VDD_27_28 (0x00008000)   // VDD voltage 2.7 ~ 2.8
+#define MMC_VDD_28_29 (0x00010000)   // VDD voltage 2.8 ~ 2.9
+#define MMC_VDD_29_30 (0x00020000)   // VDD voltage 2.9 ~ 3.0
+#define MMC_VDD_30_31 (0x00040000)   // VDD voltage 3.0 ~ 3.1
+#define MMC_VDD_31_32 (0x00080000)   // VDD voltage 3.1 ~ 3.2
+#define MMC_VDD_32_33 (0x00100000)   // VDD voltage 3.2 ~ 3.3
+#define MMC_VDD_33_34 (0x00200000)   // VDD voltage 3.3 ~ 3.4
+#define MMC_VDD_34_35 (0x00400000)   // VDD voltage 3.4 ~ 3.5
+#define MMC_VDD_35_36 (0x00800000)   // VDD voltage 3.5 ~ 3.6
 
-typedef struct _SMHC_CARD
+typedef struct _MMCSD_CARD
 {
     struct _SMHC_HOST *host;
-    CID cid; // CID register: Card Identification Number Register; card individual number for identification.
-    CSD csd; // CSD register: Card Specific Data Register; information about the card operation conditions.
-    SCR scr; // SCR register: SD Configuration Register; information about the SD Memory Card's Special Features capabilities.
+    uint32 rca; // Card Address.
+    CID cid;    // CID register: Card Identification Number Register; card individual number for identification.
+    CSD csd;    // CSD register: Card Specific Data Register; information about the card operation conditions.
+    SCR scr;    // SCR register: SD Configuration Register; information about the SD Memory Card's Special Features capabilities.
 
     uint16 tacc_clks;     // data access time by ns
     uint32 tacc_ns;       // data access time by clk cycles
@@ -100,12 +128,18 @@ typedef struct _SMHC_CARD
     uint16 card_flag;
 
     uint16 hs_max_data_rate; // max data transfer rate in high speed mode
-} SMHC_CARD;
+} MMCSD_CARD;
 
-typedef struct _SMHC_HOST
+typedef struct _MMCSD_HOST
 {
-    struct _SMHC_CARD *card;
+    struct _MMCSD_CARD *card;
+    uint32 smhc_no;
+    uint32 freq_min;
+    uint32 freq_max;
+    uint32 clock;
+    uint32 bus_width;
+    uint32 cur_valid_ocr;
+    uint32 dev_cap_flags;
+} MMCSD_HOST;
 
-} SMHC_HOST;
-
-#endif /* __SMHCSD_DEFS_H__ */
+#endif // __SMHCSD_DEFS_H__

@@ -9,9 +9,11 @@ D += ${BSP_DIR}/obj/plic.d
 #timer folder
 OBJS += ${BSP_DIR}/obj/timer.o
 D += ${BSP_DIR}/obj/timer.d
-#smhc folder
+#sdio folder
 OBJS += ${BSP_DIR}/obj/sd.o
 D += ${BSP_DIR}/obj/sd.d
+OBJS += ${BSP_DIR}/obj/sdio.o
+D += ${BSP_DIR}/obj/sdio.d
 #ccu folder
 OBJS += ${BSP_DIR}/obj/ccu.o
 D += ${BSP_DIR}/obj/ccu.d
@@ -35,7 +37,10 @@ ${BSP_DIR}/obj/plic.o : ${BSP_DIR}/driver/plic/plic.c
 ${BSP_DIR}/obj/timer.o : ${BSP_DIR}/driver/timer/timer.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
 
-${BSP_DIR}/obj/sd.o : ${BSP_DIR}/driver/smhc/sd.c
+${BSP_DIR}/obj/sd.o : ${BSP_DIR}/driver/sdio/sd.c
+	@$(CC) $(CFLAGS) -c $^ -o $@
+
+${BSP_DIR}/obj/sdio.o : ${BSP_DIR}/driver/sdio/sdio.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
 
 ${BSP_DIR}/obj/ccu.o : ${BSP_DIR}/driver/ccu/ccu.c
@@ -43,8 +48,3 @@ ${BSP_DIR}/obj/ccu.o : ${BSP_DIR}/driver/ccu/ccu.c
 
 ${BSP_DIR}/obj/gpio.o : ${BSP_DIR}/driver/gpio/gpio.c
 	@$(CC) $(CFLAGS) -c $^ -o $@
-
-# ${BSP_DIR}/obj/mmc_bsp.o : ${BSP_DIR}/driver/mmc/mmc_bsp.c
-# 	@$(CC) $(CFLAGS) -c $^ -o $@
-# ${BSP_DIR}/obj/mmc.o : ${BSP_DIR}/driver/mmc/mmc.c
-# 	@$(CC) $(CFLAGS) -c $^ -o $@

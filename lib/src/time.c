@@ -38,7 +38,7 @@ void start_timing()
     cur_timestamp = timestamp;
 }
 
-void stop_timing(uint32 *duration)
+void timing_duration(uint32 *duration)
 {
     get_timestamp_duration(cur_timestamp, timestamp, duration);
 }

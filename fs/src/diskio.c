@@ -10,7 +10,7 @@
 #include "fs/include/ff.h"	   /* Obtains integer types */
 #include "fs/include/diskio.h" /* Declarations of disk functions */
 #include <lib/include/stdlib.h>
-#include <bsp/driver/smhc/sd.h>
+#include "bsp/driver/sdio/sd.h"
 
 /* Definitions of physical drive number for each drive */
 #define DEV_RAM 0 /* Example: Map Ramdisk to physical drive 0 */
@@ -19,7 +19,7 @@
 
 #define SECTOR_SIZE 512
 
-static BYTE virtual_disk[PAGE_SIZE * 25];
+static BYTE virtual_disk[PAGE_SIZE * 10000];
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
@@ -150,7 +150,7 @@ DRESULT disk_ioctl(
 		case CTRL_SYNC:
 			return RES_OK;
 		case GET_SECTOR_COUNT:
-			*(DWORD *)buff = 200;
+			*(DWORD *)buff = 80000;
 			return RES_OK;
 		case GET_SECTOR_SIZE:
 			*(WORD *)buff = SECTOR_SIZE;
@@ -208,26 +208,23 @@ FATFS fs;
 void register_virtual_disk(void)
 {
 	FRESULT res;
-	// MKFS_PARM opt = {FM_FAT32, 1, 0, 0, 512};
+	MKFS_PARM opt = {FM_FAT32, 0, 0, 0, 0};
 
 	// mount filesystem
 
-	printf("1 %x, %x\n\r", virtual_disk[510], virtual_disk[511]);
 	char tmp[1024] = {};
-	res = f_mkfs("", 0, tmp, 1024);
+	res = f_mkfs("", &opt, tmp, 1024);
 	if (res != FR_OK)
 	{
 		printf("Format error:%d\n\r", res);
 		return;
 	}
-	printf("2 %x, %x\n\r", virtual_disk[510], virtual_disk[511]);
 	res = f_mount(&fs, "0:/", 1);
 	if (res != FR_OK)
 	{
 		printf("Mount error 2: %d\n\r", res);
 		return;
 	}
-	f_mkdir("0:/teST");
 	FIL file;
 	DWORD fre_clust, fre_sect, tot_sect;
 
@@ -240,10 +237,13 @@ void register_virtual_disk(void)
 
 	/* Print the free space (assuming 512 bytes/sector) */
 	printf("0: %d KiB total drive space.\n\r%d KiB available.\n\r", tot_sect / 2, fre_sect / 2);
-	f_open(&file, "0:/teST/tEsT.txt", FA_CREATE_NEW | FA_WRITE);
+	f_mkdir("0:/testdiR1");
+	f_mkdir("0:/testdiR2");
+	f_mkdir("0:/testdiR3");
+	f_open(&file, "0:/aaaaaaaasdfgsdgaa.txt", FA_CREATE_NEW | FA_WRITE);
 	f_write(&file, "Hello, world!", 13, NULL);
 	f_close(&file);
-	f_open(&file, "0:/teST/tEsT.txt", FA_READ);
+	f_open(&file, "0:/aaaaaaaasdfgsdgaa.txt", FA_READ);
 	f_read(&file, tmp, 13, NULL);
 	printf("tmp: %s\n\r", tmp);
 

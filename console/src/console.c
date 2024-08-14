@@ -399,7 +399,7 @@ void console_cmd_process(char c)
 
 void console_get_char(char c)
 {
-    stop_timing(&last_duration);
+    timing_duration(&last_duration);
     console_display(c);
     console_cmd_process(c);
     start_timing();

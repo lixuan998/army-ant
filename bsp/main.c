@@ -9,7 +9,7 @@
 #include "lib/include/time.h"
 #include "driver/uart/uart.h"
 #include "driver/timer/timer.h"
-#include "driver/smhc/sd.h"
+#include "driver/sdio/sd.h"
 #include "driver/gpio/gpio.h"
 #include "console/include/console.h"
 #include "fs/include/diskio.h"
@@ -26,13 +26,18 @@ void peripheral_init();
 int main()
 {        
     general_spinlock_init();
+    
     kernel_init();
     
     peripheral_init();
-    smhcn_init(0);
     console_init();
 
-    register_virtual_disk();
+
+
+    // smhcn_init(0);
+    
+
+    // register_virtual_disk();
 
     // init_proc();
     // scheduler();

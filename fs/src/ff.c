@@ -3538,11 +3538,11 @@ static FRESULT create_name(					  /* FR_OK: successful, FR_INVALID_NAME: could n
 		{ /* SBC */
 			if (strchr("*+,:;<=>[]|\"\?\x7F", (int)c))
 				return FR_INVALID_NAME; /* Reject illegal chrs for SFN */
-			// if (IsLower(c))
-			// 	c -= 0x20; /* To upper */
+			if (IsLower(c))
+				c -= 0x20; /* To upper */
 			sfn[i++] = c;
 		}
-	}
+	} 
 	*path = &p[si]; /* Return pointer to the next segment */
 	if (i == 0)
 		return FR_INVALID_NAME; /* Reject nul string */
@@ -3550,7 +3550,6 @@ static FRESULT create_name(					  /* FR_OK: successful, FR_INVALID_NAME: could n
 	if (sfn[0] == DDEM)
 		sfn[0] = RDDEM;										/* If the first character collides with DDEM, replace it with RDDEM */
 	sfn[NSFLAG] = (c <= ' ' || p[si] <= ' ') ? NS_LAST : 0; /* Set last segment flag if end of the path */
-
 
 	return FR_OK;
 #endif /* FF_USE_LFN */
@@ -3881,7 +3880,6 @@ static UINT check_fs(			/* 0:FAT/FAT32 VBR, 1:exFAT VBR, 2:Not FAT and valid BS,
 			return 0; /* It can be presumed an FAT VBR */
 		}
 	}
-	printf("sign: %x\n\r", sign);
 	return sign == 0xAA55 ? 2 : 3; /* Not an FAT VBR (valid or invalid BS) */
 }
 
@@ -3897,7 +3895,6 @@ static UINT find_volume(		   /* Returns BS status found in the hosting drive */
 	DWORD mbr_pt[4];
 
 	fmt = check_fs(fs, 0); /* Load sector 0 and check if it is an FAT VBR as SFD format */
-	printf("check_fs(fs, 0) fmt: %d\n\r", fmt);
 	if (fmt != 2 && (fmt >= 3 || part == 0))
 		return fmt; /* Returns if it is an FAT VBR as auto scan, not a BS or disk error */
 
@@ -3941,8 +3938,7 @@ static UINT find_volume(		   /* Returns BS status found in the hosting drive */
 	}
 	i = part ? part - 1 : 0; /* Table index to find first */
 	do
-	{												   /* Find an FAT volume */
-		printf("mbr_pt[i]: %d\n\r", mbr_pt[i]);
+	{ /* Find an FAT volume */
 		fmt = mbr_pt[i] ? check_fs(fs, mbr_pt[i]) : 3; /* Check if the partition is FAT */
 	} while (part == 0 && fmt >= 2 && ++i < 4);
 	return fmt;
@@ -4018,16 +4014,14 @@ static FRESULT mount_volume(					/* FR_OK(0): successful, !=0: an error occurred
 
 	/* Find an FAT volume on the hosting drive */
 	fmt = find_volume(fs, LD2PT(vol));
-	printf("test fs name: %s\n\r", fs->arr);
 	if (fmt == 4)
 		return FR_DISK_ERR; /* An error occurred in the disk I/O layer */
 	if (fmt >= 2)
 	{
-		printf("fmt >= 2\n\r");
 		return FR_NO_FILESYSTEM; /* No FAT volume is found */
 	}
-		
-	bsect = fs->winsect;		 /* Volume offset in the hosting physical drive */
+
+	bsect = fs->winsect; /* Volume offset in the hosting physical drive */
 
 	/* An FAT volume is found (bsect). Following code initializes the filesystem object */
 
@@ -4309,7 +4303,8 @@ FRESULT f_mount(
 	}
 
 	if (fs)
-	{	printf("Register new filesystem object\n\r");				   
+	{
+		printf("Register new filesystem object\n\r");
 		/* Register new filesystem object */
 		fs->pdrv = LD2PD(vol); /* Volume hosting physical drive */
 #if FF_FS_REENTRANT			   /* Create a volume mutex */
@@ -4335,10 +4330,7 @@ FRESULT f_mount(
 	if (opt == 0)
 		return FR_OK; /* Do not mount now, it will be mounted in subsequent file functions */
 
-	printf("AA\n\r");
 	res = mount_volume(&path, &fs, 0); /* Force mounted the volume */
-	printf("RES: %d\n\r", res);
-	printf("BB\n\r");
 	LEAVE_FF(fs, res);
 }
 
@@ -6957,14 +6949,12 @@ FRESULT f_mkfs(
 
 	/* Check mounted drive and clear work area */
 	vol = get_ldnumber(&path); /* Get target logical drive */
-	printf("Vol: %d\n\r", vol);
 	if (vol < 0)
 		return FR_INVALID_DRIVE;
 	if (FatFs[vol])
 		FatFs[vol]->fs_type = 0; /* Clear the fs object if mounted */
 	pdrv = LD2PD(vol);			 /* Hosting physical drive */
-	printf("pdrv: %d\n\r", pdrv);
-	ipart = LD2PT(vol);			 /* Hosting partition (0:create as new, 1..:existing partition) */
+	ipart = LD2PT(vol); /* Hosting partition (0:create as new, 1..:existing partition) */
 
 	/* Initialize the hosting physical drive */
 	ds = disk_initialize(pdrv);
@@ -7018,7 +7008,7 @@ FRESULT f_mkfs(
 		{
 			LEAVE_MKFS(FR_DISK_ERR); /* Load MBR */
 		}
-			
+
 		if (ld_word(buf + BS_55AA) != 0xAA55)
 			LEAVE_MKFS(FR_MKFS_ABORTED); /* Check if MBR is valid */
 #if FF_LBA64
@@ -7091,7 +7081,6 @@ FRESULT f_mkfs(
 	{
 		LEAVE_MKFS(FR_MKFS_ABORTED); /* Check if volume size is >=128s */
 	}
-		
 
 	/* Now start to create an FAT volume at b_vol and sz_vol */
 
@@ -7367,12 +7356,15 @@ FRESULT f_mkfs(
 					for (i = 0, pau = 1; cst32[i] && cst32[i] <= n; i++, pau <<= 1)
 						; /* Get from table */
 				}
-				n_clst = (DWORD)sz_vol / pau;			 /* Number of clusters */
+				n_clst = (DWORD)sz_vol / pau; /* Number of clusters */
 				sz_fat = (n_clst * 4 + 8 + ss - 1) / ss; /* FAT size [sector] */
 				sz_rsv = 32;							 /* Number of reserved sectors */
 				sz_dir = 0;								 /* No static directory */
 				if (n_clst <= MAX_FAT16 || n_clst > MAX_FAT32)
+				{
+					printf("n_clst <= MAX_FAT16 || n_clst > MAX_FAT32\n\r");
 					LEAVE_MKFS(FR_MKFS_ABORTED);
+				}
 			}
 			else
 			{ /* FAT volume */
