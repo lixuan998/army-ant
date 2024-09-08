@@ -31,16 +31,15 @@ int main()
     
     peripheral_init();
     console_init();
-
-
+ 
 
     // smhcn_init(0);
     
 
-    // register_virtual_disk();
+    register_virtual_disk();
 
-    // init_proc();
-    // scheduler();
+    init_proc();
+    scheduler();
     
     while(1);
     return 0;
