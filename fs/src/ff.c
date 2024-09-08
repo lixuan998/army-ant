@@ -4304,7 +4304,7 @@ FRESULT f_mount(
 
 	if (fs)
 	{
-		printf("Register new filesystem object\n\r");
+		// printf("Register new filesystem object\n\r");
 		/* Register new filesystem object */
 		fs->pdrv = LD2PD(vol); /* Volume hosting physical drive */
 #if FF_FS_REENTRANT			   /* Create a volume mutex */

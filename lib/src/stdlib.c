@@ -16,8 +16,6 @@ void memset(void *ptr, int value, int size)
 
 void memcpy(char *dest, char *src, int size)
 {
-    if (size == 14)
-        printf("Equal\n\r");
     for (int i = 0; i < size; ++i)
     {
         dest[i] = src[i];

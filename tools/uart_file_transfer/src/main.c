@@ -52,8 +52,6 @@ int main(int argc, char **argv)
     {
         printf("open %s is success\n", uart3);
         set_opt(fd, 115200, 8, 'N', 1);
-        // while(i--)
-        // {
 
         char buffer[100000];
         int len = 0;
@@ -62,26 +60,32 @@ int main(int argc, char **argv)
         len += 2;
 
         int file_name_len = strlen(file_name);
-        memcpy(buffer + len, &file_name_len, sizeof(file_name_len));
-        len += 4;
+        // memcpy(buffer + len, &file_name_len, sizeof(file_name_len));
+        for(int i = sizeof(file_name_len)-1;i >= 0;--i)
+        {
+            buffer[len++] = (file_name_len >> (8 * i)) & 0xFF;
+        }
 
-        memcpy(buffer + len, file_name, file_name_len);
-        len += file_name_len;
+        for(int i = 0;i < file_name_len;++i)
+        {
+            buffer[len++] = file_name[i];
+        }
 
         for (int i = 0; i < file_len; ++i)
         {
-            if (file_buffer[i] == 0x5A)
-            {
-                buffer[len++]=0x5B;
-                buffer[len++]=0x01;
-            }
-            else if (file_buffer[i] == 0x5B)
-            {
-                buffer[len++]=0x5B;
-                buffer[len++]=0x02;
-            }else{
-                buffer[len++]=file_buffer[i];
-            }
+            // if (file_buffer[i] == 0x5A)
+            // {
+            //     buffer[len++]=0x5B;
+            //     buffer[len++]=0x01;
+            // }
+            // else if (file_buffer[i] == 0x5B)
+            // {
+            //     buffer[len++]=0x5B;
+            //     buffer[len++]=0x02;
+            // }else{
+            //     buffer[len++]=file_buffer[i];
+            // }
+            buffer[len++]=file_buffer[i];
         }
 
         buffer[len++] = 0x5A;
@@ -94,13 +98,7 @@ int main(int argc, char **argv)
         else
         {
             printf("wr_static is %d\n", ret);
-            void *buffer1[100];
-            ret = uart_recv_timeout(fd, buffer1, 13, 1000);
-            printf("RECV size: %d\n", ret);
-            printf("RECV data: %s\n", (char *)buffer1);
         }
-        sleep(1);
-        // }
     }
     close(fd);
     return 0;

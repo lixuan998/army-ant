@@ -3,6 +3,7 @@
 #include "bsp/driver/timer/timer.h"
 #include "bsp/driver/sdio/sd.h"
 #include "console/include/console.h"
+#include "tools/uart_file_receiver/uart_file_receiver.h"
 
 void interrupt_init(void *interrupt_vector)
 {
@@ -34,18 +35,16 @@ void user_interrupt_handler()
     if (interrupt_type & (1 << 31))
     {
         int scause_val = ((interrupt_type >> 16) & 0xFF);
-        if(scause_val == SCAUSE_SOFTWARE_INTERRUPT)
+        if (scause_val == SCAUSE_SOFTWARE_INTERRUPT)
         {
-
         }
-        else if(scause_val == SCAUSE_TIMER_INTERRUPT)
+        else if (scause_val == SCAUSE_TIMER_INTERRUPT)
         {
-            
         }
-        else if(scause_val == SCAUSE_EXTERNAL_INTERRUPT)
+        else if (scause_val == SCAUSE_EXTERNAL_INTERRUPT)
         {
             int plic_val = ((interrupt_type & 0xFF));
-            if(plic_val == TIMER0_SOURCE)
+            if (plic_val == TIMER0_SOURCE)
             {
                 PROC *cur_proc = current_cpu_proc();
                 if (cur_proc != NULL)
@@ -61,7 +60,7 @@ void user_interrupt_handler()
     else
     {
         int scause_val = ((interrupt_type >> 16) & 0xFF);
-        if(scause_val == SCAUSE_ECALL_U)
+        if (scause_val == SCAUSE_ECALL_U)
         {
             PROC *cur_proc = current_cpu_proc();
             cur_proc->trapframe->epc += 4;
@@ -69,54 +68,6 @@ void user_interrupt_handler()
             syscall();
         }
     }
-}
-char file[10000];
-#include "fs/include/ff.h"
-int file_parse(char *file, int size)
-{
-    uint32 file_name_len;
-    int ret,i=0;
-
-    file += 2; // skip head
-    memcpy(&file_name_len, file, sizeof(file_name_len));
-    file += sizeof(file_name_len);
-
-    char file_name[file_name_len];
-    memcpy(file_name, file, file_name_len);
-    file += file_name_len;
-
-    int data_size = size - 2- 2 - file_name_len - sizeof(file_name_len);
-    char file_data[data_size];
-    memcpy(file_data, file, data_size);
-
-    FIL fd;
-
-    ret = f_open(&fd, file_name, FA_CREATE_NEW | FA_WRITE);
-    if (ret != 0)
-    {
-        return ret;
-    }
-    while (data_size--)
-    {
-        ret = f_write(&fd, file_data[i], 1, NULL);
-
-        if(file_data[i] == 0x5B ){
-            if(file_data[i+1]==0x01){
-                ret = f_write(&fd, 0x5A, 1, NULL);
-            }
-            else if(file_data[i+1]==0x02){
-                ret=f_write(&fd,0x5B,1,NULL);
-            }
-        }
-        ++i;
-    }
-    ret = f_close(&fd);
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    return 0;
 }
 
 uint32 interrupt_handler()
@@ -154,6 +105,7 @@ uint32 interrupt_handler()
                 int ret = getc(&c);
                 while (ret >= 0)
                 {
+                    file_byte_receive(c);
                     console_get_char(c);
                     ret = getc(&c);
                 }

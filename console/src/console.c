@@ -1,17 +1,17 @@
 #include "../include/console.h"
 #include "lib/include/stdlib.h"
-#include "tools/uart_file_receiver/uart_file_recevier.h"
+#include "tools/uart_file_receiver/uart_file_receiver.h"
 #include "fs/include/diskio.h"
 #include "fs/include/ff.h"
 
-#define COMMAND_BUFF_SIZE       1024
-#define COMMAND_HISTORY_SIZE    1024
-#define DEL_KEY                 127
-#define ESC_KEY                 27
-#define BACKSPACE_KEY           8 
+#define COMMAND_BUFF_SIZE 1024
+#define COMMAND_HISTORY_SIZE 1024
+#define DEL_KEY 127
+#define ESC_KEY 27
+#define BACKSPACE_KEY 8
 
-#define PREVIOUS_CMD            0
-#define NEXT_CMD                1
+#define PREVIOUS_CMD 0
+#define NEXT_CMD 1
 
 static char cmd_buf[COMMAND_BUFF_SIZE];
 static int cmd_buf_idx = 0;
@@ -27,17 +27,19 @@ static int arrow_flag;
 
 void retrieve_command_history(int direction)
 {
-    if(direction == PREVIOUS_CMD)
+    if (direction == PREVIOUS_CMD)
     {
-        if(cmd_history_cur == 0) return;
+        if (cmd_history_cur == 0)
+            return;
         else
         {
             printf("\r");
-            for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
+            for (int i = 0; i < cmd_buf_idx + 2; ++i)
+                printf(" ");
             printf("\rroot:$ ");
 
             memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
-            cmd_history_cur --;
+            cmd_history_cur--;
             strcpy(cmd_buf, cmd_history[cmd_history_cur]);
             cmd_buf_idx = cmd_history_len[cmd_history_cur];
             printf("%s", cmd_buf);
@@ -45,15 +47,17 @@ void retrieve_command_history(int direction)
     }
     else
     {
-        if(cmd_history_cur == cmd_history_cnt) return;
+        if (cmd_history_cur == cmd_history_cnt)
+            return;
         else
         {
             printf("\r");
-            for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
+            for (int i = 0; i < cmd_buf_idx + 2; ++i)
+                printf(" ");
             printf("\rroot:$ ");
 
             memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
-            cmd_history_cur ++;
+            cmd_history_cur++;
             strcpy(cmd_buf, cmd_history[cmd_history_cur]);
             cmd_buf_idx = cmd_history_len[cmd_history_cur];
             printf("%s", cmd_buf);
@@ -63,7 +67,7 @@ void retrieve_command_history(int direction)
 
 void add_command_history()
 {
-    memset(cmd_history[cmd_history_cnt ++], '\0', COMMAND_BUFF_SIZE);
+    memset(cmd_history[cmd_history_cnt++], '\0', COMMAND_BUFF_SIZE);
     strcpy(cmd_history[cmd_history_cnt - 1], cmd_buf);
     cmd_history_len[cmd_history_cnt - 1] = cmd_buf_idx;
     cmd_history_cur = cmd_history_cnt;
@@ -72,12 +76,15 @@ void add_command_history()
 int command_empty()
 {
     int cnt = 0;
-    for(int i = 0; i < cmd_buf_idx; ++ i)
+    for (int i = 0; i < cmd_buf_idx; ++i)
     {
-        if(cmd_buf[i] == ' ') cnt ++;
+        if (cmd_buf[i] == ' ')
+            cnt++;
     }
-    if(cnt == cmd_buf_idx) return 1;
-    else return 0;
+    if (cnt == cmd_buf_idx)
+        return 1;
+    else
+        return 0;
 }
 
 void console_init()
@@ -88,7 +95,7 @@ void console_init()
     cmd_history_cnt = 0;
     cmd_history_cur = 0;
 
-    for(int i = 0; i < COMMAND_HISTORY_SIZE; ++ i)
+    for (int i = 0; i < COMMAND_HISTORY_SIZE; ++i)
     {
         memset(cmd_history[i], '\0', COMMAND_BUFF_SIZE);
         cmd_history_len[i] = 0;
@@ -103,155 +110,164 @@ void console_display(char c)
 {
     switch (c)
     {
-        case DEL_KEY :
+    case DEL_KEY:
+    {
+        if (cmd_buf_idx > 0)
         {
-            if(cmd_buf_idx > 0)
-            {
-                printf("\b \b");
-            }
-            break;
+            printf("\b \b");
         }
-        case BACKSPACE_KEY :
+        break;
+    }
+    case BACKSPACE_KEY:
+    {
+        if (cmd_buf_idx > 0)
         {
-            if(cmd_buf_idx > 0)
-            {
-                printf("\b \b");
-            }
-            break;
+            printf("\b \b");
         }
-        case '\r' :
+        break;
+    }
+    case '\r':
+    {
+        if (cmd_buf[0] == 'p' && cmd_buf[1] == 's')
         {
-            if(cmd_buf[0] == 'p' && cmd_buf[1] == 's')
-            {
-                printf("\n\rPID          NAME\n\r");
-                printf(" 0          init");
-            }
-            if(cmd_buf[0] == '.' && cmd_buf[1] == '/')
-            {
-                printf("\n\rHello World!");
-            }
-            if(cmd_buf[0] == 'l' && cmd_buf[1] == 's')
-            {
-                // printf("\n\r3月 15 13:57 hello");
-                print_directory("0:/");
-            }
-            if(memcmp(cmd_buf,"cat ",4)==0){
-                FIL *fp;
-                char read_buff[PAGE_SIZE];
-                f_open(fp,cmd_buf+4,FA_READ);
-                f_read(fp,read_buff,PAGE_SIZE,NULL);
-                f_close(fp);
-                printf("\n\r%s\n\r",read_buff);
-            }
+            printf("\n\rPID          NAME\n\r");
+            printf(" 0          init");
+        }
+        if (cmd_buf[0] == '.' && cmd_buf[1] == '/')
+        {
+            printf("\n\rHello World!");
+        }
+        if (cmd_buf[0] == 'l' && cmd_buf[1] == 's')
+        {
+            // printf("\n\r3月 15 13:57 hello");
+            print_directory("0:/");
+        }
+        if (memcmp(cmd_buf, "cat", 3) == 0)
+        {
+            // printf("\n\r");
+            // for(int i = 0; i < 407; ++i) printf("%x ", file_buffer[i]);
+            // printf("\n\r");
+            
+            FIL *fp;
+            char read_buff[PAGE_SIZE];
+            f_open(fp, "0:/makefile", FA_READ);
+            FRESULT len=f_read(fp, read_buff, 406, NULL);
+            f_close(fp);
+            // printf("\n\r%s\n\r", read_buff);
+            printf("\n\r");
+            printf("%d %d %d\n\r", data_size,len,ret);
+            for(int i=0;i<len;i++)
+                printf("%x ",read_buff[i]);
+            printf("\n\r");
+        }
 
-            // char commmand[]="uart file transfer";
-            // if(memcmp(cmd_buf,commmand,19)==0){
-            //     file_receiver();
-            // }
-            printf("\n\rroot:$ ");
-            break;
-        }
-        case '[' :
+        // char commmand[]="uart file transfer";
+        // if(memcmp(cmd_buf,commmand,19)==0){
+        //     file_receiver();
+        // }
+        printf("\n\rroot:$ ");
+        break;
+    }
+    case '[':
+    {
+        if (arrow_flag)
         {
-            if(arrow_flag)
-            {
-                if(last_duration > 10)
-                {
-                    printf("%c", c);
-                }
-            }
-            else
+            if (last_duration > 10)
             {
                 printf("%c", c);
             }
-            break;
         }
-        case 'A' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    // printf("-UPARROW-");
-                }
-                else
-                {
-                    printf("[%c", c);
-                }
-            }
-            else
-            {
-                printf("%c", c);
-            }
-            break;
-        }
-        case 'B' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    // printf("-DOWNARROW-");
-                }
-                else
-                {
-                    printf("[%c", c);
-                }
-            }
-            else
-            {
-                printf("%c", c);
-            }
-            break;
-        }
-        case 'C' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    printf("-RIGHTARROW-");
-                }
-                else
-                {
-                    printf("[%c", c);
-                }
-            }
-            else
-            {
-                printf("%c", c);
-            }
-            break;
-        }
-        case 'D' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    printf("-LEFTARROW-");
-                }
-                else
-                {
-                    printf("[%c", c);
-                }
-            }
-            else
-            {
-                printf("%c", c);
-            }
-            break;
-        }
-        case ESC_KEY :
-        {
-            break;
-        }
-        default:
+        else
         {
             printf("%c", c);
-            break;
         }
-            
+        break;
+    }
+    case 'A':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                // printf("-UPARROW-");
+            }
+            else
+            {
+                printf("[%c", c);
+            }
+        }
+        else
+        {
+            printf("%c", c);
+        }
+        break;
+    }
+    case 'B':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                // printf("-DOWNARROW-");
+            }
+            else
+            {
+                printf("[%c", c);
+            }
+        }
+        else
+        {
+            printf("%c", c);
+        }
+        break;
+    }
+    case 'C':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                printf("-RIGHTARROW-");
+            }
+            else
+            {
+                printf("[%c", c);
+            }
+        }
+        else
+        {
+            printf("%c", c);
+        }
+        break;
+    }
+    case 'D':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                printf("-LEFTARROW-");
+            }
+            else
+            {
+                printf("[%c", c);
+            }
+        }
+        else
+        {
+            printf("%c", c);
+        }
+        break;
+    }
+    case ESC_KEY:
+    {
+        break;
+    }
+    default:
+    {
+        printf("%c", c);
+        break;
+    }
     }
 }
 
@@ -260,158 +276,158 @@ void console_cmd_process(char c)
 {
     switch (c)
     {
-        case DEL_KEY :
+    case DEL_KEY:
+    {
+        arrow_flag = 0;
+        if (cmd_buf_idx > 0)
+        {
+            cmd_buf[--cmd_buf_idx] = '\0';
+        }
+        break;
+    }
+    case BACKSPACE_KEY:
+    {
+        arrow_flag = 0;
+        if (cmd_buf_idx > 0)
+        {
+            cmd_buf[--cmd_buf_idx] = '\0';
+        }
+        break;
+    }
+    case '\r':
+    {
+        arrow_flag = 0;
+        if (!command_empty())
+        {
+            add_command_history();
+        }
+
+        memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
+        cmd_buf_idx = 0;
+        break;
+    }
+    case '[':
+    {
+        if (arrow_flag)
+        {
+            if (last_duration <= 10)
+            {
+                arrow_flag++;
+            }
+            else
+            {
+                arrow_flag = 0;
+                cmd_buf[cmd_buf_idx++] = c;
+            }
+        }
+        else
         {
             arrow_flag = 0;
-            if(cmd_buf_idx > 0)
-            {
-                cmd_buf[-- cmd_buf_idx] = '\0';
-            }
-            break;
+            cmd_buf[cmd_buf_idx++] = c;
         }
-        case BACKSPACE_KEY :
+        break;
+    }
+    case 'A':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                arrow_flag = 0;
+                retrieve_command_history(PREVIOUS_CMD);
+            }
+            else
+            {
+                arrow_flag = 0;
+                cmd_buf[cmd_buf_idx++] = '[';
+                cmd_buf[cmd_buf_idx++] = c;
+            }
+        }
+        else
         {
             arrow_flag = 0;
-            if(cmd_buf_idx > 0)
-            {
-                cmd_buf[-- cmd_buf_idx] = '\0';
-            }
-            break;
+            cmd_buf[cmd_buf_idx++] = c;
         }
-        case '\r' :
+        break;
+    }
+    case 'B':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                arrow_flag = 0;
+                retrieve_command_history(NEXT_CMD);
+            }
+            else
+            {
+                arrow_flag = 0;
+                cmd_buf[cmd_buf_idx++] = '[';
+                cmd_buf[cmd_buf_idx++] = c;
+            }
+        }
+        else
         {
             arrow_flag = 0;
-            if(!command_empty())
-            {
-                add_command_history();
-            }
-            
-            memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
-            cmd_buf_idx = 0;
-            break;
+            cmd_buf[cmd_buf_idx++] = c;
         }
-        case '[' :
+        break;
+    }
+    case 'C':
+    {
+        if (arrow_flag == 2)
         {
-            if(arrow_flag)
+            if (last_duration <= 10)
             {
-                if(last_duration <= 10)
-                {
-                    arrow_flag ++;
-                }
-                else
-                {
-                    arrow_flag = 0;
-                    cmd_buf[cmd_buf_idx ++] = c;
-                }
+                arrow_flag = 0;
             }
             else
             {
                 arrow_flag = 0;
-                cmd_buf[cmd_buf_idx ++] = c;
+                cmd_buf[cmd_buf_idx++] = '[';
+                cmd_buf[cmd_buf_idx++] = c;
             }
-            break;
         }
-        case 'A' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    arrow_flag = 0;
-                    retrieve_command_history(PREVIOUS_CMD);
-                }
-                else
-                {
-                    arrow_flag = 0;
-                    cmd_buf[cmd_buf_idx ++] = '[';
-                    cmd_buf[cmd_buf_idx ++] = c;
-                }
-            }
-            else
-            {
-                arrow_flag = 0;
-                cmd_buf[cmd_buf_idx ++] = c;
-            }
-            break;
-        }
-        case 'B' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    arrow_flag = 0;
-                    retrieve_command_history(NEXT_CMD);
-                }
-                else
-                {
-                    arrow_flag = 0;
-                    cmd_buf[cmd_buf_idx ++] = '[';
-                    cmd_buf[cmd_buf_idx ++] = c;
-                }
-            }
-            else
-            {
-                arrow_flag = 0;
-                cmd_buf[cmd_buf_idx ++] = c;
-            }
-            break;
-        }
-        case 'C' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    arrow_flag = 0;
-                }
-                else
-                {
-                    arrow_flag = 0;
-                    cmd_buf[cmd_buf_idx ++] = '[';
-                    cmd_buf[cmd_buf_idx ++] = c;
-                }
-            }
-            else
-            {
-                arrow_flag = 0;
-                cmd_buf[cmd_buf_idx ++] = c;
-            }
-            break;
-        }
-        case 'D' :
-        {
-            if(arrow_flag == 2)
-            {
-                if(last_duration <= 10)
-                {
-                    arrow_flag = 0;
-                }
-                else
-                {
-                    arrow_flag = 0;
-                    cmd_buf[cmd_buf_idx ++] = '[';
-                    cmd_buf[cmd_buf_idx ++] = c;
-                }
-            }
-            else
-            {
-                arrow_flag = 0;
-                cmd_buf[cmd_buf_idx ++] = c;
-            }
-            break;
-        }
-        case ESC_KEY :
-        {
-            arrow_flag ++;
-            break;
-        }
-        default:
+        else
         {
             arrow_flag = 0;
-            cmd_buf[cmd_buf_idx ++] = c;
-            break;
+            cmd_buf[cmd_buf_idx++] = c;
         }
+        break;
+    }
+    case 'D':
+    {
+        if (arrow_flag == 2)
+        {
+            if (last_duration <= 10)
+            {
+                arrow_flag = 0;
+            }
+            else
+            {
+                arrow_flag = 0;
+                cmd_buf[cmd_buf_idx++] = '[';
+                cmd_buf[cmd_buf_idx++] = c;
+            }
+        }
+        else
+        {
+            arrow_flag = 0;
+            cmd_buf[cmd_buf_idx++] = c;
+        }
+        break;
+    }
+    case ESC_KEY:
+    {
+        arrow_flag++;
+        break;
+    }
+    default:
+    {
+        arrow_flag = 0;
+        cmd_buf[cmd_buf_idx++] = c;
+        break;
+    }
     }
 }
 
