@@ -5,6 +5,7 @@ include ${BSP_DIR}/bsp.mk
 include kernel/kernel.mk
 include console/console.mk
 include fs/fs.mk
+include tools/uart_file_receiver/uart_file_receiver.mk
 
 
 all : army-ant.bin army-ant.elf
@@ -31,4 +32,6 @@ mkdir :
 	@mkdir -p console/obj
 	@mkdir -p driver/obj
 	@mkdir -p lib/obj
+	@mkdir -p tools/uart_file_receiver/obj
+	@mkdir -p fs/obj
 	@echo "Obj directories created."

@@ -1,4 +1,8 @@
 #include "../include/console.h"
+#include "lib/include/stdlib.h"
+#include "tools/uart_file_receiver/uart_file_recevier.h"
+#include "fs/include/diskio.h"
+#include "fs/include/ff.h"
 
 #define COMMAND_BUFF_SIZE       1024
 #define COMMAND_HISTORY_SIZE    1024
@@ -128,8 +132,22 @@ void console_display(char c)
             }
             if(cmd_buf[0] == 'l' && cmd_buf[1] == 's')
             {
-                printf("\n\r3月 15 13:57 hello");
+                // printf("\n\r3月 15 13:57 hello");
+                print_directory("0:/");
             }
+            if(memcmp(cmd_buf,"cat ",4)==0){
+                FIL *fp;
+                char read_buff[PAGE_SIZE];
+                f_open(fp,cmd_buf+4,FA_READ);
+                f_read(fp,read_buff,PAGE_SIZE,NULL);
+                f_close(fp);
+                printf("\n\r%s\n\r",read_buff);
+            }
+
+            // char commmand[]="uart file transfer";
+            // if(memcmp(cmd_buf,commmand,19)==0){
+            //     file_receiver();
+            // }
             printf("\n\rroot:$ ");
             break;
         }

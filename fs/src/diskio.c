@@ -225,38 +225,38 @@ void register_virtual_disk(void)
 		printf("Mount error 2: %d\n\r", res);
 		return;
 	}
-	FIL file;
-	DWORD fre_clust, fre_sect, tot_sect;
+	// FIL file;
+	// DWORD fre_clust, fre_sect, tot_sect;
 
-	/* Get volume information and free clusters of drive 1 */
-	res = f_getfree("0:", &fre_clust, &fs);
+	// /* Get volume information and free clusters of drive 1 */
+	// res = f_getfree("0:", &fre_clust, &fs);
 
-	/* Get total sectors and free sectors */
-	tot_sect = (fs.n_fatent - 2) * fs.csize;
-	fre_sect = fre_clust * fs.csize;
+	// /* Get total sectors and free sectors */
+	// tot_sect = (fs.n_fatent - 2) * fs.csize;
+	// fre_sect = fre_clust * fs.csize;
 
-	/* Print the free space (assuming 512 bytes/sector) */
-	printf("0: %d KiB total drive space.\n\r%d KiB available.\n\r", tot_sect / 2, fre_sect / 2);
-	f_mkdir("0:/testdiR1");
-	f_mkdir("0:/testdiR2");
-	f_mkdir("0:/testdiR3");
-	f_open(&file, "0:/aaaaaaaasdfgsdgaa.txt", FA_CREATE_NEW | FA_WRITE);
-	f_write(&file, "Hello, world!", 13, NULL);
-	f_close(&file);
-	f_open(&file, "0:/aaaaaaaasdfgsdgaa.txt", FA_READ);
-	f_read(&file, tmp, 13, NULL);
-	printf("tmp: %s\n\r", tmp);
+	// /* Print the free space (assuming 512 bytes/sector) */
+	// printf("0: %d KiB total drive space.\n\r%d KiB available.\n\r", tot_sect / 2, fre_sect / 2);
+	// f_mkdir("0:/testdiR1");
+	// f_mkdir("0:/testdiR2");
+	// f_mkdir("0:/testdiR3");
+	// f_open(&file, "0:/aaaaaaaasdfgsdgaa.txt", FA_CREATE_NEW | FA_WRITE);
+	// f_write(&file, "Hello, world!", 13, NULL);
+	// f_close(&file);
+	// f_open(&file, "0:/aaaaaaaasdfgsdgaa.txt", FA_READ);
+	// f_read(&file, tmp, 13, NULL);
+	// printf("tmp: %s\n\r", tmp);
 
-	res = f_getfree("0:", &fre_clust, &fs);
+	// res = f_getfree("0:", &fre_clust, &fs);
 
-	/* Get total sectors and free sectors */
-	tot_sect = (fs.n_fatent - 2) * fs.csize;
-	fre_sect = fre_clust * fs.csize;
+	// /* Get total sectors and free sectors */
+	// tot_sect = (fs.n_fatent - 2) * fs.csize;
+	// fre_sect = fre_clust * fs.csize;
 
-	/* Print the free space (assuming 512 bytes/sector) */
-	printf("1: %d KiB total drive space.\n\r%d KiB available.\n\r", tot_sect / 2, fre_sect / 2);
+	// /* Print the free space (assuming 512 bytes/sector) */
+	// printf("1: %d KiB total drive space.\n\r%d KiB available.\n\r", tot_sect / 2, fre_sect / 2);
 
-	print_directory("0:/");
+	// print_directory("0:/");
 }
 
 void destory_virtual_disk(void)

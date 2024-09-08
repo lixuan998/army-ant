@@ -70,6 +70,54 @@ void user_interrupt_handler()
         }
     }
 }
+char file[10000];
+#include "fs/include/ff.h"
+int file_parse(char *file, int size)
+{
+    uint32 file_name_len;
+    int ret,i=0;
+
+    file += 2; // skip head
+    memcpy(&file_name_len, file, sizeof(file_name_len));
+    file += sizeof(file_name_len);
+
+    char file_name[file_name_len];
+    memcpy(file_name, file, file_name_len);
+    file += file_name_len;
+
+    int data_size = size - 2- 2 - file_name_len - sizeof(file_name_len);
+    char file_data[data_size];
+    memcpy(file_data, file, data_size);
+
+    FIL fd;
+
+    ret = f_open(&fd, file_name, FA_CREATE_NEW | FA_WRITE);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    while (data_size--)
+    {
+        ret = f_write(&fd, file_data[i], 1, NULL);
+
+        if(file_data[i] == 0x5B ){
+            if(file_data[i+1]==0x01){
+                ret = f_write(&fd, 0x5A, 1, NULL);
+            }
+            else if(file_data[i+1]==0x02){
+                ret=f_write(&fd,0x5B,1,NULL);
+            }
+        }
+        ++i;
+    }
+    ret = f_close(&fd);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
 
 uint32 interrupt_handler()
 {

@@ -38,8 +38,8 @@ int main()
 
     register_virtual_disk();
 
-    init_proc();
-    scheduler();
+    // init_proc();
+    // scheduler();
     
     while(1);
     return 0;
