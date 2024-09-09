@@ -8,8 +8,6 @@
 
 char file_buffer[10000];
 int file_buffer_idx = 0;
-int data_size=0;
-int ret=-1;
 
 /*
 file format:
@@ -17,31 +15,6 @@ file format:
     |  head  |   length of file name   |file name|file data|tail
 0:success
 */
-int file_receiver()
-{
-    interrupt_disable();
-    char file[10000];
-    int size = 0;
-    int byte;
-
-    while (1)
-    {
-        if (size > 1 && 0x5A == file[size - 2] && 0x02 == file[size - 1])
-        {
-            break;
-        }
-
-        byte = uart_scan_char();
-
-        if (byte == -1)
-        {
-            continue;
-        }
-        file[size++] = byte;
-    }
-    interrupt_enable();
-    return file_parse(file, size);
-}
 
 void file_byte_receive(char data)
 {
@@ -70,7 +43,7 @@ void file_byte_receive(char data)
         printf("file buffer overflow\n\r");
         file_buffer_idx = 0;
     }
-    if (is_file_data_complete())
+    if (is_file_receiver_complete())
     {
         file_parse(file_buffer, file_buffer_idx);
         file_buffer[file_buffer_idx] = '\0';
@@ -78,7 +51,7 @@ void file_byte_receive(char data)
     }
 }
 
-int is_file_data_complete()
+int is_file_receive_complete()
 {
     if (file_buffer_idx < 4)
         return 0;
@@ -93,8 +66,8 @@ int is_file_data_complete()
 
 int file_parse(char *file, int size)
 {
-    uint32 file_name_len;
-    int  i = 0;
+    uint32 file_name_len = 0;
+    int i = 0;
 
     file += HEAD_SIZE; // skip head
     for (int i = 0; i < sizeof(file_name_len); ++i)
@@ -103,42 +76,43 @@ int file_parse(char *file, int size)
     }
     file += sizeof(file_name_len);
 
-    char file_name[file_name_len];
+    char file_name[file_name_len + 1];
     memcpy(file_name, file, file_name_len);
+    file_name[file_name_len] = '\0';
     file += file_name_len;
 
-    data_size = size - HEAD_SIZE - TAIL_SIZE - file_name_len - sizeof(file_name_len);
-    char file_data[data_size];
-    memcpy(file_data, file, data_size);
+    int file_data_size = size - HEAD_SIZE - TAIL_SIZE - file_name_len - sizeof(file_name_len);
+    char file_data[file_data_size];
+    memcpy(file_data, file, file_data_size);
 
     FIL fd;
 
-    ret = f_open(&fd, "0:/makefile", FA_CREATE_NEW | FA_WRITE);
+    FRESULT ret = f_open(&fd, file_name, FA_CREATE_NEW | FA_WRITE);
     if (ret != 0)
     {
         return ret;
     }
     char ch;
-    // for(i = 0; i < data_size;++i)
-    // {
-        ch = file_data[i];
-        ret = f_write(&fd, "hello", 5, NULL);
-        
-        // if (file_data[i] == 0x5B)
-        // {
-        //     if (file_data[i + 1] == 0x01)
-        //     {
-        //         ch = 0x5A;
-        //         ret = f_write(&fd, &ch, 1, NULL);
-        //     }
-        //     else if (file_data[i + 1] == 0x02)
-        //     {
-        //         ch = 0x5B;
-        //         ret = f_write(&fd, &ch, 1, NULL);
-        //     }
-        // }
-    //     ++i;
-    // }
+    for (i = 0; i < file_data_size; ++i)
+    {
+        if (file_data[i] == 0x5B)
+        {
+            if (file_data[i + 1] == 0x01)
+            {
+                ch = 0x5A;
+                ret = f_write(&fd, &ch, 1, NULL);
+            }
+            else if (file_data[i + 1] == 0x02)
+            {
+                ch = 0x5B;
+                ret = f_write(&fd, &ch, 1, NULL);
+            }
+        }
+        else
+        {
+            ret = f_write(&fd, &file_data[i], 1, NULL);
+        }
+    }
     ret = f_close(&fd);
     if (ret != 0)
     {

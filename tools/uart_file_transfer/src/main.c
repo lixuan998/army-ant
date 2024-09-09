@@ -37,12 +37,6 @@ int main(int argc, char **argv)
     }
     char *file_buffer;
     int file_len = read_file(file_name, &file_buffer);
-    // for (int i = 0; i < file_len; ++i)
-    //     printf("%02x ", file_buffer[i]);
-    // printf("\n");
-    // printf("contents of file %s is %s\n", file_name, file_buffer);
-    // printf("file_len = %d\n", file_len);
-    // return 0;
 
     if ((fd = open(uart3, O_RDWR | O_NOCTTY | O_NDELAY)) < 0)
     {
@@ -60,7 +54,7 @@ int main(int argc, char **argv)
         len += 2;
 
         int file_name_len = strlen(file_name);
-        // memcpy(buffer + len, &file_name_len, sizeof(file_name_len));
+
         for(int i = sizeof(file_name_len)-1;i >= 0;--i)
         {
             buffer[len++] = (file_name_len >> (8 * i)) & 0xFF;
@@ -73,19 +67,19 @@ int main(int argc, char **argv)
 
         for (int i = 0; i < file_len; ++i)
         {
-            // if (file_buffer[i] == 0x5A)
-            // {
-            //     buffer[len++]=0x5B;
-            //     buffer[len++]=0x01;
-            // }
-            // else if (file_buffer[i] == 0x5B)
-            // {
-            //     buffer[len++]=0x5B;
-            //     buffer[len++]=0x02;
-            // }else{
-            //     buffer[len++]=file_buffer[i];
-            // }
-            buffer[len++]=file_buffer[i];
+            if (file_buffer[i] == 0x5A)
+            {
+                buffer[len++]=0x5B;
+                buffer[len++]=0x01;
+            }
+            else if (file_buffer[i] == 0x5B)
+            {
+                buffer[len++]=0x5B;
+                buffer[len++]=0x02;
+            }else{
+                buffer[len++]=file_buffer[i];
+            }
+
         }
 
         buffer[len++] = 0x5A;

@@ -143,28 +143,27 @@ void console_display(char c)
             print_directory("0:/");
         }
         if (memcmp(cmd_buf, "cat", 3) == 0)
-        {
-            // printf("\n\r");
-            // for(int i = 0; i < 407; ++i) printf("%x ", file_buffer[i]);
-            // printf("\n\r");
-            
-            FIL *fp;
+        { 
+            FIL fd;
+            FRESULT ret;
+            uint32 read_bytes;
             char read_buff[PAGE_SIZE];
-            f_open(fp, "0:/makefile", FA_READ);
-            FRESULT len=f_read(fp, read_buff, 406, NULL);
-            f_close(fp);
-            // printf("\n\r%s\n\r", read_buff);
+
+            memset(read_buff,0,PAGE_SIZE);
+            ret=f_open(&fd, cmd_buf+4, FA_READ | FA_OPEN_ALWAYS);
+            if(ret!=FR_OK){
+                printf("\n\ropen file:%s failed\n\r",cmd_buf+4);
+            }
+            ret=f_read(&fd, read_buff, PAGE_SIZE, &read_bytes);
+            if(ret!=FR_OK){
+                printf("\n\rread file:%s failed\n\r",cmd_buf+4);
+            }
+            f_close(&fd);
             printf("\n\r");
-            printf("%d %d %d\n\r", data_size,len,ret);
-            for(int i=0;i<len;i++)
-                printf("%x ",read_buff[i]);
+            for(int i = 0; i < read_bytes; ++i) printf("%x ", read_buff[i]);
             printf("\n\r");
         }
 
-        // char commmand[]="uart file transfer";
-        // if(memcmp(cmd_buf,commmand,19)==0){
-        //     file_receiver();
-        // }
         printf("\n\rroot:$ ");
         break;
     }
