@@ -43,7 +43,7 @@ void file_byte_receive(char data)
         printf("file buffer overflow\n\r");
         file_buffer_idx = 0;
     }
-    if (is_file_receiver_complete())
+    if (is_file_receive_complete())
     {
         file_parse(file_buffer, file_buffer_idx);
         file_buffer[file_buffer_idx] = '\0';
