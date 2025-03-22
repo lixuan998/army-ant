@@ -3,7 +3,7 @@
 #include <mm/mmu.h>
 #include <common/operation.h>
 #include <arch/arch_defs.h>
-#include "bsp/driver/plic/plic.h"
+// #include "bsp/driver/plic/plic.h"
 // #include "arch/riscv/include/riscv_type_defs.h"
 // #include "arch/riscv/include/riscv_mem_layout.h"
 extern char                                 __bss_start[];
@@ -36,7 +36,7 @@ void boot_cfg()
 
     w_sie(r_sie() | SIE_SEIE_MASK | SIE_STIE_MASK | SIE_SSIE_MASK);
     // w_sstatus(r_sstatus() | (1 << 18));
-    plic_s_mode_access();
+    // plic_s_mode_access();
     w_pmpaddr0(0xFFFFFFFFFFFFFFFFUL);
     w_pmpcfg0(0xF);
 

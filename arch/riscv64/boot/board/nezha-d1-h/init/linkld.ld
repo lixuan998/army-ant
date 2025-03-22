@@ -13,7 +13,7 @@ SECTIONS
   PROVIDE(__kernel_start = .);
     
   .text : {
-    arch/riscv64/boot/init/start.S.o(.text .text.*);
+	KEEP(*(.startup))
     *(.text .text.*);
     . = ALIGN(0x1000);
     PROVIDE(__kernel_text_start = .);

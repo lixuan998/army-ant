@@ -1,6 +1,7 @@
 #include <common/asm.h>
 #include <common/config.h>
 
+.section .startup
 .comm init_stack, BOOT_STACK_SIZE
 
 FUNC_BEGIN(_start)

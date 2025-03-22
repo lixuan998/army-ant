@@ -1,6 +1,6 @@
 include config.mk
 
-Q=@
+Q=
 
 AA_ARCH_PATH := arch/$(AA_ARCH)
 AA_ARCH_DIRS := lock mm sched
@@ -21,10 +21,10 @@ C_OBJS := $(C_SRCS:%.c=%.c.o)
 ASM_SRCS := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.S))
 ASM_OBJS := $(ASM_SRCS:%.S=%.S.o)
 
-INIT_C_SRCS := $(wildcard $(AA_ARCH_PATH)/boot/init/*.c)
+INIT_C_SRCS := $(wildcard $(AA_ARCH_PATH)/boot/board/$(AA_BOARD)/init/*.c)
 INIT_C_OBJS := $(INIT_C_SRCS:%.c=%.c.o)
 
-INIT_ASM_SRCS := $(wildcard $(AA_ARCH_PATH)/boot/init/*.S)
+INIT_ASM_SRCS := $(wildcard $(AA_ARCH_PATH)/boot/board/$(AA_BOARD)/init/*.S)
 INIT_ASM_OBJS := $(INIT_ASM_SRCS:%.S=%.S.o)
 
 ALL_OBJS := $(C_OBJS) $(ASM_OBJS) $(INIT_C_OBJS) $(INIT_ASM_OBJS)
@@ -39,7 +39,7 @@ army-ant.bin : army-ant.elf
 
 army-ant.elf : ${ALL_OBJS}
 	@echo "Linking ELF..."
-	@${LD} -z max-page-size=4096 -T $(AA_ARCH_PATH)/boot/init/linkld.ld $^ -o $@
+	@${LD} -z max-page-size=4096 -T $(AA_ARCH_PATH)/boot/board/$(AA_BOARD)/init/linkld.ld $^ -o $@
 	@echo "Making objdump to army-ant.txt..."
 	@${OBJDUMP} -d army-ant.elf > army-ant.txt
 
