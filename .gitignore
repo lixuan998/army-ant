@@ -71,3 +71,6 @@ res.xml
 .VSCodeCounter/
 
 army-ant.txt
+
+# ctags
+tags
