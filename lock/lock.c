@@ -22,8 +22,9 @@ void spinlock_lock(spinlock *splock)
 
 void spinlock_unlock(spinlock *splock)
 {
-    if(!splock)
+    if(!splock){
         panic("splock is NULL");
+	}
     __COMPILER_BARRIER();
     splock->owner += 1;
 }
@@ -33,13 +34,15 @@ error_t spinlock_try_lock(spinlock *splock)
     volatile uint32_t new_val = splock->next;
 	error_t ret = AA_ERROR_SUCCESS;
 
-    if(!splock)
+    if(!splock) {
         panic("splock is NULL");
-
-	if (splock->owner != new_val
+    }
+	if(splock->owner != new_val
 	    || atomic_cmpxchg_32((int *) &splock->next, new_val,
-					         new_val + 1) != new_val)
-		ret = AA_ERROR_SPINLOCK_TRY_LOCK;
+					         new_val + 1) != new_val) {
+        ret = AA_ERROR_SPINLOCK_TRY_LOCK;
+    }
+    
 	__COMPILER_BARRIER();
 	return ret;
 }

@@ -3,14 +3,14 @@ include config.mk
 Q=
 
 AA_ARCH_PATH := arch/$(AA_ARCH)
-AA_ARCH_DIRS := lock mm sched
+AA_ARCH_DIRS := mm sched
 
 AA_BOARD_PATH = arch/$(AA_ARCH)/board/$(AA_BOARD)
 AA_BOARD_DIRS = uart
 
 INCLUDE_DIR := -Iinclude -Iinclude/arch/${AA_ARCH} \
 			   -Iinclude/arch/${AA_ARCH}/board/${AA_BOARD}
-DIRS := lib mm \
+DIRS := lib mm lock \
         $(AA_ARCH_PATH) $(addprefix $(AA_ARCH_PATH)/,$(AA_ARCH_DIRS)) \
 		$(AA_BOARD_PATH) $(addprefix $(AA_BOARD_PATH)/,$(AA_BOARD_DIRS))
 
