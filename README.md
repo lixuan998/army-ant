@@ -1,6 +1,6 @@
 # army-ant
 
-![Army Ant](logo/army-ant-logo.png)
+![Army Ant](logo/army-ant-logo-s.png)
 
 ### 2024-1-5 17:38
 - 修改了代码组织结构，将对应的功能定义放到arch文件夹中，内核部分的函数实现放到kernel中；
