@@ -1,11 +1,10 @@
-TOOLCHAIN_DIR := /home/climatex/tools/xuantie_toolchain/bin
-TOOLCHAIN=riscv64-unknown-linux-gnu
+TOOLCHAIN=riscv64-elf
 LINKLD := linkld.ld
 
-CC := ${TOOLCHAIN_DIR}/$(TOOLCHAIN)-gcc
-LD := ${TOOLCHAIN_DIR}/$(TOOLCHAIN)-ld
-OBJCOPY := ${TOOLCHAIN_DIR}/$(TOOLCHAIN)-objcopy
-OBJDUMP := ${TOOLCHAIN_DIR}/$(TOOLCHAIN)-objdump
+CC := $(TOOLCHAIN)-gcc
+LD := $(TOOLCHAIN)-ld
+OBJCOPY := $(TOOLCHAIN)-objcopy
+OBJDUMP := $(TOOLCHAIN)-objdump
 
 CFLAGS = -Wall -O -fno-omit-frame-pointer -ggdb -gdwarf-2
 CFLAGS += -MD

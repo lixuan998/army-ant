@@ -2,8 +2,7 @@
 
 set -e
 
-XFEL_PATH=/mnt/d/Softwares/xfel-windows-v1.3.2/xfel-windows-v1.3.2/
-XFEL=$XFEL_PATH/xfel.exe
+XFEL=xfel
 
 make clean && make -j
 
