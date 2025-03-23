@@ -39,7 +39,7 @@ army-ant.bin : army-ant.elf
 
 army-ant.elf : ${ALL_OBJS}
 	@echo "Linking ELF..."
-	@${LD} -z max-page-size=4096 -T $(AA_ARCH_PATH)/boot/board/$(AA_BOARD)/init/linkld.ld $^ -o $@
+	@${LD} ${LDFLAGS} -T $(AA_ARCH_PATH)/boot/board/$(AA_BOARD)/init/$(LINKLD) $^ -o $@
 	@echo "Making objdump to army-ant.txt..."
 	@${OBJDUMP} -d army-ant.elf > army-ant.txt
 
