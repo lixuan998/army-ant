@@ -18,29 +18,28 @@ void test()
 void boot_cfg()
 {
     //Set MPP to Supervisor mode.
-    uint64_t cur_mstatus = r_mstatus();
+    uint64_t cur_mstatus = READ_CSR(mstatus);
     printf("mstatus: %x\n\r", cur_mstatus);
     cur_mstatus &= (~(MSTATUS_MPP_MASK));
     cur_mstatus |= (SUPERVISOR_MODE_CODE << MSTATUS_MPP_OFFSET);
-    w_mstatus(cur_mstatus);
-    w_mepc((uint64_t)main);
+    WRITE_CSR(mstatus, cur_mstatus);
+    WRITE_CSR(mepc, (uintptr_t)main);
 
     //Stop paging
-    sfence_vma();
-    w_satp((uint64_t)SATP_BARE_MODE << (uint64_t)RV64_SATP_MODE_OFFSET);
-    sfence_vma();
+    WRITE_CSR(satp, (uintptr_t)SATP_BARE_MODE << RV64_SATP_MODE_OFFSET);
+    INVALIDATE_TLB();
 
 
-    w_medeleg(0xFFFF);
-    w_mideleg(0xFFFF);
+    WRITE_CSR(medeleg, 0xFFFF);
+    WRITE_CSR(mideleg, 0xFFFF);
 
-    w_sie(r_sie() | SIE_SEIE_MASK | SIE_STIE_MASK | SIE_SSIE_MASK);
+    WRITE_CSR(sie, READ_CSR(sie) | SIE_SEIE_MASK | SIE_STIE_MASK | SIE_SSIE_MASK);
     // w_sstatus(r_sstatus() | (1 << 18));
     // plic_s_mode_access();
-    w_pmpaddr0(0xFFFFFFFFFFFFFFFFUL);
-    w_pmpcfg0(0xF);
+    WRITE_CSR(pmpaddr0, 0xFFFFFFFFFFFFFFFFUL);
+    WRITE_CSR(pmpcfg0, 0xF);
 
-    w_tp((uint64_t)r_mhartid());
+    WRITE_GPR(tp, (uintptr_t)READ_CSR(mhartid));
 
     asm volatile ("mret");
 }

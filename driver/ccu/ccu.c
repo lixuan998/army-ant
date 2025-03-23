@@ -2,14 +2,14 @@
 
 void smhcn_clk_reset(int n)
 {
-    volatile soc_reg_t reg_val = read32(CCU_SMHC_BGR_REG);
+    volatile soc_reg_t reg_val = READ_REG32(CCU_SMHC_BGR_REG);
     reg_val |= CCU_SMHCn_BGR_RST_BIT(n);
-    write32(CCU_SMHC_BGR_REG, reg_val);
+    WRITE_REG32(CCU_SMHC_BGR_REG, reg_val);
 }
 
 void smhcn_clk_gating(int n, int pass)
 {
-    volatile soc_reg_t reg_val = read32(CCU_SMHC_BGR_REG);
+    volatile soc_reg_t reg_val = READ_REG32(CCU_SMHC_BGR_REG);
     if(pass == CCU_PASS)
     {
         reg_val |= CCU_SMHCn_BGR_GATING_BIT(n);
@@ -18,12 +18,12 @@ void smhcn_clk_gating(int n, int pass)
     {
         reg_val &= (~CCU_SMHCn_BGR_GATING_BIT(n));
     }
-    write32(CCU_SMHC_BGR_REG, reg_val);
+    WRITE_REG32(CCU_SMHC_BGR_REG, reg_val);
 }
 
 void smhcn_clk_config(int n)
 {
-    soc_reg_t clk_reg_val = read32(CCU_SMHCn_CLK_REG(n));
+    soc_reg_t clk_reg_val = READ_REG32(CCU_SMHCn_CLK_REG(n));
     // select clock source HOSC:
     clk_reg_val |= CCU_SMHC_CLK_REG_SRC_HOSC;
     // set factor n:
@@ -32,7 +32,7 @@ void smhcn_clk_config(int n)
     clk_reg_val |= CCU_SMHC_CLK_REG_FACTOR_M(0);
     // turn on clock:
     clk_reg_val |= CCU_SMHC_CLK_REG_GATING_BIT;
-    write32(CCU_SMHCn_CLK_REG(n), clk_reg_val);
+    WRITE_REG32(CCU_SMHCn_CLK_REG(n), clk_reg_val);
 }
 
 void smhcn_clk_init(int n)
@@ -47,14 +47,14 @@ void smhcn_clk_init(int n)
 
 void ledc_clk_reset(int n)
 {
-    volatile soc_reg_t reg_val = read32(CCU_LEDC_BGR_REG);
+    volatile soc_reg_t reg_val = READ_REG32(CCU_LEDC_BGR_REG);
     reg_val |= CCU_LEDC_BGR_REG_RST_BIT;
-    write32(CCU_LEDC_BGR_REG, reg_val);
+    WRITE_REG32(CCU_LEDC_BGR_REG, reg_val);
 }
 
 void ledc_clk_gating(int n, int pass)
 {
-    volatile soc_reg_t reg_val = read32(CCU_LEDC_BGR_REG);
+    volatile soc_reg_t reg_val = READ_REG32(CCU_LEDC_BGR_REG);
     if(pass == CCU_PASS)
     {
         reg_val |= CCU_LEDC_BGR_REG_GATING_BIT;
@@ -63,12 +63,12 @@ void ledc_clk_gating(int n, int pass)
     {
         reg_val &= (~CCU_LEDC_BGR_REG_GATING_BIT);
     }
-    write32(CCU_LEDC_BGR_REG, reg_val);
+    WRITE_REG32(CCU_LEDC_BGR_REG, reg_val);
 }
 
 void ledc_clk_config()
 {
-    soc_reg_t clk_reg_val = read32(CCU_LEDC_CLK_REG);
+    soc_reg_t clk_reg_val = READ_REG32(CCU_LEDC_CLK_REG);
     // select clock source HOSC:
     clk_reg_val |= CCU_LEDC_CLK_REG_SRC_HOSC;
     // set factor n:
@@ -77,7 +77,7 @@ void ledc_clk_config()
     clk_reg_val |= CCU_LEDC_CLK_REG_FACTOR_M(0);
     // turn on clock:
     clk_reg_val |= CCU_SMHC_CLK_REG_GATING_BIT;
-    write32(CCU_LEDC_CLK_REG, clk_reg_val);
+    WRITE_REG32(CCU_LEDC_CLK_REG, clk_reg_val);
 }
 
 void ledc_clk_init(int n)

@@ -122,16 +122,16 @@ uint32 interrupt_handler()
             case SMHC0_SOURCE:
             {
                 interrupt_type |= SMHC0_SOURCE;
-                volatile soc_reg_t reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                volatile soc_reg_t status = read32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
+                volatile soc_reg_t reg_val = READ_REG32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
+                volatile soc_reg_t status = READ_REG32(SMHCn_BASE_ADDR(0) + SMHC_STATUS_OFFSET);
                 printf("U status: %x, %b\n\r", status, status);
-                write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, 0xFFFFFFFF);
+                WRITE_REG32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, 0xFFFFFFFF);
                 while (reg_val)
                 {
-                    reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
+                    reg_val = READ_REG32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
                 }
-                reg_val = read32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
-                write32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
+                reg_val = READ_REG32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET);
+                WRITE_REG32(SMHCn_BASE_ADDR(0) + SMHC_RINTSTS_OFFSET, reg_val);
                 if(reg_val & (1 << 30)) printf("Card Insert, reg_val: %b, or res: %d\n\r", reg_val, (reg_val & (1 << 30)));
                 else if(reg_val & (1 << 31)) printf("Card Removed\n\r");
                 break;

@@ -5,17 +5,17 @@
 
 void uart_init()
 {
-    // write32(UARTn_BASE(0) + UART_IER, ~UART_IER_ERBFI);
-    // write32(UARTn_BASE(0) + UART_FCR, UART_FCR_ENABLE_FIFO);
-    // write32(UARTn_BASE(0) + UART_LCR, UART_LCR_DLS_8);
-    write32(UARTn_BASE(0) + UART_IER, UART_IER_ERBFI);
+    // WRITE_REG32(UARTn_BASE(0) + UART_IER, ~UART_IER_ERBFI);
+    // WRITE_REG32(UARTn_BASE(0) + UART_FCR, UART_FCR_ENABLE_FIFO);
+    // WRITE_REG32(UARTn_BASE(0) + UART_LCR, UART_LCR_DLS_8);
+    WRITE_REG32(UARTn_BASE(0) + UART_IER, UART_IER_ERBFI);
 }
 
 void uart_send_byte(uint8_t byte)
 {
     while (1)
     {
-        uint32_t lsr_val = read32(UARTn_BASE(0) + UART_LSR);
+        uint32_t lsr_val = READ_REG32(UARTn_BASE(0) + UART_LSR);
         if (lsr_val & (UART_LSR_THR_EMPTY))
         {
             break;
@@ -27,9 +27,9 @@ void uart_send_byte(uint8_t byte)
 
 void uart_recv_byte(uint8_t *byte)
 {
-    if(read32(UARTn_BASE(0) + UART_LSR) & UART_LSR_DATA_READY)
+    if(READ_REG32(UARTn_BASE(0) + UART_LSR) & UART_LSR_DATA_READY)
     {
-        *byte = (uint8_t)read32(UARTn_BASE(0) + UART_RBR);
+        *byte = (uint8_t)READ_REG32(UARTn_BASE(0) + UART_RBR);
     }
     else *byte = -1;
 }

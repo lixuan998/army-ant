@@ -78,16 +78,14 @@ pte_t* arch_pte_retrieve(pgtbl_t* pagetable, addr_t virt_addr,
 
 void arch_mmu_enable(pgtbl_t *pagetable)
 {
-    sfence_vma();
-    w_satp((SATP_SV39_MODE << RV64_SATP_MODE_OFFSET) | ADDR_TO_SATP((addr_t)pagetable));
-    sfence_vma();
+    WRITE_CSR(satp, (SATP_SV39_MODE << RV64_SATP_MODE_OFFSET) | ADDR_TO_SATP((uintptr_t)pagetable));
+    INVALIDATE_TLB();
 }
 
 void mmu_disable()
 {
-    sfence_vma();
-    w_satp((SATP_SV39_MODE << RV64_SATP_MODE_OFFSET));
-    sfence_vma();
+    WRITE_CSR(satp, (SATP_SV39_MODE << RV64_SATP_MODE_OFFSET));
+    INVALIDATE_TLB();
 }
 
 void arch_kernel_mmu_enable()

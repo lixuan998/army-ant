@@ -64,196 +64,34 @@
  *
  ****************************************************************************************************************************************************/
 
-/****************************************************************************************************************************************************
- * @brief This function's purpose is to read the Machine Status Register, which  keeps track of and controls the hart’s current
- * operating state. This register is in the Machine Mode.
- ****************************************************************************************************************************************************/
-static inline uint64_t  r_mstatus()
-{
-    uint64_t mstatus;
-    asm volatile("csrr %0, mstatus" : "=r"(mstatus));
-    return mstatus;
-}
+#define READ_CSR(csr)															\
+		({uintptr_t value;														\
+        asm volatile("csrr %0, " #csr : "=r" (value));							\
+        value;})
 
-/****************************************************************************************************************************************************
- * @brief This function's purpose is to write the Machine Status Register, which  keeps track of and controls the hart’s current
- * operating state. This register is in the Machine Mode.
- ****************************************************************************************************************************************************/
-static inline void w_mstatus(uint64_t mstatus)
-{
-    asm volatile("csrw mstatus, %0" : : "r"(mstatus));
-}
+#define WRITE_CSR(csr, value)													\
+		do {																	\
+			asm volatile("csrw " #csr ", %0" : : "r" ((uintptr_t)(value)));		\
+		} while (0)
 
-inline void w_mepc(uint64_t mepc)
-{
-    asm volatile("csrw mepc, %0" : : "r"(mepc));
-}
+#define WRITE_GPR(reg, value)                                                   \
+        do {                                                                    \
+            asm volatile("mv " #reg ", %0" : : "r" ((uintptr_t)(value)));       \
+        } while (0)
 
-/****************************************************************************************************************************************************
- * @brief this function's purpose is to read the Hart ID Register, which contains the integer ID of the hardware
- * thread running the code. This register is in the Machine Mode.
- ****************************************************************************************************************************************************/
-static inline uint64_t r_mhartid()
-{
-    uint64_t mhartid;
-    asm volatile("csrr %0, mhartid" : "=r"(mhartid));
-    return mhartid;
-}
+#define READ_GPR(reg)                                                           \
+        ({uintptr_t value;                                                      \
+           asm volatile("mv %0, " #reg : "=r" (value));                         \
+           value;})
 
-static inline void w_medeleg(uint64_t medeleg)
-{
-    asm volatile("csrw medeleg, %0" : : "r"(medeleg));
-}
+#define INVALIDATE_TLB()                                                        \
+        asm volatile("sfence.vma zero, zero")
 
-static inline void w_mideleg(uint64_t mideleg)
-{
-    asm volatile("csrw mideleg, %0" : : "r"(mideleg));
-}
-/****************************************************************************************************************************************************
- * @brief this function's purpose is to read the  Supervisor Address Translation and Protection (satp) Register
- * , controls supervisor-mode address translation and protection.
- * In RV64, Mode currently has 5 options:
- * 0    -   Bare Mode   -   No translation or protection(no paging)
- * 8    -     Sv39      -   Page-based 39-bit virtual addressing
- * 9    -     Sv48      -   Page-based 48-bit virtual addressing
- * 10   -     Sv57      -   Reserved for page-based 57-bit virtual addressing
- * 11   -     Sv64      -   Reserved for page-based 64-bit virtual addressing
- * In RV32, Mode has only two options:
- * 0    -   Bare Mode   -   No translation or protection(no paging)
- * 1    -     Sv32      -   Page-based 32-bit virtual addressing
- ****************************************************************************************************************************************************/
-static inline uint64_t r_satp()
-{
-    uint64_t satp;
-    asm volatile("csrr %0, satp" : "=r"(satp));
-    return satp;
-}
+#define INVALIDATE_TLB_VA(va)                                                   \
+        asm volatile("sfence.vma %0, zero" : : "r" (va))
 
-/****************************************************************************************************************************************************
- * @brief this function's purpose is to write the  Supervisor Address Translation and Protection (satp) Register
- * , controls supervisor-mode address translation and protection.
- ****************************************************************************************************************************************************/
-static inline void w_satp(uint64_t satp)
-{
-    asm volatile("csrw satp, %0" : : "r"(satp));
-}
+#define INVALIDATE_TLB_ASID(asid)                                               \
+        asm volatile("sfence.vma zero, %0" : : "r" (asid))
 
-static inline uint64_t r_sie()
-{
-    uint64_t sie;
-    asm volatile("csrr %0, sie" : "=r"(sie));
-    return sie;
-}
-
-static inline void w_sie(uint64_t sie)
-{
-    asm volatile("csrw sie, %0" : : "r"(sie));
-}
-
-static inline void w_pmpaddr0(uint64_t pmpaddr0)
-{
-    asm volatile("csrw pmpaddr0, %0" : : "r"(pmpaddr0));
-}
-
-static inline void w_pmpcfg0(uint64_t pmpcfg0)
-{
-    asm volatile("csrw pmpcfg0, %0" : : "r"(pmpcfg0));
-}
-
-static inline uint64_t r_tp()
-{
-    uint64_t tp;
-    asm volatile("mv %0, tp" : "=r"(tp));
-    return tp;
-}
-
-static inline void w_tp(uint64_t tp)
-{
-    asm volatile("mv tp, %0" : : "r"(tp));
-}
-
-/****************************************************************************************************************************************************
- * @brief This function's purpose is to read the Supervisor Status Register, which  keeps track of and controls the hart’s current
- * operating state. This register is in the Machine Mode.
- ****************************************************************************************************************************************************/
-static inline uint64_t r_sstatus()
-{
-    uint64_t sstatus;
-    asm volatile("csrr %0, sstatus" : "=r"(sstatus));
-    return sstatus;
-}
-
-/****************************************************************************************************************************************************
- * @brief This function's purpose is to write the Supervisor Status Register, which  keeps track of and controls the hart’s current
- * operating state. This register is in the Machine Mode.
- ****************************************************************************************************************************************************/
-static inline void w_sstatus(uint64_t sstatus)
-{
-    asm volatile("csrw sstatus, %0" : : "r"(sstatus));
-}
-
-static inline void w_stvec(uint64_t stvec)
-{
-    asm volatile("csrw stvec, %0" : : "r"(stvec));
-}
-
-static inline uint64_t r_stvec()
-{
-    uint64_t stvec;
-    asm volatile("csrr %0, stvec" : "=r"(stvec));
-    return stvec;
-}
-
-static inline uint64_t r_scause()
-{
-    uint64_t scause;
-    asm volatile("csrr %0, scause" : "=r"(scause));
-    return scause;
-}
-
-static inline uint64_t r_stval()
-{
-    uint64_t stval;
-    asm volatile("csrr %0, stval" : "=r"(stval));
-    return stval;
-}
-
-static inline void turn_on_s_interrupt()
-{
-    w_sstatus(r_sstatus() | SSTATUS_SIE_MASK);
-}
-
-static inline void turn_off_s_interrupt()
-{
-    w_sstatus(r_sstatus() & ~SSTATUS_SIE_MASK);
-}
-
-static inline int s_interrupt_status()
-{
-    return (r_sstatus() & SSTATUS_SIE_MASK);
-}
-
-static inline void sfence_vma()
-{
-    // Flush all TLB entries.-
-    asm volatile("sfence.vma zero, zero");
-}
-
-static inline int get_cpu_id()
-{
-    return 0;
-    int cpu_id = (uint64_t)r_tp();
-    return cpu_id;
-}
-
-static inline void w_sepc(uint64_t x)
-{
-    asm volatile("csrw sepc, %0" : : "r"(x));
-}
-
-static inline uint64_t r_sepc()
-{
-    uint64_t x;
-    asm volatile("csrr %0, sepc" : "=r"(x));
-    return x;
-}
+#define INVALIDATE_TLB_VA_ASID(va, asid)                                        \
+		asm volatile("sfence.vma %0, %1" : : "r" (va), "r" (asid))

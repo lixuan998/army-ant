@@ -78,29 +78,29 @@ void gpio_config(N_GPIO_CFG *cfgs, int cnt)
         }
         //gpio function select.
         func_cfg_reg_addr += ((cfg.port_num / 8) * 0x0004);
-        func_cfg_reg_val = read32(func_cfg_reg_addr);
+        func_cfg_reg_val = READ_REG32(func_cfg_reg_addr);
         func_cfg_reg_val &= ~(0x000FUL << ((cfg.port_num % 8) * 4));
         func_cfg_reg_val |= (cfg.func_select << ((cfg.port_num % 8) * 4));
-        write32(func_cfg_reg_addr, func_cfg_reg_val);
-        func_cfg_reg_val = read32(func_cfg_reg_addr);
+        WRITE_REG32(func_cfg_reg_addr, func_cfg_reg_val);
+        func_cfg_reg_val = READ_REG32(func_cfg_reg_addr);
 
         //gpio data set.
-        write32(dat_reg_addr, cfg.data);
+        WRITE_REG32(dat_reg_addr, cfg.data);
 
         //gpio drive level set.
         drv_reg_addr += ((cfg.port_num / 8) * 0x0004);
-        drv_reg_val = read32(drv_reg_addr);
+        drv_reg_val = READ_REG32(drv_reg_addr);
         drv_reg_val &= ~(0x000F << ((cfg.port_num % 8) * 4));
         drv_reg_val |= (cfg.drv_level << ((cfg.port_num % 8) * 4));
-        write32(drv_reg_addr, drv_reg_val);
+        WRITE_REG32(drv_reg_addr, drv_reg_val);
 
         //gpio pull state set.
         pull_reg_addr += ((cfg.port_num / 16) * 0x0004);
-        pull_reg_val = read32(pull_reg_addr);
+        pull_reg_val = READ_REG32(pull_reg_addr);
         pull_reg_val &= ~(0x003 << ((cfg.port_num % 16) * 2));
         pull_reg_val |= (cfg.pull_state << ((cfg.port_num % 16) * 2));
-        write32(pull_reg_addr, pull_reg_val);
-        pull_reg_val = read32(pull_reg_addr);
+        WRITE_REG32(pull_reg_addr, pull_reg_val);
+        pull_reg_val = READ_REG32(pull_reg_addr);
     }
 }
 

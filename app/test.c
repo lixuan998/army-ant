@@ -22,13 +22,13 @@
 
 #define uint32 unsigned int
 
-inline void write32(volatile uint32 reg, uint32 val)
+inline void WRITE_REG32(volatile uint32 reg, uint32 val)
 {
     volatile uint32 *reg_ptr = (uint32 *)((long)reg);
     *reg_ptr = val;
 }
 
-inline uint32 read32(volatile uint32 reg)
+inline uint32 READ_REG32(volatile uint32 reg)
 {
     uint32 val = *((uint32 *)((long)reg));
     return val;
@@ -48,13 +48,13 @@ int main()
         {
             while (1)
             {
-                uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
+                uint32 lsr_val = READ_REG32(UART_BASE_ADDR + UART_LSR);
                 if (lsr_val & (UART_LSR_THR_EMPTY))
                 {
                     break;
                 }
             }
-            write32(UART_BASE_ADDR + UART_THR, hello[i]);
+            WRITE_REG32(UART_BASE_ADDR + UART_THR, hello[i]);
         }
         (((volatile char *)(VM_PROC_SHARED_MEM_ADDR))[0]) = 'R';
     }
@@ -68,13 +68,13 @@ int main()
 //     {
 //         while (1)
 //         {
-//             uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
+//             uint32 lsr_val = READ_REG32(UART_BASE_ADDR + UART_LSR);
 //             if (lsr_val & (UART_LSR_THR_EMPTY))
 //             {
 //                 break;
 //             }
 //         }
-//         write32(UART_BASE_ADDR + UART_THR, 'W');
+//         WRITE_REG32(UART_BASE_ADDR + UART_THR, 'W');
 //     }
 // }
 
@@ -90,11 +90,11 @@ void putc(char c)
 {
     while (1)
     {
-        uint32 lsr_val = read32(UART_BASE_ADDR + UART_LSR);
+        uint32 lsr_val = READ_REG32(UART_BASE_ADDR + UART_LSR);
         if (lsr_val & (UART_LSR_THR_EMPTY))
         {
             break;
         }
     }
-    write32(UART_BASE_ADDR + UART_THR, c);
+    WRITE_REG32(UART_BASE_ADDR + UART_THR, c);
 }
