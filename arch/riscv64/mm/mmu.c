@@ -91,12 +91,15 @@ void arch_kernel_mmu_init(void)
     
     // Create kernel page table.
     for (uint32_t i = 0; i < _k_tbl_entrys; ++i) {
+        KLOG_DEBUG("MMU", "Before mapping %d", i);
         error_t ret = arch_mmu_mapping(_kernel_pgtbl, _k_map_tbl[i].virt_addr_start,
                                        _k_map_tbl[i].phys_addr_start, _k_map_tbl[i].size,
                                        _k_map_tbl[i].permisson, MEM_TYPE_STATIC);
+        KLOG_DEBUG("MMU", "After mapping %d", i);
         if (ret != AA_ERROR_SUCCESS) {
             PANIC("fail creating kernel pagetable");
         } // TODO: maybe need some recycles?
     }
+    printk("kernel_pgtbl: %p\n\r", _kernel_pgtbl);
     arch_mmu_enable(_kernel_pgtbl);
 }

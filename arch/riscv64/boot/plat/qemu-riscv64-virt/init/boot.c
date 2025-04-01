@@ -21,6 +21,7 @@ void boot_cfg()
     WRITE_CSR(mepc, (uintptr_t)main);
 
     //Set MMU Mapping.
+    mmu_disable();
     mmu_map_init();
 
     WRITE_CSR(medeleg, 0xFFFF);

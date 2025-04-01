@@ -58,7 +58,7 @@ clean :
 	
 CPUS := 1 
 QEMU := qemu-system-${AA_ARCH}
-QEMUOPTS = -machine virt -bios none -kernel army-ant.elf -m 1024M -smp $(CPUS) -nographic
+QEMUOPTS = -machine virt -bios none -kernel army-ant.elf -m 128M -smp $(CPUS) -nographic
 # QEMUOPTS += -global virtio-mmio.force-legacy=false
 # QEMUOPTS += -drive file=fs.img,if=none,format=raw,id=x0
 # QEMUOPTS += -device virtio-blk-device,drive=x0,bus=virtio-mmio-bus.0

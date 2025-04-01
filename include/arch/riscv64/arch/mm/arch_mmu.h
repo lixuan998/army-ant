@@ -21,7 +21,7 @@
 #define VM_B_BUFFERABLE                 (0UL << 61)
 
 #define RV32_SATP_MODE_OFFSET                 30
-#define RV64_SATP_MODE_OFFSET                 60
+#define RV64_SATP_MODE_OFFSET                 (60UL)
 #define SATP_BARE_MODE                        0UL
 #define SATP_SV32_MODE                        1UL
 #define SATP_SV39_MODE                        8UL

@@ -3,15 +3,12 @@
 
 void plat_timer_init(void)
 {
-    WRITE_CSR(mie, READ_CSR(mie) | xIE_MTIE_MSK);
+    WRITE_CSR(mie, READ_CSR(mie) | xIE_STIE_MSK);
      
     // enable the sstc extension (i.e. stimecmp).
     WRITE_CSR(0x30a, READ_CSR(0x30a) | (1UL << 63));
 
     // allow supervisor to use stimecmp and time.
-    WRITE_CSR(mcounteren, READ_CSR(mcounteren) | 2UL);
-
-    // ask for the very first timer interrupt.
     WRITE_CSR(mcounteren, READ_CSR(mcounteren) | 2UL);
 
     // Set timer interval (about 1/10 sec).
