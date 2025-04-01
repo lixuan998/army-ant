@@ -6,7 +6,7 @@ AA_ARCH_PATH := arch/$(AA_ARCH)
 AA_ARCH_DIRS := mm sched
 
 AA_BOARD_PATH = arch/$(AA_ARCH)/plat/$(AA_BOARD)
-AA_BOARD_DIRS = timer uart
+AA_BOARD_DIRS = timer uart plic
 
 INCLUDE_DIR := -Iinclude -Iinclude/arch/${AA_ARCH} \
 			   -Iinclude/arch/${AA_ARCH}/plat/${AA_BOARD}

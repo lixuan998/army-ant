@@ -1,20 +1,20 @@
-#include "plic.h"
+#include <plat/plic/plat_plic.h>
 
 void plic_s_mode_access()
 {
     //Give access to supervisor mode to access PLIC registers.
-    write32(PLIC_CTRL_REG, PLIC_CTRL_REG_S_MODE_ACCESS);
+    WRITE_REG32(PLIC_CTRL_REG, PLIC_CTRL_REG_S_MODE_ACCESS);
 }
 
 void plic_interrupt_enable()
 {
     for(int i = 1; i < PLIC_INTERRUPT_MAX; ++ i)
     {
-        write32(PLIC_PRIO_REG(i), PLIC_ENABLE);
+        WRITE_REG32(PLIC_PRIO_REG(i), PLIC_ENABLE);
     }
     for(int i = 0; i < 10; ++ i)
     {
-        write32(PLIC_SIE_REG(i), 0xFFFFFFFF);
+        WRITE_REG32(PLIC_SIE_REG(i), 0xFFFFFFFF);
     }
 }
 
@@ -22,20 +22,20 @@ void plic_interrupt_disable()
 {
     for(int i = 1; i < PLIC_INTERRUPT_MAX; ++ i)
     {
-        write32(PLIC_PRIO_REG(i), PLIC_DISABLE);
+        WRITE_REG32(PLIC_PRIO_REG(i), PLIC_DISABLE);
     }
     for(int i = 0; i < 10; ++ i)
     {
-        write32(PLIC_SIE_REG(i), PLIC_DISABLE);
+        WRITE_REG32(PLIC_SIE_REG(i), PLIC_DISABLE);
     }
 }
 
 int plic_interrupt_source()
 {
-    return read32(PLIC_SCLAIM_REG);
+    return READ_REG32(PLIC_SCLAIM_REG);
 }
 
 void plic_interrupt_handled(int source)
 {
-    write32(PLIC_SCLAIM_REG, source);
+    WRITE_REG32(PLIC_SCLAIM_REG, source);
 }

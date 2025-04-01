@@ -5,6 +5,7 @@
 #include <common/log.h>
 #include <arch/arch_defs.h>
 #include <plat/timer/plat_timer.h>
+#include <plat/plic/plat_plic.h>
 
 extern int main();
 extern void mmu_map_init(void);
@@ -13,8 +14,7 @@ extern void interrupt_vector();
 void boot_cfg()
 {
     //Set MPP to Supervisor mode.
-    uint64_t cur_mstatus = READ_CSR(mstatus);
-    KLOG_DEBUG("BOOTCFG", "mstatus: %x", cur_mstatus); 
+    uintptr_t cur_mstatus = READ_CSR(mstatus);
     cur_mstatus &= (~(MSTATUS_MPP_MSK));
     cur_mstatus |= (SUPERVISOR_MODE_CODE << MSTATUS_MPP_OFFSET);
     WRITE_CSR(mstatus, cur_mstatus);
@@ -28,8 +28,8 @@ void boot_cfg()
     WRITE_CSR(mideleg, 0xFFFF);
 
     WRITE_CSR(sie, READ_CSR(sie) | xIE_SEIE_MSK | xIE_STIE_MSK | xIE_SSIE_MSK);
-    // w_sstatus(r_sstatus() | (1 << 18));
-    // plic_s_mode_access();
+    
+    plic_s_mode_access();
     WRITE_CSR(pmpaddr0, 0xFFFFFFFFFFFFFFFFUL);
     WRITE_CSR(pmpcfg0, 0xF);
 

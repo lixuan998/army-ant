@@ -1,14 +1,13 @@
 #ifndef __PLIC_H__
 #define __PLIC_H__
 
-#include "arch/riscv/include/riscv_type_defs.h"
-#include "arch/riscv/include/riscv_basic_operation.h"
-#include "lib/include/stdio.h"
+#include <common/operation.h>
+#include <lib/stddef.h>
 
 #define PLIC_ENABLE                 (1)
 #define PLIC_DISABLE                (0)
 
-#define PLIC_BASE_ADDR              (0x10000000UL)
+#define PLIC_BASE_ADDR              (0x0C000000UL)
 #define PLIC_PRIO_REG(n)            (PLIC_BASE_ADDR + 0x0000UL + 0x0004UL * n)   //PLIC Priority Register n.
 #define PLIC_IP_REG(n)              (PLIC_BASE_ADDR + 0x1000UL + 0x0004UL * n)   //PLIC Interrupt Pending Register n.
 #define PLIC_MIE_REG(n)             (PLIC_BASE_ADDR + 0x2000UL + 0x0004UL * n)   //PLIC Machine Mode Interrupt Enable Register n.
