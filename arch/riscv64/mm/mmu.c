@@ -60,11 +60,11 @@ pte_t* arch_pte_retrieve(pgtbl_t* pagetable, addr_t virt_addr,
                 pagetable = (pgtbl_t*)static_mem_alloc();
             }
  
-            memset(pagetable, 0, PAGE_SIZE);
             if (pagetable == NULL) {
                 KLOG_ERR("MMU", "pagetable NULL");
                 return NULL;
             }
+            memset(pagetable, 0, PAGE_SIZE);
             (*pte) = PHY_ADDR_TO_PTE(pagetable) | PTE_PERMISSION_V;
         }
     }
@@ -91,15 +91,12 @@ void arch_kernel_mmu_init(void)
     
     // Create kernel page table.
     for (uint32_t i = 0; i < _k_tbl_entrys; ++i) {
-        KLOG_DEBUG("MMU", "Before mapping %d", i);
         error_t ret = arch_mmu_mapping(_kernel_pgtbl, _k_map_tbl[i].virt_addr_start,
                                        _k_map_tbl[i].phys_addr_start, _k_map_tbl[i].size,
                                        _k_map_tbl[i].permisson, MEM_TYPE_STATIC);
-        KLOG_DEBUG("MMU", "After mapping %d", i);
         if (ret != AA_ERROR_SUCCESS) {
             PANIC("fail creating kernel pagetable");
         } // TODO: maybe need some recycles?
     }
-    printk("kernel_pgtbl: %p\n\r", _kernel_pgtbl);
     arch_mmu_enable(_kernel_pgtbl);
 }

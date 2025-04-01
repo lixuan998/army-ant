@@ -16,28 +16,28 @@ void mmu_map_init(void)
             .virt_addr_start = (addr_t)__peripheral_start,
             .phys_addr_start = (addr_t)__peripheral_start,
             .size = (addr_t)__peripheral_end - (addr_t)__peripheral_start,
-            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_W | PTE_PERMISSION_D | PTE_PERMISSION_A | VM_SO_STRONG_ORDER
+            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_W
         },
         {
             //Map for kernel text segment
             .virt_addr_start = (addr_t)__text_start,
             .phys_addr_start = (addr_t)__text_start,
             .size = (addr_t)__text_end - (addr_t)__text_start,
-            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_X | PTE_PERMISSION_A | VM_C_CACHEABLE | VM_B_BUFFERABLE
+            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_X
         },
         {
             //Map for the trampoline (virtual address to physical address)
             .virt_addr_start = (addr_t)VM_TRAMPOLINE_ADDR,
             .phys_addr_start = (addr_t)__trampoline_start,
             .size = PAGE_SIZE,
-            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_X | PTE_PERMISSION_A
+            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_X
         },
         {
             //Map for the trampoline (physical address to physical address)
             .virt_addr_start = (addr_t)__trampoline_start,
             .phys_addr_start = (addr_t)__trampoline_start,
             .size = PAGE_SIZE,
-            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_X | PTE_PERMISSION_A
+            .permisson = PTE_PERMISSION_R | PTE_PERMISSION_X
         },
         {
             //Map for the rest of kernel and the rest of RAM
