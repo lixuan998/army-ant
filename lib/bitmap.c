@@ -7,7 +7,7 @@ error_t bitmap_init(bitmap *bmp, uint32_t width)
     spinlock_init(&bmp->splock);
     if(width > BITMAP_MAX_WIDTH)
         return AA_ERROR_BITMAP_OVERFLOW;
-    bmp->bitmap_width = 2048;
+    bmp->bitmap_width = width;
     memset(bmp->bits, 0, BITMAP_MAX_WIDTH / 8);
     return AA_ERROR_SUCCESS;
 }

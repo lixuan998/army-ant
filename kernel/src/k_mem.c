@@ -40,7 +40,7 @@ void *alloc_single_page()
 {
     if (mem_page_list == NULL)
     {
-        panic("in alloc_single_page, no memory page left");
+        PANIC("in alloc_single_page, no memory page left");
     }
     spinlock_lock(&mem_paging_spinlock);
     MEM_PAGE *page = mem_page_list;
@@ -55,7 +55,7 @@ void free_single_page(addr_t page)
 {
     if ((addr_t)page % PAGE_SIZE || (addr_t)page < (addr_t)kernel_end_addr || (addr_t)page > MEM_TOP_ADDR)
     {
-        panic("in free_single_page, page out of bound");
+        PANIC("in free_single_page, page out of bound");
     }
     memset((void *)page, UNALLOCTE_PAGE_VALUE, PAGE_SIZE);
 
@@ -101,7 +101,7 @@ void heap_mem_blk_cell_use(HEAP_MEM_BLK *blk, int cell_num)
 
     if (x >= SQRT_PAGE_SIZE || y >= SQRT_PAGE_SIZE)
     {
-        panic("in blk_cell_use: cell x or cell y overrange.");
+        PANIC("in blk_cell_use: cell x or cell y overrange.");
     }
     int blk_cell_y_idx = y / bitof(char);
 
@@ -118,7 +118,7 @@ int is_heap_mem_blk_cell_used(HEAP_MEM_BLK *blk, int cell_num)
     if (x >= SQRT_PAGE_SIZE || y >= SQRT_PAGE_SIZE)
     {
         printf("x: %d, y: %d\n\r", x, y);
-        panic("in is_blk_cell_used: cell x or cell y overrange.");
+        PANIC("in is_blk_cell_used: cell x or cell y overrange.");
     }
     int blk_cell_y_idx = y / bitof(char);
 
@@ -136,7 +136,7 @@ void heap_mem_blk_cell_free(HEAP_MEM_BLK *blk, int cell_num)
 
     if (x >= SQRT_PAGE_SIZE || y >= SQRT_PAGE_SIZE)
     {
-        panic("in blk_cell_free: cell x or cell y overrange.");
+        PANIC("in blk_cell_free: cell x or cell y overrange.");
     }
     int blk_cell_y_idx = y / bitof(char);
 
@@ -218,7 +218,7 @@ void k_free(void *ptr)
 {
     if (k_heap_mem_blk == NULL)
     {
-        panic("k_free: heap mem blk is null");
+        PANIC("k_free: heap mem blk is null");
     }
     HEAP_MEM_BLK *cur_heap_mem_blk = k_heap_mem_blk;
 

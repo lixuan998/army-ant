@@ -1,7 +1,7 @@
 #pragma once
 
-#include <common/stdint.h>
-#include <common/stddef.h>
+#include <lib/stdint.h>
+#include <lib/stddef.h>
 #include <common/lock.h>
 #include <common/error.h>
 
@@ -9,7 +9,7 @@
 #define BITMAP_MAX_WIDTH  2048
 
 typedef struct _bitmap {
-    spinlock splock;
+    struct spinlock splock;
     char bits[BITMAP_MAX_WIDTH / 8];
     uint32_t bitmap_width;
 } bitmap;

@@ -27,8 +27,8 @@ extern unsigned long                                 rodata_end_addr[];
 extern unsigned long                                 data_end_addr[];
 extern unsigned long                                 bss_start_addr[];
 extern unsigned long                                 bss_end_addr[];
-extern unsigned long                                 trampoline_start_addr[];
-extern unsigned long                                 trampoline_end_addr[];
+extern unsigned long                                 __trampoline_start[];
+extern unsigned long                                 __trampoline_end[];
 extern unsigned long                                 trampoline[];
 #endif /* __TRAMPOLINE__ */
 

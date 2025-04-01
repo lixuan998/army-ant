@@ -1,15 +1,15 @@
 #pragma once
 
 #include <lib/printk.h>
-#include <common/stdint.h>
-#include <common/stddef.h>
+#include <lib/stdint.h>
+#include <lib/stddef.h>
 #include <arch/arch_operation.h>
 
-#define ALIGN_FLOOR(addr)																			\
-		(((addr)) & ~(PAGE_SIZE - 1))
+#define ALIGN_FLOOR(addr, size)																			\
+		(((addr)) & ~((size) - 1))
 
-#define ALIGN_CEIL(addr)																			\
-		(((addr) + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
+#define ALIGN_CEIL(addr, size)																			\
+		(((addr) + (size) - 1) & ~((size) - 1))
 
 #define IOMEM(addr)																					\
 		((volatile void __iomem *)((long)(addr)))
@@ -20,7 +20,7 @@
             while (1);																				\
         } while (0)
 
-#define panic(msg, ...) _PANIC(msg, ##__VA_ARGS__)
+#define PANIC(msg, ...) _PANIC(msg, ##__VA_ARGS__)
 
 #define OFFSET_OF(type, member)																		\
 		((uintptr_t)&(((type *)0)->member))
@@ -32,7 +32,7 @@
 		} while (0)
 
 #define READ_REG32(reg_addr)																		\
-		(*((volatile uint32_t *)((uintptr_t)(reg_addr))))
+		(*((uint32_t *)((uintptr_t)(reg_addr))))
 
 #define WRITE_REG64(reg_addr, val)																	\
 		do {																						\

@@ -1,10 +1,10 @@
 #pragma once
 
-#include <common/stdint.h>
-#include <common/stddef.h>
+#include <lib/stdint.h>
+#include <lib/stddef.h>
 #include <common/error.h>
 
-typedef struct _spinlock {
+struct spinlock {
     union {
         struct {
             uint32_t owner;
@@ -12,9 +12,9 @@ typedef struct _spinlock {
         };
         uint64_t slock;
     };
-} spinlock;
+};
 
-void spinlock_init(spinlock *splock);
-void spinlock_lock(spinlock *splock);
-void spinlock_unlock(spinlock *splock);
-error_t spinlock_try_lock(spinlock *splock);
+void spinlock_init(struct spinlock *splock);
+void spinlock_lock(struct spinlock *splock);
+void spinlock_unlock(struct spinlock *splock);
+error_t spinlock_try_lock(struct spinlock *splock);

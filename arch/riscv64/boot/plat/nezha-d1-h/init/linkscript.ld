@@ -16,12 +16,12 @@ SECTIONS
 	KEEP(*(.startup))
     *(.text .text.*);
     . = ALIGN(0x1000);
-    PROVIDE(__kernel_text_start = .);
-    PROVIDE(trampoline_start_addr = .);
+    PROVIDE(__text_start = .);
+    PROVIDE(__trampoline_start = .);
     *(trampoline_section);
     . = ALIGN(0x1000);
-    PROVIDE(trampoline_end_addr = .);
-    ASSERT(trampoline_end_addr - trampoline_start_addr == 0x1000, "error: trampoline size is not 0x1000");
+    PROVIDE(__trampoline_end = .);
+    ASSERT(__trampoline_end - __trampoline_start == 0x1000, "error: trampoline size is not 0x1000");
   } > TEXT_SEG
 
   .rodata : {

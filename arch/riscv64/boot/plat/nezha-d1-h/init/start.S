@@ -1,5 +1,5 @@
-#include <common/asm.h>
-#include <common/config.h>
+#include <arch/asm.h>
+#include <arch/mm/arch_mem_layout.h>
 
 .section .startup
 .comm init_stack, BOOT_STACK_SIZE

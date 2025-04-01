@@ -28,11 +28,14 @@
 #include <mm/mem_paging.h>
 #include <mm/mmu.h>
 
-#include <arch/arch_mem_layout.h>
+#include <arch/mm/arch_mem_layout.h>
+
+#include <io/uart.h>
 
 int main()
 {        
-    kernel_mmu_enable();
+    uart_init();
+    kernel_mmu_init();
     // general_spinlock_init();
     // kernel_init();
     
@@ -55,7 +58,7 @@ int main()
 //     printf("memory page size:                     %d bytes\n\r", PAGE_SIZE);
 //     printf("memory start address:                 %x\n\r", kernel_end_addr);
 //     printf("memory end address:                   %x\n\r", MEM_TOP_ADDR);
-//     printf("trampoline address:                   %x\n\r", trampoline_start_addr);
+//     printf("trampoline address:                   %x\n\r", __trampoline_start);
 //     printf("kernel text end address:                   %x\n\r", kernel_text_end_addr);
 //     printf("memory size:                          %d bytes\n\r", MEM_TOP_ADDR);
 //     mem_paging_init();
@@ -71,7 +74,7 @@ int main()
 
 // void general_spinlock_init()
 // {
-//     for(int i = 0; i < GENERAL_SPINLOCK_NUM; ++ i)
+//     for(int i = 0; i < GENERAL_SPINLOCK_NUM; ++i)
 //     {
 //         spinlock_init(general_spinlock + i, "general_spinlock");
 //     }

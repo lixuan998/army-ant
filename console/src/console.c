@@ -29,7 +29,7 @@ void retrieve_command_history(int direction)
         else
         {
             printf("\r");
-            for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
+            for(int i = 0; i < cmd_buf_idx + 2; ++i) printf(" ");
             printf("\rroot:$ ");
 
             memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
@@ -45,7 +45,7 @@ void retrieve_command_history(int direction)
         else
         {
             printf("\r");
-            for(int i = 0; i < cmd_buf_idx + 2; ++ i) printf(" ");
+            for(int i = 0; i < cmd_buf_idx + 2; ++i) printf(" ");
             printf("\rroot:$ ");
 
             memset(cmd_buf, '\0', COMMAND_BUFF_SIZE);
@@ -68,7 +68,7 @@ void add_command_history()
 int command_empty()
 {
     int cnt = 0;
-    for(int i = 0; i < cmd_buf_idx; ++ i)
+    for(int i = 0; i < cmd_buf_idx; ++i)
     {
         if(cmd_buf[i] == ' ') cnt ++;
     }
@@ -84,7 +84,7 @@ void console_init()
     cmd_history_cnt = 0;
     cmd_history_cur = 0;
 
-    for(int i = 0; i < COMMAND_HISTORY_SIZE; ++ i)
+    for(int i = 0; i < COMMAND_HISTORY_SIZE; ++i)
     {
         memset(cmd_history[i], '\0', COMMAND_BUFF_SIZE);
         cmd_history_len[i] = 0;

@@ -116,7 +116,7 @@ void sd_mmc_controller_reset()
     }
     if (limit <= 0)
     {
-        panic("in sd_mmc_controller_reset, command excute timeout\n");
+        PANIC("in sd_mmc_controller_reset, command excute timeout\n");
     }
 }
 
@@ -283,6 +283,6 @@ void sd_mmc_send_cmd(SD_CMD *cmd)
     }
     if (limit <= 0)
     {
-        panic("in sd_mmc_send_cmd, command send timeout\n");
+        PANIC("in sd_mmc_send_cmd, command send timeout\n");
     }
 }

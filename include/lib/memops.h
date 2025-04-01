@@ -1,7 +1,7 @@
 #pragma once
 
-#include <common/stdint.h>
-#include <common/stddef.h>
+#include <lib/stdint.h>
+#include <lib/stddef.h>
 
 void memset(void *ptr, int value, int size);
 

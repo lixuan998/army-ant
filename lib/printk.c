@@ -30,8 +30,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <common/stdbool.h>
-#include <common/stdint.h>
+#include <lib/stdbool.h>
+#include <lib/stdint.h>
 #include <lib/printk.h>
 #include <io/uart.h>
 
@@ -150,7 +150,7 @@ static inline void _out_char(char character, void* buffer, size_t idx, size_t ma
 {
     (void)buffer; (void)idx; (void)maxlen;
     if (character) {
-        uart_send_byte((uint8_t)character);
+        uartputc((uint8_t)character);
     }
 }
 

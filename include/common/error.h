@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/stdint.h>
+#include <lib/stdint.h>
 
 typedef uint32_t error_t;
 

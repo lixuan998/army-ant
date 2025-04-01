@@ -153,7 +153,7 @@ void exec(PROC *proc, unsigned char *code, int code_size)
 
     // Map for trampoline
     map_info[trampoline_entry_idx].virt_addr_start = (addr_t)(VM_TRAMPOLINE_ADDR);
-    map_info[trampoline_entry_idx].phys_addr_start = (addr_t)trampoline_start_addr;
+    map_info[trampoline_entry_idx].phys_addr_start = (addr_t)__trampoline_start;
     map_info[trampoline_entry_idx].size = PAGE_SIZE;
     map_info[trampoline_entry_idx].permisson = PTE_PERMISSION_R | PTE_PERMISSION_X | PTE_PERMISSION_A;
 
@@ -245,7 +245,7 @@ void user_trap()
 {
 
     if ((r_sstatus() & SSTATUS_SPP_MASK) != 0)
-        panic("usertrap: not from user mode");
+        PANIC("usertrap: not from user mode");
     w_stvec((isa_reg_t)kernel_interrupt_vector);
     PROC *cur_proc = current_cpu_proc();
     cur_proc->trapframe->epc = r_sepc();

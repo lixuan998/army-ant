@@ -1,10 +1,11 @@
 #pragma once
 
-#include <common/stdint.h>
-#include <common/stddef.h>
+#include <lib/stdint.h>
+#include <lib/stddef.h>
 #include <common/error.h>
 #include <arch/arch_defs.h>
 #include <mm/mem_defs.h>
+#include <mm/mmu.h>
 
 #define PTE_PERMISSION_V                (1UL << 0)
 #define PTE_PERMISSION_R                (1UL << 1)
@@ -31,16 +32,7 @@
 #define PHY_ADDR_TO_PTE(phy_addr)       ((((uintptr_t)(phy_addr)) >> 12) << 10)
 #define ADDR_TO_SATP(phy_addr)          (((uintptr_t)(phy_addr)) >> 12)
 
-typedef uintptr_t pgtbl_t;
-typedef uintptr_t pte_t;
-typedef uint64_t  pgsize_t;
 
-typedef struct mmu_map_tbl{
-    addr_t virt_addr_start;
-    addr_t phys_addr_start;
-    pgsize_t size;
-    uint64_t permisson;
-} mmu_map_tbl;
 
 error_t arch_mmu_mapping(pgtbl_t* pagetable, addr_t virt_addr_start,
                          addr_t phys_addr_start, pgsize_t size,
@@ -50,5 +42,6 @@ pte_t* arch_pte_retrieve(pgtbl_t* pagetable, addr_t virt_addr,
                          mem_type type);
 
 void arch_mmu_enable(pgtbl_t *pagetable);
+void arch_mmu_disable(void);
 
-void arch_kernel_mmu_enable();
+void arch_kernel_mmu_init(void);

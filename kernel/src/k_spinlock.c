@@ -23,7 +23,7 @@ void spinlock_lock(SPINLOCK *slk)
     
     if(slk -> locked && slk -> slk_owner == cur_cpu)
     {
-        panic("riscv_spinlock_lock");
+        PANIC("riscv_spinlock_lock");
     }
 
     while(__sync_lock_test_and_set(&slk->locked, 1) != 0);
@@ -39,7 +39,7 @@ void spinlock_unlock(SPINLOCK *slk)
     CPU *cur_cpu = current_cpu();
     if(!(slk -> locked && slk -> slk_owner == cur_cpu))
     {
-        panic("riscv_spinlock_unlock");
+        PANIC("riscv_spinlock_unlock");
     }
 
     slk -> slk_owner = NULL;

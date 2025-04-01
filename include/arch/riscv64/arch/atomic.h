@@ -1,6 +1,6 @@
 #pragma once
 
-#include <common/stdint.h>
+#include <lib/stdint.h>
 
 #define __FENCE(p, s) asm volatile ("fence " #p "," #s : : : "memory")
 

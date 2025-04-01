@@ -1,5 +1,5 @@
 #define __TRAMPOLINE__
-#include <arch/arch_mem_layout.h>
+#include <arch/mm/arch_mem_layout.h>
 
 .section trampoline_section
 .globl trampoline

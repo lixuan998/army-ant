@@ -4,7 +4,7 @@
 // #include "arch/riscv/include/riscv_type_defs.h"
 #include <lib/printk.h>
 #include <common/operation.h>
-#include <common/stdint.h>
+#include <lib/stdint.h>
 
 #define PLIC_ENABLE                 (1)
 #define PLIC_DISABLE                (0)

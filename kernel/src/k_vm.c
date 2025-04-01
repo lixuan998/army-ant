@@ -16,7 +16,7 @@ pagetable_t pagetable_create(VM_MAP_INFO map_info[], int num_of_mapping)
 
 void pagetable_destroy(pagetable_t pagetable)
 {
-    for(int i = 0; i < 512; ++ i)
+    for(int i = 0; i < 512; ++i)
     {
         pte_t pte = pagetable[i];
         if((pte & PTE_PERMISSION_V) && ((pte & PTE_PERMISSION_R) == 0))
@@ -35,7 +35,7 @@ pte_t* pte_retrieve(pagetable_t pagetable, addr_t virt_addr)
 {
     if(virt_addr >= VM_ADDR_MAX_VAL)
     {
-        panic("in pte_retrieve, virt_addr exceeded.");
+        PANIC("in pte_retrieve, virt_addr exceeded.");
     }
     for (int idx = 2; idx > 0; --idx)
     {
