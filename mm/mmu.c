@@ -42,6 +42,11 @@ pgtbl_t* pgtbl_create(mmu_map_tbl map_tbl[], uint32_t tbl_entrys,
     return pgtbl;
 }
 
+pgtbl_t* get_kernel_pgtbl()
+{
+    return arch_get_kernel_pgtbl();
+}
+
 void kernel_mmu_init()
 {
     arch_kernel_mmu_init();

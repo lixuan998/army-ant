@@ -211,8 +211,8 @@ void kernel_trap()
 
     interrupt_disable();
 
-    extern char user_intr_interface[];
-    addr_t vm_user_intr_interface_addr = (addr_t)VM_TRAMPOLINE_ADDR + ((addr_t)user_intr_interface - (addr_t)trampoline);
+    extern char trap_to_kernel[];
+    addr_t vm_user_intr_interface_addr = (addr_t)VM_TRAMPOLINE_ADDR + ((addr_t)trap_to_kernel - (addr_t)trampoline);
     w_stvec(vm_user_intr_interface_addr);
     // Set up trapframe values
     cur_proc->trapframe->k_satp = r_satp();
@@ -233,13 +233,13 @@ void kernel_trap()
     w_sepc((cur_proc->trapframe->epc));
     addr_t user_satp = ((SATP_SV39_MODE << RV64_SATP_MODE_OFFSET) | ADDR_TO_SATP((addr_t)cur_proc->pagetable));
 
-    addr_t vm_ret_to_user_func_addr = (addr_t)VM_TRAMPOLINE_ADDR + (addr_t)((addr_t)ret_to_user - (addr_t)trampoline);
+    addr_t vm_ret_to_user_func_addr = (addr_t)VM_TRAMPOLINE_ADDR + (addr_t)((addr_t)back_to_user - (addr_t)trampoline);
     ((void (*)(addr_t))vm_ret_to_user_func_addr)(user_satp);
 }
 
 /**
  * @brief Trap from user space to kernel space.
- * @note Called from user_intr_interface in trampoline.S.
+ * @note Called from trap_to_kernel in trampoline.S.
  */
 void user_trap()
 {

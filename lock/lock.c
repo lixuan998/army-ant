@@ -1,6 +1,9 @@
 #include <common/lock.h>
 #include <common/operation.h>
+#include <irq/irq.h>
 #include <arch/atomic.h>
+
+static int prev_irq_enabled[CPU_NUM] = {0};
 
 void spinlock_init(struct spinlock *splock)
 {
@@ -13,12 +16,16 @@ void spinlock_init(struct spinlock *splock)
 
 void spinlock_lock(struct spinlock *splock)
 {
-    uint32_t cur_val = 0;
+    volatile uint32_t cur_val = 0;
     if (!splock) {
         PANIC("splock is NULL");
     }
+    prev_irq_enabled[READ_HARTID()] = irq_lock();
+
     cur_val = atomic_fetch_add_32(&splock->next, 1);
-    while (cur_val != splock->owner);
+    while (cur_val != splock->owner) {
+        __asm__ volatile("nop");
+    }
     __COMPILER_BARRIER();
 }
 
@@ -27,8 +34,9 @@ void spinlock_unlock(struct spinlock *splock)
     if (!splock) {
         PANIC("splock is NULL");
 	}
+    atomic_fetch_add_32(&splock->owner, 1);
     __COMPILER_BARRIER();
-    splock->owner += 1;
+    irq_unlock(prev_irq_enabled[READ_HARTID()]);
 }
 
 error_t spinlock_try_lock(struct spinlock *splock)

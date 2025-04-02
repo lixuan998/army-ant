@@ -7,6 +7,8 @@ extern char __top_addr[];
 extern char __kernel_end[];
 extern char __text_start[];
 extern char __text_end[];
+extern char __bss_start[];
+extern char __bss_end[];
 extern char __trampoline_start[];
 extern char __trampoline_end[];
 

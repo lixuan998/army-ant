@@ -18,6 +18,7 @@ SECTIONS
   .text : {
     PROVIDE(__text_start = .);
 	  KEEP(*(.startup))
+    KEEP(*(.arch_irq_vec))
     *(.text .text.*);
     . = ALIGN(0x1000);
     PROVIDE(__text_end = .);
@@ -26,7 +27,7 @@ SECTIONS
   .trampoline : {
     . = ALIGN(0x1000);
     PROVIDE(__trampoline_start = .);
-    *(trampoline_section);
+    *(.trampoline_section);
     . = ALIGN(0x1000);
     PROVIDE(__trampoline_end = .);
     ASSERT(__trampoline_end - __trampoline_start == 0x1000, "error: trampoline size is not 0x1000");

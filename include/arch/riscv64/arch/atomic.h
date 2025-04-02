@@ -79,7 +79,7 @@ static inline int64_t atomic_cmpxchg_64(int64_t *ptr, int64_t oldval, int64_t ne
 #endif
 }
 
-#define __COMPILER_BARRIER() asm volatile("":::"memory")
+#define __COMPILER_BARRIER() asm volatile("fence rw, rw" ::: "memory")
 
 #ifdef __riscv_atomic
 #define atomic_fetch_add_32(ptr, val) __sync_fetch_and_add(ptr, val)

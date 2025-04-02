@@ -1,13 +1,13 @@
 #define __TRAMPOLINE__
 #include "arch/riscv/include/riscv_mem_layout.h"
 
-.section trampoline_section
+.section .trampoline_section
 .globl trampoline
 trampoline:
 .align 4
 
-.globl user_intr_interface
-user_intr_interface:    
+.globl trap_to_kernel
+trap_to_kernel:    
         csrw sscratch, a0
 
         li a0, VM_TRAPFRAME_ADDR
@@ -62,8 +62,8 @@ user_intr_interface:
 
         jr t0
 
-.globl ret_to_user
-ret_to_user:
+.globl back_to_user
+back_to_user:
         sfence.vma zero, zero
         csrw satp, a0
         sfence.vma zero, zero

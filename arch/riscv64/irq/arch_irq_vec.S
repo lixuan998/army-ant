@@ -1,9 +1,9 @@
+.section .arch_irq_vec
 
-.global kernel_interrupt_vector
-.extern kernel_interrupt_handler
 .align 4
-
-kernel_interrupt_vector:
+.extern arch_irq_handler
+.globl arch_irq_vec_tbl
+arch_irq_vec_tbl:
 
     addi sp, sp, -256
 
@@ -39,7 +39,7 @@ kernel_interrupt_vector:
     sd t5, 232(sp)
     sd t6, 240(sp)
 
-    call kernel_interrupt_handler
+    call arch_irq_handler
 
     ld ra, 0(sp)
     ld sp, 8(sp)

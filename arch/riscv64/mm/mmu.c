@@ -71,6 +71,11 @@ pte_t* arch_pte_retrieve(pgtbl_t* pagetable, addr_t virt_addr,
     return &pagetable[VM_ADDR_IDX(virt_addr, 0)];
 }
 
+pgtbl_t* arch_get_kernel_pgtbl()
+{
+    return _kernel_pgtbl;
+}
+
 void arch_mmu_enable(pgtbl_t *pagetable)
 {
     WRITE_CSR(satp, (SATP_SV39_MODE << RV64_SATP_MODE_OFFSET) | ADDR_TO_SATP((uintptr_t)pagetable));
@@ -83,20 +88,29 @@ void arch_mmu_disable(void)
     INVALIDATE_TLB();
 }
 
-void arch_kernel_mmu_init(void)
+pgtbl_t* arch_mmu_pgtbl_create(mem_type type, mmu_map_tbl map_tbl[], uint32_t tbl_entries)
 {
-    static_mem_init();
-    _kernel_pgtbl = (pgtbl_t*)static_mem_alloc();
-    uint32_t _k_tbl_entrys = 5;
+    pgtbl_t *_pgtbl = NULL;
+    if (type == MEM_TYPE_DYN) {
+        _pgtbl = (pgtbl_t*)mem_page_alloc();
+    } else {
+        _pgtbl = (pgtbl_t*)static_mem_alloc();
+    }
     
     // Create kernel page table.
-    for (uint32_t i = 0; i < _k_tbl_entrys; ++i) {
-        error_t ret = arch_mmu_mapping(_kernel_pgtbl, _k_map_tbl[i].virt_addr_start,
-                                       _k_map_tbl[i].phys_addr_start, _k_map_tbl[i].size,
-                                       _k_map_tbl[i].permisson, MEM_TYPE_STATIC);
+    for (uint32_t i = 0; i < tbl_entries; ++i) {
+        error_t ret = arch_mmu_mapping(_pgtbl, map_tbl[i].virt_addr_start,
+                                       map_tbl[i].phys_addr_start, map_tbl[i].size,
+                                       map_tbl[i].permisson, type);
         if (ret != AA_ERROR_SUCCESS) {
             PANIC("fail creating kernel pagetable");
         } // TODO: maybe need some recycles?
     }
+    return _pgtbl;
+}
+
+void arch_kernel_mmu_init(void)
+{
+    _kernel_pgtbl = arch_mmu_pgtbl_create(MEM_TYPE_STATIC, _k_map_tbl, 5);
     arch_mmu_enable(_kernel_pgtbl);
 }

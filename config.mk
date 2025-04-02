@@ -1,18 +1,34 @@
 ifndef TOOLCHAIN
 TOOLCHAIN := $(shell if riscv64-unknown-elf-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
-	then echo 'riscv64-unknown-elf-'; \
-	elif riscv64-linux-gnu-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
-	then echo 'riscv64-linux-gnu-'; \
-	elif riscv64-unknown-linux-gnu-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
-	then echo 'riscv64-unknown-linux-gnu-'; \
-	elif riscv64-elf-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
-	then echo 'riscv64-elf-'; \
-	else echo "***" 1>&2; \
-	echo "*** Error: Couldn't find a riscv64 version of GCC/binutils." 1>&2; \
-	echo "*** To turn off this error, run 'gmake TOOLPREFIX= ...'." 1>&2; \
-	echo "***" 1>&2; exit 1; fi)
+			   then echo 'riscv64-unknown-elf-'; \
+			   elif riscv64-linux-gnu-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
+			   then echo 'riscv64-linux-gnu-'; \
+			   elif riscv64-unknown-linux-gnu-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
+			   then echo 'riscv64-unknown-linux-gnu-'; \
+			   elif riscv64-elf-objdump -i 2>&1 | grep 'elf64-big' >/dev/null 2>&1; \
+			   then echo 'riscv64-elf-'; \
+			   else echo "***" 1>&2; \
+			   echo "*** Error: Couldn't find a riscv64 version of GCC/binutils." 1>&2; \
+			   echo "*** To turn off this error, run 'gmake TOOLPREFIX= ...'." 1>&2; \
+			   echo "***" 1>&2; exit 1; fi)
 endif
 LINKLD := linkscript.ld
+
+ifndef ARCH
+ARCH = riscv64
+endif
+
+ifndef PLAT
+PLAT = qemu-riscv64-virt
+endif
+
+ifndef CPU_NUM
+CPU_NUM := 4
+endif
+
+ifndef BOOT_CORE
+BOOT_CORE := 0
+endif
 
 CC := $(TOOLCHAIN)gcc
 LD := $(TOOLCHAIN)ld
@@ -25,9 +41,6 @@ CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -mno-relax
 CFLAGS += $(shell $(CC) -fno-stack-protector -E -x c /dev/null >/dev/null 2>&1 && echo -fno-stack-protector)
 CFLAGS += -march=rv64g -nostdinc
+CFLAGS += -DCPU_NUM=${CPU_NUM} -DBOOT_CORE=${BOOT_CORE}
 
 LDFLAGS := -nostdlib -z max-page-size=4096  
-
-AA_ARCH = riscv64
-AA_BOARD = qemu-riscv64-virt
-# AA_BOARD = nezha-d1-h

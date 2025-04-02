@@ -8,7 +8,7 @@
 #include "lib/include/stdlib.h"
 
 extern PROC_LIST proc_list;
-extern addr_t ret_to_user[];
+extern addr_t back_to_user[];
 
 void proc_list_add(PROC_LIST *list, PROC *proc);
 PROC *proc_list_get_next(PROC_LIST *list);

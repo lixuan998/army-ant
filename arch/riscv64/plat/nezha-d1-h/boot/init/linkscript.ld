@@ -18,7 +18,7 @@ SECTIONS
     . = ALIGN(0x1000);
     PROVIDE(__text_start = .);
     PROVIDE(__trampoline_start = .);
-    *(trampoline_section);
+    *(.trampoline_section);
     . = ALIGN(0x1000);
     PROVIDE(__trampoline_end = .);
     ASSERT(__trampoline_end - __trampoline_start == 0x1000, "error: trampoline size is not 0x1000");

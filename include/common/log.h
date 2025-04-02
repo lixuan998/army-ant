@@ -13,8 +13,7 @@
 #define LOG(level, level_str, tag, fmt, ...)                   \
     do {                                                       \
         if (level <= CURRENT_LOG_LEVEL) {                      \
-            printk(level_str "["tag"] " fmt, ##__VA_ARGS__);   \
-            printk("\r\n");                                    \
+            printk(level_str "["tag"] " fmt "\r\n", ##__VA_ARGS__);   \
         }                                                      \
     } while (0)
 

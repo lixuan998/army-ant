@@ -40,8 +40,9 @@ error_t arch_mmu_mapping(pgtbl_t* pagetable, addr_t virt_addr_start,
 
 pte_t* arch_pte_retrieve(pgtbl_t* pagetable, addr_t virt_addr,
                          mem_type type);
-
+pgtbl_t* arch_get_kernel_pgtbl();
 void arch_mmu_enable(pgtbl_t *pagetable);
 void arch_mmu_disable(void);
 
+pgtbl_t* arch_mmu_pgtbl_create(mem_type type, mmu_map_tbl map_tbl[], uint32_t tbl_entries);
 void arch_kernel_mmu_init(void);
