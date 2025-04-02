@@ -51,25 +51,8 @@
 #define xIE_SEIE_OFFSET                       9
 #define xIE_SEIE_MSK                          (1UL << xIE_SEIE_OFFSET)
 
-#define SCAUSE_INTERRUPT                      (1UL << 63)
-#define SCAUSE_EXCEPTION                      (0UL << 63)
+#define SCAUSE_INTERRUPT_OFFSET               63
+#define SCAUSE_INTERRUPT_MSK                  (1UL << 63)
 #define SCAUSE_EXCEPTION_CODE_MSK             0x7FFFFFFFFFFFFFFFUL
-#define SCAUSE_SOFTWARE_INTERRUPT             1
-#define SCAUSE_TIMER_INTERRUPT                5
-#define SCAUSE_EXTERNAL_INTERRUPT             9
-
-#define SCAUSE_INST_ADDR_MISALIGN             0
-#define SCAUSE_INST_ACCESS_FAULT              1
-#define SCAUSE_ILLEGAL_INST                   2
-#define SCAUSE_BREAKPOINT                     3
-#define SCAUSE_LOAD_ADDR_MISALIGN             4
-#define SCAUSE_LOAD_ACCESS_FAULT              5
-#define SCAUSE_STORE_AMO_ADDR_MISALIGN        6
-#define SCAUSE_STORE_AMO_ACCESS_FAULT         7
-#define SCAUSE_ECALL_U                        8
-#define SCAUSE_ECALL_S                        9
-#define SCAUSE_INST_PAGE_FAULT                12
-#define SCAUSE_LOAD_PAGE_FAULT                13
-#define SCAUSE_STORE_AMO_PAGE_FAULT           15
 
 typedef uintptr_t addr_t;

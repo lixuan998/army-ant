@@ -8,6 +8,7 @@
 
 #include <irq/irq.h>
 #include <arch/arch_defs.h>
+#include <arch/atomic.h>
 #include <plat/timer/plat_timer.h>
 #include <plat/plic/plat_plic.h>
 
@@ -25,10 +26,10 @@ void boot_core_init(void)
     mm_init();
     // plic_interrupt_enable();
     irq_init();
-    irq_disable();
     print_logo();
-    // irq_enable();
+    irq_enable();
     smp_ready = 1;
+    while(1);
 }
 
 void smp_core_init(void)
@@ -39,6 +40,8 @@ void smp_core_init(void)
     KLOG_DEBUG("HARTID", "HARTID: %d", READ_HARTID());
     secondary_mm_init();
     irq_init();
+    irq_enable();
+    while(1);
 }
 
 void boot_cfg()
