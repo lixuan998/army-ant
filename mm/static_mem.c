@@ -5,7 +5,7 @@
 #include <lib/memops.h>
 #include <lib/bitmap.h>
 
-static struct spinlock _sm_splock;
+static spinlock_t _sm_splock;
 static char static_mem_pool[STATIC_MEM_PAGES][PAGE_SIZE] __attribute__((aligned(PAGE_SIZE)));
 static bitmap static_mem_bitmap;
 

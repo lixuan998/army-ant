@@ -5,7 +5,7 @@
 
 static int prev_irq_enabled[CPU_NUM] = {0};
 
-void spinlock_init(struct spinlock *splock)
+void spinlock_init(spinlock_t *splock)
 {
     if (!splock) {
         PANIC("splock is NULL");
@@ -14,7 +14,7 @@ void spinlock_init(struct spinlock *splock)
     splock->next = 0;
 }
 
-void spinlock_lock(struct spinlock *splock)
+void spinlock_lock(spinlock_t *splock)
 {
     volatile uint32_t cur_val = 0;
     if (!splock) {
@@ -29,7 +29,7 @@ void spinlock_lock(struct spinlock *splock)
     __COMPILER_BARRIER();
 }
 
-void spinlock_unlock(struct spinlock *splock)
+void spinlock_unlock(spinlock_t *splock)
 {
     if (!splock) {
         PANIC("splock is NULL");
@@ -39,7 +39,7 @@ void spinlock_unlock(struct spinlock *splock)
     irq_unlock(prev_irq_enabled[READ_HARTID()]);
 }
 
-error_t spinlock_try_lock(struct spinlock *splock)
+error_t spinlock_try_lock(spinlock_t *splock)
 {
     volatile uint32_t new_val = splock->next;
 	error_t ret = AA_ERROR_SUCCESS;

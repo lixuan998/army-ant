@@ -5,15 +5,20 @@ Q=
 AA_ARCH_PATH := arch/$(ARCH)
 AA_ARCH_DIRS := mm sched irq
 
-AA_PLAT_PATH = arch/$(ARCH)/plat/$(PLAT)
-AA_PLAT_DIRS = timer uart plic
+AA_PLAT_PATH := arch/$(ARCH)/plat/$(PLAT)
+AA_PLAT_DIRS := timer uart plic
+
+AA_TOOLS_PATH := tools
+# AA_TOOLS_DIR := elf 
 
 INCLUDE_DIR := -Iinclude -Iinclude/arch/${ARCH} \
-			   -Iinclude/arch/${ARCH}/plat/${PLAT}
-DIRS := lib mm lock irq \
-        $(AA_ARCH_PATH) $(addprefix $(AA_ARCH_PATH)/,$(AA_ARCH_DIRS)) \
-		$(AA_PLAT_PATH) $(addprefix $(AA_PLAT_PATH)/,$(AA_PLAT_DIRS))
+			   -Iinclude/arch/${ARCH}/plat/${PLAT} \
+			   -Itools/elf
 
+DIRS := lib mm lock irq sched\
+        $(AA_ARCH_PATH) $(addprefix $(AA_ARCH_PATH)/,$(AA_ARCH_DIRS)) \
+		$(AA_PLAT_PATH) $(addprefix $(AA_PLAT_PATH)/,$(AA_PLAT_DIRS)) \
+		$(AA_TOOLS_PATH) $(addprefix $(AA_TOOLS_PATH)/,$(AA_TOOLS_DIR))
 
 C_SRCS := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.c))
 C_OBJS := $(C_SRCS:%.c=%.c.o)
@@ -21,10 +26,10 @@ C_OBJS := $(C_SRCS:%.c=%.c.o)
 ASM_SRCS := $(foreach dir,$(DIRS),$(wildcard $(dir)/*.S))
 ASM_OBJS := $(ASM_SRCS:%.S=%.S.o)
 
-INIT_C_SRCS := $(wildcard $(AA_ARCH_PATH)/plat/$(PLAT)/boot/init/*.c)
+INIT_C_SRCS := $(wildcard $(AA_ARCH_PATH)/plat/$(PLAT)/boot/*.c)
 INIT_C_OBJS := $(INIT_C_SRCS:%.c=%.c.o)
 
-INIT_ASM_SRCS := $(wildcard $(AA_ARCH_PATH)/plat/$(PLAT)/boot/init/*.S)
+INIT_ASM_SRCS := $(wildcard $(AA_ARCH_PATH)/plat/$(PLAT)/boot/*.S)
 INIT_ASM_OBJS := $(INIT_ASM_SRCS:%.S=%.S.o)
 
 ALL_OBJS := $(C_OBJS) $(ASM_OBJS) $(INIT_C_OBJS) $(INIT_ASM_OBJS)
@@ -39,7 +44,7 @@ army-ant.bin : army-ant.elf
 
 army-ant.elf : ${ALL_OBJS}
 	@echo "Linking ELF..."
-	@${LD} ${LDFLAGS} -T $(AA_ARCH_PATH)/plat/$(PLAT)/boot/init/$(LINKLD) $^ -o $@
+	@${LD} ${LDFLAGS} -T $(AA_ARCH_PATH)/plat/$(PLAT)/boot/$(LINKLD) $^ -o $@
 	@echo "Making objdump to army-ant.txt..."
 	@${OBJDUMP} -d army-ant.elf > army-ant.txt
 

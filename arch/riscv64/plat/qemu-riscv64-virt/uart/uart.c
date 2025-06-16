@@ -38,7 +38,7 @@
 
 #define UART_IER_ERBFI       1 << 0 // Enable Received Data Available Interrupt. 
 
-static struct spinlock _uart_splock;
+static spinlock_t _uart_splock;
 
 void uart_init()
 {

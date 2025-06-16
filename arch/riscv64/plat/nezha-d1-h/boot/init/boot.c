@@ -12,6 +12,9 @@ extern char                                 __bss_end[];
 extern int main();
 
 extern void interrupt_vector();
+
+const char boot_tag[] = "Boot";
+
 void test()
 {
     printk("test\n\r");
@@ -20,7 +23,7 @@ void boot_cfg()
 {
     //Set MPP to Supervisor mode.
     uint64_t cur_mstatus = READ_CSR(mstatus);
-    KLOG_DEBUG("BOOTCFG", "mstatus: %x", cur_mstatus); 
+    KLOG_DEBUG(boot_tag, "mstatus: %x", cur_mstatus); 
     cur_mstatus &= (~(MSTATUS_MPP_MSK));
     cur_mstatus |= (SUPERVISOR_MODE_CODE << MSTATUS_MPP_OFFSET);
     WRITE_CSR(mstatus, cur_mstatus);

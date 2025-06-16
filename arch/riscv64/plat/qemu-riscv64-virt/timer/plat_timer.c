@@ -26,7 +26,7 @@ void plat_timer_init(void)
 
 void plat_timer_irq_handler(void)
 {
-    KLOG_DEBUG("TIMER IRQ HANDLER", "hart %d's timer triggered", READ_HARTID());
+    // KLOG_DEBUG("TIMER IRQ HANDLER", "hart %d's timer triggered", READ_HARTID());
     tim_tick_cnt += 1;
     _plat_timer_reload();
 }

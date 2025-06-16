@@ -23,7 +23,7 @@ error_t arch_mmu_mapping(pgtbl_t* pagetable, addr_t virt_addr_start,
 
     //It's not necessary to align phys_addr_start, it's only for making the whole process more explicit.
     phys_addr_start = ALIGN_FLOOR(phys_addr_start, PAGE_SIZE);
-    KLOG_INFO("MMU", "mapping phy addr range %p ~ %p to virt addr range %p ~ %p",
+    KLOG_INFO(mmu_tag, "mapping phy addr range %p ~ %p to virt addr range %p ~ %p",
               phys_addr_start, phys_addr_start + size,
               virt_addr_start, virt_addr_end);
     while (virt_addr_start < virt_addr_end) {
@@ -61,7 +61,7 @@ pte_t* arch_pte_retrieve(pgtbl_t* pagetable, addr_t virt_addr,
             }
  
             if (pagetable == NULL) {
-                KLOG_ERR("MMU", "pagetable NULL");
+                KLOG_ERR(mmu_tag, "pagetable NULL");
                 return NULL;
             }
             memset(pagetable, 0, PAGE_SIZE);

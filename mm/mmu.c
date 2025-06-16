@@ -4,6 +4,7 @@
 #include <mm/static_mem.h>
 #include <arch/mm/arch_mmu.h>
 
+const char mmu_tag[] = "MMU";
 error_t pgtbl_insert(pgtbl_t* pgtbl, mmu_map_tbl map_tbl[],
                      uint32_t tbl_entrys, mem_type type)
 {

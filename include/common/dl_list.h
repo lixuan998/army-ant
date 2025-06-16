@@ -20,8 +20,8 @@ struct dl_list {
 		do {															\
 			(node)->previous = list;									\
 			(node)->next = (list)->next;								\
-			(list)->next = (node);										\
 			((list)->next)->previous = (node);							\
+			(list)->next = (node);										\
 		} while (0)
 
 #define DL_LIST_ADD_TAIL(list, node)									\
@@ -31,8 +31,8 @@ struct dl_list {
 		do {															\
 			((node)->next)->previous = (node)->previous;				\
 			((node)->previous)->next = (node)->next;					\
-			(node)->previous = (DL_LIST *)NULL;							\
-			(node)->next = (DL_LIST *)NULL;								\
+			(node)->previous = (struct dl_list *)NULL;							\
+			(node)->next = (struct dl_list *)NULL;								\
 		} while (0)
 
 #define DL_LIST_EMPTY(list)												\

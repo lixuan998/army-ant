@@ -18,8 +18,7 @@ static void default_exception_handler(void)
 
 static void software_irq_handler(void)
 {
-    KLOG_DEBUG("IRQ_HANDLER", "Software IRQ Not Implemented\r\n");
-    while(1);
+    PANIC("IRQ_HANDLER", "Software IRQ Not Implemented\r\n");
 }
 
 static void timer_irq_handler(void)
@@ -29,81 +28,67 @@ static void timer_irq_handler(void)
 
 static void external_irq_handler(void)
 {
-    KLOG_DEBUG("IRQ_HANDLER", "External IRQ Not Implemented\r\n");
-    while(1);
+    PANIC("IRQ_HANDLER", "External IRQ Not Implemented\r\n");
 }
 static void instruction_address_misaligned_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Instruction Address Misaligned\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Instruction Address Misaligned\r\n");
 }
 static void instruction_access_fault_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Instruction Access Fault\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Instruction Access Fault\r\n");
 }
 static void illegal_instruction_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Illegal Instruction\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Illegal Instruction\r\n");
 }
 static void breakpoint_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Breakpoint\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Breakpoint\r\n");
 }
 static void load_address_misaligned_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Load Address Misaligned\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Load Address Misaligned\r\n");
 }
 
 static void load_access_fault_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Load Access Fault\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Load Access Fault\r\n");
 }
 
 static void store_address_misaligned_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Store Address Misaligned\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Store Address Misaligned\r\n");
 }
 
 static void store_access_fault_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Store Access Fault\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Store Access Fault\r\n");
 }
 
 static void user_ecall_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "User Environment Call\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "User Environment Call\r\n");
 }
 
 static void supervisor_ecall_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Supervisor Environment Call\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Supervisor Environment Call\r\n");
 }
 
 static void instruction_page_fault_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Instruction Page Fault\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Instruction Page Fault\r\n");
 }
 
 static void load_page_fault_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Load Page Fault\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Load Page Fault\r\n");
 }
 
 static void store_page_fault_handler(void)
 {
-    KLOG_DEBUG("EXCEPTION_HANDLER", "Store Page Fault\r\n");
-    while(1);
+    PANIC("EXCEPTION_HANDLER", "Store Page Fault\r\n");
 }
 
 void arch_irq_vec_tbl(void);
@@ -174,9 +159,17 @@ void arch_irq_handler()
     uint8_t is_irq = (scause_val & SCAUSE_INTERRUPT_MSK) >> SCAUSE_INTERRUPT_OFFSET;
     if (is_irq) {
         enum irq_type type = (scause_val & SCAUSE_EXCEPTION_CODE_MSK);
-        irq_handler_set[type]();
+        if (irq_handler_set[type] == NULL) {
+            PANIC("Unsupport IRQ Type: %d\r\n", type);
+        } else {
+            irq_handler_set[type]();
+        }
     } else {
         enum exception_type type = (scause_val & SCAUSE_EXCEPTION_CODE_MSK);
-        exception_handler_set[type]();
+        if (exception_handler_set[type] == NULL) {
+            PANIC("Unsupport Exception Type: %d\r\n", type);
+        } else {
+            exception_handler_set[type]();
+        }
     }
 }

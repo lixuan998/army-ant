@@ -36,7 +36,7 @@
 #include <io/uart.h>
 #include <common/lock.h>
 
-struct spinlock print_lock = {0};
+spinlock_t print_lock = {0};
 
 // define this globally (e.g. gcc -DPRINTF_INCLUDE_CONFIG_H ...) to include the
 // printf_config.h header file

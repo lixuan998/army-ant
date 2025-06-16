@@ -26,14 +26,14 @@ enum task_state {
 
 struct cpu;
 
-struct task {
+struct task_cb {
     char           task_name[TASK_NAME_MAX_LEN];
     tid_t          tid;
     pid_t          pid;
-    struct cpu     *cpu;
+    struct cpu     *cpu; // CPU that the task is running on.
     task_state_t   state;
     priority_t     priority;
-    void           *sp;
+    void           *sp; // Stack pointer.
     uint32_t       stack_size;
     uint32_t       time_slice;
     uint32_t       wait_time;
@@ -47,5 +47,5 @@ struct task {
 struct cpu {
     struct task *current_task;
     uintptr_t *stack_ptr;
-    struct spinlock lock;
+    spinlock_t lock;
 };

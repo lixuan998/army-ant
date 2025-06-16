@@ -9,7 +9,7 @@
 #define BITMAP_MAX_WIDTH  2048
 
 typedef struct _bitmap {
-    struct spinlock splock;
+    spinlock_t splock;
     char bits[BITMAP_MAX_WIDTH / 8];
     uint32_t bitmap_width;
 } bitmap;

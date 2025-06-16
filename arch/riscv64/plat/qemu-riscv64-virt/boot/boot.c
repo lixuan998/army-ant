@@ -12,7 +12,6 @@
 #include <plat/timer/plat_timer.h>
 #include <plat/plic/plat_plic.h>
 
-extern int main();
 extern void mmu_map_init(void);
 extern void interrupt_vector();
 
@@ -22,7 +21,7 @@ void boot_core_init(void)
 {
     uart_init();
     KLOG_INFO("INITIALIZING", "Initializing system...");
-    printk("hartid: %d\r\n", READ_HARTID());
+    KLOG_DEBUG("HARTID", "hartid: %d", READ_HARTID());
     mm_init();
     // plic_interrupt_enable();
     irq_init();

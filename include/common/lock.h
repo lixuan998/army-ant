@@ -14,7 +14,9 @@ struct spinlock {
     };
 };
 
-void spinlock_init(struct spinlock *splock);
-void spinlock_lock(struct spinlock *splock);
-void spinlock_unlock(struct spinlock *splock);
-error_t spinlock_try_lock(struct spinlock *splock);
+typedef struct spinlock spinlock_t;
+
+void spinlock_init(spinlock_t *splock);
+void spinlock_lock(spinlock_t *splock);
+void spinlock_unlock(spinlock_t *splock);
+error_t spinlock_try_lock(spinlock_t *splock);
